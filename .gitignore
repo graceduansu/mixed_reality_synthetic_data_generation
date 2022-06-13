@@ -1,0 +1,5 @@
+/assets
+/__pycache__
+*.png
+*.exr
+*.log

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<scene version="0.5.0">
+	<integrator type="volpath">
+		<integer name="rrDepth" value="5"/>
+		<boolean name="hideEmitters" value="true"/>
+	</integrator>
+
+	<emitter type="sunsky">
+		<float name="turbidity" value="3"/>
+		<float name="latitude" value="40.44694"/>
+        <float name="longitude" value="-79.94902"/>
+        <float name="timezone" value="-4"/>
+		
+		<integer name="year" value="2010"/>
+		<integer name="month" value="07"/>
+		<integer name="day" value="10"/>
+
+        <float name="hour" value="16"/>
+        <float name="minute" value="30"/>
+
+        <float name="sunScale" value="3"/>
+		<float name="skyScale" value="3"/>
+
+		<transform name="toWorld">
+			<lookAt origin="278, 273, -800" target="278, 273, -799" up="0, 1, 0"/>
+		</transform>
+	</emitter>
+
+    <!-- <emitter type="envmap">
+		<string name="filename" value="../cars_test/parking_lot.hdr"/>
+		<transform name="toWorld">
+			<scale value="0.4"/>
+		</transform>
+		<float name="scale" value="5"/>
+	</emitter>
+	 -->
+
+
+	<sensor type="perspective">
+		<string name="fovAxis" value="smaller"/>
+		<float name="nearClip" value="10"/>
+		<float name="farClip" value="2800"/>
+		<float name="focusDistance" value="1000"/>
+		<transform name="toWorld">
+			<lookAt origin="278, 273, -800" target="278, 273, -799" up="0, 1, 0"/>
+		</transform>
+		<float name="fov" value="60"/>
+
+		<sampler type="ldsampler">
+			<integer name="sampleCount" value="16"/>
+		</sampler>
+
+		<film type="ldrfilm">
+            <string name="pixelFormat" value="rgba"/>
+			<integer name="width" value="1024"/>
+			<integer name="height" value="1024"/>
+			<boolean name="banner" value="false"/>
+			<rfilter type="gaussian"/>
+			
+		</film>
+	</sensor>
+
+
+	<shape type="obj">
+		<string name="filename" value="../cars_test/meshes/cbox_floor.obj"/>
+		<transform name="toWorld">
+			<scale x="2" y="4" z="2.7"/>
+			<translate x="-200" y="0" z="-100"/>
+			<rotate x="1" y="0" z="0" angle="-35"/>
+			
+			
+		</transform>
+
+		
+		<!-- <emitter type="area">
+			<spectrum name="radiance" value="400:0, 500:8, 600:15.6, 700:18.4"/>
+		</emitter> -->
+
+		<!-- <bsdf type="thindielectric">
+				<spectrum name="specularReflectance" value="0.1"/>
+		</bsdf> -->
+
+		<bsdf type="roughdiffuse">
+			<spectrum name="reflectance" value="0.5"/>
+			<texture type="bitmap" name="reflectance">
+				<string name="filename" value="assets/background.jpg"/>
+				<float name="vscale" value="0.2"/>
+				<float name="uscale" value="0.2"/>
+				<float name="uoffset" value="0.8"/>
+				<float name="voffset" value="0.8"/>
+			</texture>
+		</bsdf>
+
+	</shape>
+
+	<shape type="obj">
+		<string name="filename" value="../cars_test/meshes/motorbike-obj/Bike_remesh.obj"/>
+		
+		<transform name="toWorld">
+			<scale value="0.1"/>
+			<rotate x="0" y="1" z="0" angle="45"/>
+			<translate x="-100" y="-70" z="900"/>	
+			<rotate x="1" y="0" z="0" angle="-35"/>
+		</transform>
+		
+	</shape>
+    
+
+	<shape type="obj">
+		<string name="filename" value="../cars_test/meshes/mustang/1967-shelby-ford-mustang.obj"/>
+		
+		<transform name="toWorld">
+			<scale value="40"/>
+			<rotate x="0" y="1" z="0" angle="-15"/>
+			<translate x="200" y="0" z="200"/>
+			<rotate x="1" y="0" z="0" angle="-35"/>
+		</transform>
+	</shape>
+
+	<shape type="obj">
+		<string name="filename" value="../cars_test/meshes/bus_obj/Bus_obj/Bus_remesh.obj"/>
+		
+		<transform name="toWorld">
+			<scale value="0.1"/>
+			<rotate x="0" y="1" z="0" angle="35"/>
+			<translate x="400" y="70" z="600"/>
+			<rotate x="1" y="0" z="0" angle="-35"/>
+		</transform>
+	</shape>
+
+    <!-- <shape type="rectangle">
+        
+        <bsdf type="twosided">
+            <bsdf type="diffuse">
+                <texture type="bitmap" name="reflectance">
+                    <string name="filename" value="background.jpg"/>
+                </texture>
+            </bsdf>
+        </bsdf>
+
+        <transform name="toWorld">
+			<scale x="500" y="500" z="500"/>
+            <rotate x="0" y="0" z="1" angle="180"/>
+			<translate x="256" y="256" z="100"/>
+			
+		</transform>
+
+    </shape> -->
+
+</scene>
