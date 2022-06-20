@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- Render test for 10 low-poly cars with ground patches -->
-
 <scene version="0.5.0">
     <integrator type="volpath">
         <integer name="rrDepth" value="5" />
@@ -45,22 +43,20 @@
 
         <film type="ldrfilm">
             <string name="pixelFormat" value="rgba" />
-            <integer name="width" value="2000" />
-            <integer name="height" value="1500" />
+            <integer name="width" value="400" />
+            <integer name="height" value="300" />
             <boolean name="banner" value="false" />
             <rfilter type="gaussian" />
         </film>
     </sensor>
 
-    <!-- -->
-    <shape type="obj">
-        <string name="filename" value="assets/ground.obj" />
-        <transform name="toWorld">
-            <scale value="0.035" />
+    <shape type="shapegroup" id="road">
+        <shape type="obj">
+            <string name="filename" value="assets/ground.obj" />
+            <transform name="toWorld">
+                <scale value="0.03" />
+            </transform>
 
-        </transform>
-
-        <bsdf type="twosided">
             <bsdf type="roughdiffuse">
                 <spectrum name="reflectance" value="0.5" />
                 <texture type="bitmap" name="reflectance">
@@ -71,40 +67,32 @@
                     <float name="voffset" value="0.8" />
                 </texture>
             </bsdf>
-        </bsdf>
+
+        </shape>
+    </shape>
+
+
+    <!-- Adding car and road objects to scene -->
+
+    <shape type="instance">
+        <ref id="road" />
     </shape>
 
     <shape type="obj">
-		<string name="filename" value="../cars_test/meshes/car/1e2f9cb6b33c92ea82381b04bbe0ce6d/model.obj"/>
-		<transform name="toWorld">
+        <string name="filename" value="../cars_test/meshes/car/1e2f9cb6b33c92ea82381b04bbe0ce6d/model.obj" />
+        <transform name="toWorld">
             <translate x="0" y="0.16" z="0" />
-            <scale value="5"/>
-		</transform>
-	</shape>
+            <scale value="5" />
+        </transform>
+    </shape>
 
     
-    <!-- -->
-    <shape type="obj">
-        <string name="filename" value="assets/ground.obj" />
+    <shape type="instance">
+        <ref id="road"/>
         <transform name="toWorld">
-            <scale value="0.035" />
-
             <rotate x="0" y="1" z="0" angle="-35" />
             <translate x="-8" y="0" z="0" />
-        </transform>
-
-        <bsdf type="twosided">
-            <bsdf type="roughdiffuse">
-                <spectrum name="reflectance" value="0.5" />
-                <texture type="bitmap" name="reflectance">
-                    <string name="filename" value="assets/background.jpg" />
-                    <float name="vscale" value="0.2" />
-                    <float name="uscale" value="0.2" />
-                    <float name="uoffset" value="0.8" />
-                    <float name="voffset" value="0.8" />
-                </texture>
-            </bsdf>
-        </bsdf>
+		</transform>
     </shape>
 
     <shape type="obj">
@@ -117,41 +105,5 @@
             <translate x="-8" y="0" z="0" />
 		</transform>
 	</shape>
-    
 
-    <!-- -->
-    <shape type="obj">
-        <string name="filename" value="assets/ground.obj" />
-        <transform name="toWorld">
-            <scale value="0.035" />
-
-            <rotate x="0" y="1" z="0" angle="90" />
-            <translate x="-16" y="0" z="0" />
-        </transform>
-
-        <bsdf type="twosided">
-            <bsdf type="roughdiffuse">
-                <spectrum name="reflectance" value="0.5" />
-                <texture type="bitmap" name="reflectance">
-                    <string name="filename" value="assets/background.jpg" />
-                    <float name="vscale" value="0.2" />
-                    <float name="uscale" value="0.2" />
-                    <float name="uoffset" value="0.8" />
-                    <float name="voffset" value="0.8" />
-                </texture>
-            </bsdf>
-        </bsdf>
-    </shape>
-
-    <shape type="obj">
-		<string name="filename" value="../cars_test/meshes/car/ff5ad56515bc0167500fb89d8b5ec70a/model.obj"/>
-		<transform name="toWorld">
-            <translate x="0" y="0.16" z="0" />
-            <scale value="5"/>
-
-            <rotate x="0" y="1" z="0" angle="90" />
-            <translate x="-16" y="0" z="0" />
-		</transform>
-	</shape>
-      
 </scene>

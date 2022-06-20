@@ -60,7 +60,7 @@
 
         </transform>
 
-        <bsdf type="twosided">
+        
             <bsdf type="roughdiffuse">
                 <spectrum name="reflectance" value="0.5" />
                 <texture type="bitmap" name="reflectance">
@@ -71,7 +71,6 @@
                     <float name="voffset" value="0.8" />
                 </texture>
             </bsdf>
-        </bsdf>
     </shape>
 
     <shape type="obj">
@@ -93,7 +92,7 @@
             <translate x="-8" y="0" z="0" />
         </transform>
 
-        <bsdf type="twosided">
+        
             <bsdf type="roughdiffuse">
                 <spectrum name="reflectance" value="0.5" />
                 <texture type="bitmap" name="reflectance">
@@ -104,7 +103,6 @@
                     <float name="voffset" value="0.8" />
                 </texture>
             </bsdf>
-        </bsdf>
     </shape>
 
     <shape type="obj">
@@ -129,7 +127,7 @@
             <translate x="-16" y="0" z="0" />
         </transform>
 
-        <bsdf type="twosided">
+        
             <bsdf type="roughdiffuse">
                 <spectrum name="reflectance" value="0.5" />
                 <texture type="bitmap" name="reflectance">
@@ -140,7 +138,6 @@
                     <float name="voffset" value="0.8" />
                 </texture>
             </bsdf>
-        </bsdf>
     </shape>
 
     <shape type="obj">
@@ -166,7 +163,7 @@
             <translate x="0" y="0" z="-8" />
         </transform>
 
-        <bsdf type="twosided">
+        
             <bsdf type="roughdiffuse">
                 <spectrum name="reflectance" value="0.5" />
                 <texture type="bitmap" name="reflectance">
@@ -177,7 +174,6 @@
                     <float name="voffset" value="0.8" />
                 </texture>
             </bsdf>
-        </bsdf>
     </shape>
 
     <shape type="obj">
@@ -202,7 +198,7 @@
             <translate x="0" y="0" z="-16" />
         </transform>
 
-        <bsdf type="twosided">
+        
             <bsdf type="roughdiffuse">
                 <spectrum name="reflectance" value="0.5" />
                 <texture type="bitmap" name="reflectance">
@@ -213,7 +209,6 @@
                     <float name="voffset" value="0.8" />
                 </texture>
             </bsdf>
-        </bsdf>
     </shape>
 
     <shape type="obj">
