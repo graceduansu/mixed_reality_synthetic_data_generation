@@ -137,4 +137,4 @@ if __name__ == '__main__':
     use_alpha_blend = True # if False, use overlay instead
 
     main(output_dir, xml_file, cam_to_world_matrix, render_ground, cars_list, 
-        bg_img_path, rendered_img_name, composite_img_name, use_alpha_blend)
+        bg_img_path, rendered_img_name, composite_img_name, use_alpha_blend, turbidity=5)
