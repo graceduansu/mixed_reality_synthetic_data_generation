@@ -1,15 +1,17 @@
 from PIL import Image
-import cv2
-import numpy as np
 
-img1 = cv2.imread("../assets/cam2_week1_2021-05-07T16-20-36.673497.jpg")
-img2 = cv2.imread("../plane_test.png", flags=cv2.IMREAD_UNCHANGED)
 
-opaque_mask = img2[:, :, 3] != 0
-img3 = img2.copy()[:, :, :3]
+def overlay(bg_img_path, overlay_img_path, dest_img_path):
 
-result_opaque = cv2.addWeighted(img1[opaque_mask], 0.5, img3[opaque_mask], 0.5, 0.0)
-img1[opaque_mask] = result_opaque
-
-cv2.imwrite("result.png", img1)
-
+    # Opening the primary image (used in background)
+    bg_img = Image.open(bg_img_path)
+    
+    # Opening the secondary image (overlay image)
+    overlay_img = Image.open(overlay_img_path)
+    
+    # Pasting overlay image on top of background img 
+    # starting at coordinates (0, 0)
+    overlay_img = overlay_img.resize(bg_img.size[:2])
+    bg_img.paste(overlay_img, (0,0), mask = overlay_img, )
+    
+    bg_img.save(dest_img_path)

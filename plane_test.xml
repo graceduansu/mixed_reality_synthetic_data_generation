@@ -83,7 +83,21 @@
         <transform name="toWorld">
             <scale value="1" />
             <rotate x="0" y="1" z="0" angle="135" />
-            <translate x="-15" y="0" z="1" />
+            <translate x="-17" y="0" z="0" />
+        </transform>
+    </shape>
+
+
+	<!-- background left lane -->
+
+
+    <shape type="obj">
+        <string name="filename" value="../cars_test/meshes/mustang/1967-shelby-ford-mustang_RESIZED.obj" />
+
+        <transform name="toWorld">
+            <scale value="1" />
+            <rotate x="0" y="1" z="0" angle="135" />
+            <translate x="4" y="0" z="-20" />
         </transform>
     </shape>
 
@@ -96,11 +110,11 @@
         <transform name="toWorld">
             <scale value="1" />
             <rotate x="0" y="1" z="0" angle="45" />
-            <translate x="23" y="0" z="3" />
+            <translate x="0" y="0" z="3" />
         </transform>
     </shape>
 
-    <!-- right side right lane -->
+    <!-- left side right lane -->
 
 
 
@@ -110,7 +124,7 @@
         <transform name="toWorld">
             <scale value="1" />
             <rotate x="0" y="1" z="0" angle="200" />
-            <translate x="5" y="0" z="3" />
+            <translate x="-15" y="0" z="-10" />
         </transform>
     </shape>
 
