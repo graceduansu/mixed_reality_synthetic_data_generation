@@ -93,8 +93,11 @@ def main(output_dir, xml_file, cam_to_world_matrix, render_ground, cars_list,
     # generate mitsuba command
     print("Run the following command to render:")
     print()
-    print("mitsuba" + cli_args + " " + xml_file)
+    print("mitsuba" + cli_args + " " + xml_path)
     print()
+
+    cmd = "mitsuba" + cli_args + " " + xml_path
+    os.system(cmd)
 
     done = input('Hit enter after rendering is complete to generate composite:\n')
 
@@ -113,7 +116,7 @@ def main(output_dir, xml_file, cam_to_world_matrix, render_ground, cars_list,
 
 if __name__ == '__main__':
     ######### Required arguments. Modify as desired: #############
-    output_dir = "/home/gdsu/scenes/city_test/"
+    output_dir = "/mars/home/khiem/workspace/ilim-projects/city_test/"
     xml_file = "generated.xml"
     cam_to_world_matrix = '-6.32009074e-01 3.81421015e-01  6.74598057e-01 -1.95597297e+01 '\
         '5.25615099e-03 8.72582680e-01 -4.88438164e-01  6.43714192e+00 '\
@@ -122,15 +125,23 @@ if __name__ == '__main__':
     render_ground = True
 
     # car z position can be calculated later according to line equation
-    cars_list = [
-        {"obj": "../cars_test/meshes/car/857a3a01bd311511f200a72c9245aee7/model.obj", 
-        "x": -17, "y": 0.16, "z": None, "scale": 5, "y_rotate": 225, 
-        "line_slope":-0.95, "line_displacement":-16.19},
+    # cars_list = [
+    #     {"obj": "../cars_test/meshes/car/857a3a01bd311511f200a72c9245aee7/model.obj",
+    #     "x": -17, "y": 0.16, "z": None, "scale": 5, "y_rotate": 225,
+    #     "line_slope":-0.95, "line_displacement":-16.19},
+    #
+    #     {"obj": "../cars_test/meshes/car/ff5ad56515bc0167500fb89d8b5ec70a/model.obj",
+    #     "x": 4, "y": 0.16, "z": None, "scale": 5, "y_rotate": 225,
+    #     "line_slope":-0.95, "line_displacement":-16.19}
+    #     ]
 
-        {"obj": "../cars_test/meshes/car/ff5ad56515bc0167500fb89d8b5ec70a/model.obj", 
-        "x": 4, "y": 0.16, "z": None, "scale": 5, "y_rotate": 225,
-        "line_slope":-0.95, "line_displacement":-16.19}
+    cars_list = [
+        {"obj": "/mars/home/khiem/Downloads/uploads_files_2138687_OBJ/Audi_A3.obj",
+        "x": -17, "y": 0.16, "z": None, "scale": 0.01, "y_rotate": 225,
+        "line_slope":-0.95, "line_displacement":-16.19},
         ]
+    # cars_list = []
+
     bg_img_path = "../assets/cam2_week1_forward_2021-05-01T14-43-40.623202.jpg"
     rendered_img_name = "generated.png"
     composite_img_name = "generated_composite.png"
