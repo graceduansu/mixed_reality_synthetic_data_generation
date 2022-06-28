@@ -180,5 +180,5 @@ if __name__ == '__main__':
 
     main(output_dir, xml_name, cam_to_world_matrix, cars_list, 
         bg_img_path, rendered_img_name, composite_img_name, compose_mode, 
-        width=2000,height=1500)
+        width=2000,height=1500, turbidity=5)
     
