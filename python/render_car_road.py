@@ -111,23 +111,23 @@ def render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list,
     for key in MITSUBA_ARGS:
         cli_args += " -D {}={} ".format(key, MITSUBA_ARGS[key])
 
-    # generate mitsuba command
-    mts_cmd = "mitsuba" + cli_args + " -o " + rendered_img_name + " " + xml_name + ".xml \'"
+    with open('docker_script.sh', 'w') as outfn:
+        outfn.write('source /etc/environment && cd /hosthome \n')
+        # generate mitsuba command
+        mts_cmd = "mitsuba" + cli_args + " -o " + rendered_img_name + " " + xml_name + ".xml \n"
+        outfn.write(mts_cmd)
 
-    docker_cmd = '''sudo docker run -v {}:/hosthome/ -t 3548f5fbbf98 /bin/bash -c \'source /etc/environment && cd /hosthome && '''.format(output_dir)
-    
-    print(docker_cmd)
-    
-    os.system(docker_cmd + mts_cmd)
+        pl_img = xml_name + "_pl.png"
+        obj_img = xml_name + "_obj.png"
+        
+        if compose_mode == "quotient":
+            mts_cmd = "mitsuba" + cli_args + " -o " + pl_img + " " + xml_name + "_pl.xml \n"
+            outfn.write(mts_cmd)
+            mts_cmd = "mitsuba" + cli_args + " -o " + obj_img + " " + xml_name + "_obj.xml \n"
+            outfn.write(mts_cmd)
 
-    pl_img = xml_name + "_pl.png"
-    obj_img = xml_name + "_obj.png"
-    
-    if compose_mode == "quotient":
-        mts_cmd = "mitsuba" + cli_args + " -o " + pl_img + " " + xml_name + "_pl.xml \'"
-        os.system(docker_cmd + mts_cmd)
-        mts_cmd = "mitsuba" + cli_args + " -o " + obj_img + " " + xml_name + "_obj.xml \'"
-        os.system(docker_cmd + mts_cmd)
+    docker_cmd = '''sudo docker run -v {}:/hosthome/ -it 3548f5fbbf98 /bin/bash -c \' bash /hosthome/python/docker_script.sh\''''.format(output_dir)
+    os.system(docker_cmd)
 
     rendered_img_path = output_dir + rendered_img_name
     composite_img_path = output_dir + composite_img_name

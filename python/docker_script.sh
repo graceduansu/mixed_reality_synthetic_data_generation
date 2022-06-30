@@ -1,0 +1,4 @@
+source /etc/environment && cd /hosthome 
+mitsuba -D turbidity=5  -D latitude=40.44694  -D longitude=-79.94902  -D timezone=-4  -D year=2021  -D month=5  -D day=1  -D hour=14  -D minute=43  -D sunScale=1  -D skyScale=1  -D fov=81  -D sampleCount=16  -D width=2000  -D height=1500  -o cadillac_right.png cadillac_right.xml 
+mitsuba -D turbidity=5  -D latitude=40.44694  -D longitude=-79.94902  -D timezone=-4  -D year=2021  -D month=5  -D day=1  -D hour=14  -D minute=43  -D sunScale=1  -D skyScale=1  -D fov=81  -D sampleCount=16  -D width=2000  -D height=1500  -o cadillac_right_pl.png cadillac_right_pl.xml 
+mitsuba -D turbidity=5  -D latitude=40.44694  -D longitude=-79.94902  -D timezone=-4  -D year=2021  -D month=5  -D day=1  -D hour=14  -D minute=43  -D sunScale=1  -D skyScale=1  -D fov=81  -D sampleCount=16  -D width=2000  -D height=1500  -o cadillac_right_obj.png cadillac_right_obj.xml 
