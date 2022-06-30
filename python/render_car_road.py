@@ -56,9 +56,7 @@ def generate_xml(xml_file, cam_to_world_matrix, cars_list, render_ground=True, r
 
 
     tree.write(xml_file, encoding='utf-8', xml_declaration=True)
-    
-    print("Finshed generating {}".format(xml_file))
-    
+        
 
 def calculate_car_pos(m, b, x_pos):
     """
@@ -111,14 +109,16 @@ def render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list,
     for key in MITSUBA_ARGS:
         cli_args += " -D {}={} ".format(key, MITSUBA_ARGS[key])
 
+    pl_img = xml_name + "_pl.png"
+    obj_img = xml_name + "_obj.png"
+
     with open('docker_script.sh', 'w') as outfn:
         outfn.write('source /etc/environment && cd /hosthome \n')
         # generate mitsuba command
         mts_cmd = "mitsuba" + cli_args + " -o " + rendered_img_name + " " + xml_name + ".xml \n"
         outfn.write(mts_cmd)
 
-        pl_img = xml_name + "_pl.png"
-        obj_img = xml_name + "_obj.png"
+        
         
         if compose_mode == "quotient":
             mts_cmd = "mitsuba" + cli_args + " -o " + pl_img + " " + xml_name + "_pl.xml \n"

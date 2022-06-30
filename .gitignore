@@ -4,3 +4,9 @@ __pycache__
 *.log
 *.zip
 assets/traffic-cars
+*.xml
+!assets/car_road_template.xml
+wip/
+vid/
+*.gif
+*.mp4

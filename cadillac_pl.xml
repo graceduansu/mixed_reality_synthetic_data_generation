@@ -54,7 +54,7 @@
         <transform name="toWorld">
             <scale value="0.03"/>
             <rotate x="0" y="1" z="0" angle="315"/>
-            <translate x="-2" y="0" z="1.26"/>
+            <translate x="None" y="0" z="None"/>
         </transform>
 
         <bsdf type="roughdiffuse">
