@@ -3,4 +3,4 @@ __pycache__
 *.exr
 *.log
 *.zip
-/home/gdsu/scenes/city_test/assets/traffic-cars
+assets/traffic-cars

@@ -78,7 +78,7 @@ MITSUBA_ARGS = {'turbidity':3, 'latitude':40.44694, 'longitude':-79.94902,
     'fov':81, 'sampleCount':16, 'width':1000, 'height':750}
 
 
-def main(output_dir, xml_name, cam_to_world_matrix, cars_list, 
+def render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list, 
         bg_img_path, rendered_img_name, composite_img_name, compose_mode, **kwargs):
     """
     See MITSUBA_ARGS dict initialization above for optional kwargs
@@ -112,20 +112,22 @@ def main(output_dir, xml_name, cam_to_world_matrix, cars_list,
         cli_args += " -D {}={} ".format(key, MITSUBA_ARGS[key])
 
     # generate mitsuba command
-    print("Run the following commands to render:")
-    print()
-    print("mitsuba" + cli_args + " -o " + rendered_img_name + " " + xml_name + ".xml")
-    print()
+    mts_cmd = "mitsuba" + cli_args + " -o " + rendered_img_name + " " + xml_name + ".xml \'"
+
+    docker_cmd = '''sudo docker run -v {}:/hosthome/ -t 3548f5fbbf98 /bin/bash -c \'source /etc/environment && cd /hosthome && '''.format(output_dir)
+    
+    print(docker_cmd)
+    
+    os.system(docker_cmd + mts_cmd)
 
     pl_img = xml_name + "_pl.png"
     obj_img = xml_name + "_obj.png"
+    
     if compose_mode == "quotient":
-        print("mitsuba" + cli_args + " -o " + pl_img + " " + xml_name + "_pl.xml")
-        print()
-        print("mitsuba" + cli_args + " -o " + obj_img + " " + xml_name + "_obj.xml")
-        print()
-
-    done = input('Hit enter after rendering is complete to generate composite:\n')
+        mts_cmd = "mitsuba" + cli_args + " -o " + pl_img + " " + xml_name + "_pl.xml \'"
+        os.system(docker_cmd + mts_cmd)
+        mts_cmd = "mitsuba" + cli_args + " -o " + obj_img + " " + xml_name + "_obj.xml \'"
+        os.system(docker_cmd + mts_cmd)
 
     rendered_img_path = output_dir + rendered_img_name
     composite_img_path = output_dir + composite_img_name
@@ -145,15 +147,10 @@ def main(output_dir, xml_name, cam_to_world_matrix, cars_list,
     
 
 if __name__ == '__main__':
-    # bg_img_path = "/home/gdsu/scenes/city_test/assets/cam2_week1_forward_2021-05-01T14-43-40.623202.jpg"
-    # rendered_img_path = "/home/gdsu/scenes/city_test/invRendTest.png"
-    # composite_img_path = "invRendTest_composite.png"
-    # alpha_blend(bg_img_path, rendered_img_path, composite_img_path)
-
     ######### Required arguments. Modify as desired: #############
     
     output_dir = "/home/gdsu/scenes/city_test/"
-    xml_name = "quotientTest"
+    xml_name = "cadillac_right"
     cam_to_world_matrix = '-6.32009074e-01 3.81421015e-01  6.74598057e-01 -1.95597297e+01 '\
         '5.25615099e-03 8.72582680e-01 -4.88438164e-01  6.43714192e+00 '\
         '-7.74943161e-01  -3.05151563e-01 -5.53484978e-01  4.94516235e+00 '\
@@ -161,8 +158,11 @@ if __name__ == '__main__':
 
     # car z position will be calculated later according to line equation
     cars_list = [
-        {"obj": "../cars_test/meshes/car/1e2f9cb6b33c92ea82381b04bbe0ce6d/model.obj", 
-        "x": -2, "y": 0.8, "z": None, "scale": 5, "y_rotate": 315, 
+        # {"obj": "../cars_test/meshes/car/1e2f9cb6b33c92ea82381b04bbe0ce6d/model.obj", 
+        # "x": -2, "y": 0.8, "z": None, "scale": 5, "y_rotate": 315, 
+        # "line_slope":0.87, "line_displacement":3},
+        {"obj": "assets/traffic-cars/cadillac-ats-sedan/OBJ/Cadillac_ATS.obj", 
+        "x": -2, "y": 0, "z": None, "scale": 0.01, "y_rotate": 315, 
         "line_slope":0.87, "line_displacement":3},
 
         # {"obj": "../cars_test/meshes/car/ff5ad56515bc0167500fb89d8b5ec70a/model.obj", 
@@ -170,7 +170,7 @@ if __name__ == '__main__':
         # "line_slope":-0.95, "line_displacement":-16.19}
         ]
 
-    bg_img_path = "../assets/cam2_week1_forward_2021-05-01T14-43-40.623202.jpg"
+    bg_img_path = "../assets/cam2_week1_right_turn_2021-05-01T14-42-00.655968.jpg"
     compose_mode = "quotient" # "alpha", "overlay", or "quotient"
 
 
@@ -178,7 +178,7 @@ if __name__ == '__main__':
     composite_img_name = xml_name + "_" + compose_mode + "_composite.png"
     
 
-    main(output_dir, xml_name, cam_to_world_matrix, cars_list, 
+    render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list, 
         bg_img_path, rendered_img_name, composite_img_name, compose_mode, 
-        width=2000,height=1500, turbidity=5)
+        width=2000, height=1500, turbidity=5)
     
