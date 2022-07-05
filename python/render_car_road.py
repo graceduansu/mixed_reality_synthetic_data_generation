@@ -9,6 +9,7 @@ from quotient_compose import quotient_compose
 from lxml import etree as ET
 import cv2
 import numpy as np
+from object_insertion import compose_and_blend
 
 def generate_xml(xml_file, cam_to_world_matrix, cars_list, render_ground=True, render_cars=True):
     
@@ -18,6 +19,8 @@ def generate_xml(xml_file, cam_to_world_matrix, cars_list, render_ground=True, r
     sensor_matrix = root.find('sensor').find('transform').find('matrix')
     sensor_matrix.set('value', cam_to_world_matrix) 
 
+    # envmap_matrix = root.find('emitter').find('transform').find('matrix')
+    # envmap_matrix.set('value', cam_to_world_matrix) 
 
     for car in cars_list:   
         if render_cars:
@@ -45,8 +48,8 @@ def generate_xml(xml_file, cam_to_world_matrix, cars_list, render_ground=True, r
         </transform>
 
         <bsdf type="roughdiffuse">
-            <spectrum name="reflectance" value="0.5" />
-            <float name="alpha" value="0.2" />
+            <spectrum name="reflectance" value="0.1" />
+            <float name="alpha" value="0.5" />
         </bsdf>
 
     </shape>'''.format(car['y_rotate'], car['x'], 0, car['z'])
@@ -140,7 +143,7 @@ def render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list,
         overlay(bg_img_path, rendered_img_path, composite_img_path)
         print('Overlay for {} complete'.format(composite_img_path))
     elif compose_mode == "quotient":
-        quotient_compose(bg_img_path, rendered_img_path, composite_img_path, 
+        compose_and_blend(bg_img_path, rendered_img_path, composite_img_path, 
             output_dir + pl_img, output_dir + obj_img)
         print('Overlay for {} complete'.format(composite_img_path))
    
@@ -150,11 +153,17 @@ if __name__ == '__main__':
     ######### Required arguments. Modify as desired: #############
     
     output_dir = "/home/gdsu/scenes/city_test/"
-    xml_name = "cadillac_right"
-    cam_to_world_matrix = '-6.32009074e-01 3.81421015e-01  6.74598057e-01 -1.95597297e+01 '\
-        '5.25615099e-03 8.72582680e-01 -4.88438164e-01  6.43714192e+00 '\
-        '-7.74943161e-01  -3.05151563e-01 -5.53484978e-01  4.94516235e+00 '\
+    xml_name = "cadillac_shaler2"
+    cam_to_world_matrix = '0.20172554 -0.33973872 -0.91863181 10.57091294 '\
+        '0.0543035   0.94035019 -0.33584616  4.71233738 '\
+        '0.97793555  0.01786383  0.20814166 -4.32893994 '\
         '0 0 0 1'
+
+        # shaler 1
+        # '0.03979259 0.37164486 0.92752178 -8.40213354 '\
+        # '-0.06316676 0.92733595 -0.36886041  4.16372478 '\
+        # '-0.99720936 -0.04391064 0.0603767 -1.63034521 '\
+        # '0 0 0 1'
 
     # car z position will be calculated later according to line equation
     cars_list = [
@@ -170,7 +179,7 @@ if __name__ == '__main__':
         # "line_slope":-0.95, "line_displacement":-16.19}
         ]
 
-    bg_img_path = "../assets/cam2_week1_right_turn_2021-05-01T14-42-00.655968.jpg"
+    bg_img_path = "../assets/shaler_2_fullsize.png"
     compose_mode = "quotient" # "alpha", "overlay", or "quotient"
 
 
@@ -180,5 +189,8 @@ if __name__ == '__main__':
 
     render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list, 
         bg_img_path, rendered_img_name, composite_img_name, compose_mode, 
-        width=2000, height=1500, turbidity=5)
+        width=1280, height=720, 
+        turbidity=3, 
+        year=2022, month=3, day=16, hour=16, minute=30
+        )
     
