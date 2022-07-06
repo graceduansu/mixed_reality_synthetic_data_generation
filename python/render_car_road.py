@@ -11,7 +11,7 @@ import cv2
 import numpy as np
 from object_insertion import compose_and_blend
 
-def generate_xml(xml_file, cam_to_world_matrix, cars_list, render_ground=True, render_cars=True):
+def generate_xml(xml_file, cam_to_world_matrix, cars_list, render_ground=True, render_cars=True, is_hdr=False):
     
     tree = ET.parse('../assets/car_road_template.xml')
     root = tree.getroot()
@@ -19,8 +19,9 @@ def generate_xml(xml_file, cam_to_world_matrix, cars_list, render_ground=True, r
     sensor_matrix = root.find('sensor').find('transform').find('matrix')
     sensor_matrix.set('value', cam_to_world_matrix) 
 
-    # envmap_matrix = root.find('emitter').find('transform').find('matrix')
-    # envmap_matrix.set('value', cam_to_world_matrix) 
+    if is_hdr:
+        film = root.find('film')
+        film.set('type', 'hdrfilm')
 
     for car in cars_list:   
         if render_cars:
@@ -80,7 +81,7 @@ MITSUBA_ARGS = {'turbidity':3, 'latitude':40.44694, 'longitude':-79.94902,
 
 
 def render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list, 
-        bg_img_path, rendered_img_name, composite_img_name, compose_mode, **kwargs):
+        bg_img_path, rendered_img_name, composite_img_name, compose_mode, is_hdr_output, **kwargs):
     """
     See MITSUBA_ARGS dict initialization above for optional kwargs
     """
@@ -93,16 +94,16 @@ def render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list,
     
     # Im_all
     xml_path = output_dir + xml_name + ".xml"
-    generate_xml(xml_path, cam_to_world_matrix, cars_list, render_cars=True, render_ground=True)
+    generate_xml(xml_path, cam_to_world_matrix, cars_list, render_cars=True, render_ground=True, is_hdr=is_hdr_output)
 
     if compose_mode == "quotient":
         # Im_pl
         xml_path_pl = output_dir + xml_name + "_pl.xml"
-        generate_xml(xml_path_pl, cam_to_world_matrix, cars_list, render_cars=False, render_ground=True)
+        generate_xml(xml_path_pl, cam_to_world_matrix, cars_list, render_cars=False, render_ground=True, is_hdr=is_hdr_output)
 
         # Im_obj
         xml_path_obj = output_dir + xml_name + "_obj.xml"
-        generate_xml(xml_path_obj, cam_to_world_matrix, cars_list, render_cars=True, render_ground=False)
+        generate_xml(xml_path_obj, cam_to_world_matrix, cars_list, render_cars=True, render_ground=False, is_hdr=is_hdr_output)
 
     # handle kwargs
     for key in kwargs:
@@ -112,8 +113,13 @@ def render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list,
     for key in MITSUBA_ARGS:
         cli_args += " -D {}={} ".format(key, MITSUBA_ARGS[key])
 
-    pl_img = xml_name + "_pl.png"
-    obj_img = xml_name + "_obj.png"
+    if is_hdr:
+        img_ext = ".exr"
+    else:
+        img_ext = ".png"
+        
+    pl_img = xml_name + "_pl" + img_ext
+    obj_img = xml_name + "_obj" + img_ext
 
     with open('docker_script.sh', 'w') as outfn:
         outfn.write('source /etc/environment && cd /hosthome \n')
@@ -154,7 +160,7 @@ if __name__ == '__main__':
     ######### Required arguments. Modify as desired: #############
     
     output_dir = "/home/gdsu/scenes/city_test/"
-    xml_name = "nissan"
+    xml_name = "exr-test"
     cam_to_world_matrix = '-6.32009074e-01 3.81421015e-01  6.74598057e-01 -1.95597297e+01 '\
         '5.25615099e-03 8.72582680e-01 -4.88438164e-01  6.43714192e+00 '\
         '-7.74943161e-01  -3.05151563e-01 -5.53484978e-01  4.94516235e+00 '\
@@ -162,16 +168,16 @@ if __name__ == '__main__':
 
     # car z position will be calculated later according to line equation
     cars_list = [
-        {"obj": "assets/Nissan/Nissan-Rogue-2014/rogue.obj", 
-        "x": -2, "y": 0.8, "z": None, "scale": 0.000395, "y_rotate": 315, 
-        "line_slope":0.87, "line_displacement":3},
+        # {"obj": "assets/Nissan/Nissan-Rogue-2014/rogue.obj", 
+        # "x": -2, "y": 0.8, "z": None, "scale": 0.000395, "y_rotate": 315, 
+        # "line_slope":0.87, "line_displacement":3},
         # {"obj": "assets/traffic-cars/cadillac-ats-sedan/OBJ/Cadillac_ATS.obj", 
         # "x": 3, "y": 0, "z": None, "scale": 0.01, "y_rotate": 135, 
         # "line_slope":0.87, "line_displacement":-1},
 
-        # {"obj": "../cars_test/meshes/car/ff5ad56515bc0167500fb89d8b5ec70a/model.obj", 
-        # "x": -6, "y": 0.8, "z": None, "scale": 5, "y_rotate": 225,
-        # "line_slope":-0.95, "line_displacement":-16.19}
+        {"obj": "../cars_test/meshes/car/ff5ad56515bc0167500fb89d8b5ec70a/model.obj", 
+        "x": -6, "y": 0.8, "z": None, "scale": 5, "y_rotate": 225,
+        "line_slope":-0.95, "line_displacement":-16.19}
         ]
 
     bg_img_path = "../assets/cam2_week1_right_turn_2021-05-01T14-42-00.655968.jpg"
@@ -180,10 +186,11 @@ if __name__ == '__main__':
 
     rendered_img_name = xml_name + ".png"
     composite_img_name = xml_name + "_" + compose_mode + "_composite.png"
+    is_hdr_output = False # if False, output ldr
     
 
     render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list, 
-        bg_img_path, rendered_img_name, composite_img_name, compose_mode, 
+        bg_img_path, rendered_img_name, composite_img_name, compose_mode, is_hdr_output
         width=1000, height=750, 
         # turbidity=3, latitude=40.524701, longitude=-79.962172,
         # year=2022, month=3, day=16, hour=16, minute=30
