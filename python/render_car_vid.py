@@ -50,7 +50,7 @@ def render_car_vid(wip_dir, render_name, cam_to_world_matrix, cars_list,
     for key in kwargs:
         MITSUBA_ARGS[key] = kwargs[key]
 
-    cli_args = " -q "
+    cli_args = " -q -x "
     for key in MITSUBA_ARGS:
         cli_args += " -D {}={} ".format(key, MITSUBA_ARGS[key])
 
@@ -99,26 +99,17 @@ def render_car_vid(wip_dir, render_name, cam_to_world_matrix, cars_list,
 if __name__ == '__main__':
     ######### Required arguments. Modify as desired: #############
     docker_mount_dir = "/home/gdsu/scenes/city_test"
-    render_name = "mustang-horz-craig-bright"
+    render_name = "mustang-vert-craig-blended"
     
     cam_to_world_matrix = '-6.32009074e-01 3.81421015e-01  6.74598057e-01 -1.95597297e+01 '\
         '5.25615099e-03 8.72582680e-01 -4.88438164e-01  6.43714192e+00 '\
         '-7.74943161e-01  -3.05151563e-01 -5.53484978e-01  4.94516235e+00 '\
         '0 0 0 1'
-    
-    # fifth and craig: 
-    
-
-    # shaler 2
-    # '0.20172554 -0.33973872 -0.91863181 10.57091294 '\
-    #     '0.0543035   0.94035019 -0.33584616  4.71233738 '\
-    #     '0.97793555  0.01786383  0.20814166 -4.32893994 '\
-    #     '0 0 0 1'
 
     cars_list = [
         {"obj": "assets/mustang/1967-shelby-ford-mustang_RESIZED.obj", 
-        "x_start": -15, "x_end": 15, 'speed': 6, 'x':None, 'y':0, "z": None, "scale": 1, "y_rotate": 225, 
-        "line_slope":0.87, "line_displacement":3},
+        "x_start": 4, "x_end": -16.5, 'speed': 6, 'x':None, 'y':0, "z": None, "scale": 1, "y_rotate": 135, 
+        "line_slope":-0.95, "line_displacement":-16.19},
         ]
 
     bg_img_path = "/home/gdsu/scenes/city_test/assets/cam2_week1_forward_2021-05-01T14-43-40.623202.jpg"

@@ -117,6 +117,7 @@ def render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list,
 
     with open('docker_script.sh', 'w') as outfn:
         outfn.write('source /etc/environment && cd /hosthome \n')
+        outfn.write('ls -alF \n')
         # generate mitsuba command
         mts_cmd = "mitsuba" + cli_args + " -o " + rendered_img_name + " " + xml_name + ".xml \n"
         outfn.write(mts_cmd)
@@ -153,33 +154,27 @@ if __name__ == '__main__':
     ######### Required arguments. Modify as desired: #############
     
     output_dir = "/home/gdsu/scenes/city_test/"
-    xml_name = "cadillac_shaler2"
-    cam_to_world_matrix = '0.20172554 -0.33973872 -0.91863181 10.57091294 '\
-        '0.0543035   0.94035019 -0.33584616  4.71233738 '\
-        '0.97793555  0.01786383  0.20814166 -4.32893994 '\
+    xml_name = "nissan"
+    cam_to_world_matrix = '-6.32009074e-01 3.81421015e-01  6.74598057e-01 -1.95597297e+01 '\
+        '5.25615099e-03 8.72582680e-01 -4.88438164e-01  6.43714192e+00 '\
+        '-7.74943161e-01  -3.05151563e-01 -5.53484978e-01  4.94516235e+00 '\
         '0 0 0 1'
-
-        # shaler 1
-        # '0.03979259 0.37164486 0.92752178 -8.40213354 '\
-        # '-0.06316676 0.92733595 -0.36886041  4.16372478 '\
-        # '-0.99720936 -0.04391064 0.0603767 -1.63034521 '\
-        # '0 0 0 1'
 
     # car z position will be calculated later according to line equation
     cars_list = [
-        # {"obj": "../cars_test/meshes/car/1e2f9cb6b33c92ea82381b04bbe0ce6d/model.obj", 
-        # "x": -2, "y": 0.8, "z": None, "scale": 5, "y_rotate": 315, 
-        # "line_slope":0.87, "line_displacement":3},
-        {"obj": "assets/traffic-cars/cadillac-ats-sedan/OBJ/Cadillac_ATS.obj", 
-        "x": -2, "y": 0, "z": None, "scale": 0.01, "y_rotate": 315, 
+        {"obj": "assets/Nissan/Nissan-Rogue-2014/rogue.obj", 
+        "x": -2, "y": 0.8, "z": None, "scale": 0.000395, "y_rotate": 315, 
         "line_slope":0.87, "line_displacement":3},
+        # {"obj": "assets/traffic-cars/cadillac-ats-sedan/OBJ/Cadillac_ATS.obj", 
+        # "x": 3, "y": 0, "z": None, "scale": 0.01, "y_rotate": 135, 
+        # "line_slope":0.87, "line_displacement":-1},
 
         # {"obj": "../cars_test/meshes/car/ff5ad56515bc0167500fb89d8b5ec70a/model.obj", 
         # "x": -6, "y": 0.8, "z": None, "scale": 5, "y_rotate": 225,
         # "line_slope":-0.95, "line_displacement":-16.19}
         ]
 
-    bg_img_path = "../assets/shaler_2_fullsize.png"
+    bg_img_path = "../assets/cam2_week1_right_turn_2021-05-01T14-42-00.655968.jpg"
     compose_mode = "quotient" # "alpha", "overlay", or "quotient"
 
 
@@ -189,8 +184,8 @@ if __name__ == '__main__':
 
     render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list, 
         bg_img_path, rendered_img_name, composite_img_name, compose_mode, 
-        width=1280, height=720, 
-        turbidity=3, 
-        year=2022, month=3, day=16, hour=16, minute=30
+        width=1000, height=750, 
+        # turbidity=3, latitude=40.524701, longitude=-79.962172,
+        # year=2022, month=3, day=16, hour=16, minute=30
         )
     

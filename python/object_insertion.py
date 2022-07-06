@@ -3,6 +3,11 @@ import os
 import numpy as np
 from PIL import Image, ImageFilter
 from matplotlib import pyplot as plt
+from skimage.morphology import (erosion, dilation, opening, closing,  # noqa
+                                white_tophat)
+from skimage.morphology import black_tophat, skeletonize, convex_hull_image  # noqa
+from skimage.morphology import disk  # noqa
+
 
 
 def compose_and_blend(bg_img_path, im_all_path, dest_image_path, im_pl_path, im_obj_path):
@@ -23,6 +28,10 @@ def compose_and_blend(bg_img_path, im_all_path, dest_image_path, im_pl_path, im_
     im_obj = Image.open(im_obj_path)
     im_obj = im_obj.resize((width, height))
     im_obj = np.asarray(im_obj)
+    # if im_obj is empty, skip to avoid NoneType errors
+    if np.sum(im_obj) == 0:
+        print("im_obj is empty")
+        return
     
     m_all = im_all[:, :, 3] > 0
     m_obj = im_obj[:, :, 3] > 0
@@ -51,24 +60,26 @@ def compose_and_blend(bg_img_path, im_all_path, dest_image_path, im_pl_path, im_
     contour_mask = contour_mask[:, :, 0] > 0
     contour_mask = contour_mask.astype('uint8') * 255
 
-    blurred_image = cv2.GaussianBlur(im_new, (5, 5), 0)
-    #blurred_image = cv2.medianBlur(im_new, 5)
+    blurred_image = cv2.medianBlur(im_new, 5)
 
     I_final = bg_img.copy()
 
     I_final[m_obj] = im_all[m_obj]
 
     # instead of just assigning pixels, we alpha blend the blurred edges with the original edges
-    I_final[contour_mask > 0] = cv2.addWeighted(blurred_image[contour_mask > 0], 0.7, I_final[contour_mask > 0], 0.3, 0)
-
-    # plt.imshow(I_final); plt.show()
+    I_final[contour_mask > 0] = cv2.addWeighted(blurred_image[contour_mask > 0], 0.5, I_final[contour_mask > 0], 0.5, 0)
 
     M_bg = m_all.astype(int) - m_obj.astype(int)
 
     diff = (np.maximum(im_all, 1e-10) / np.maximum(im_pl, 1e-10))
-    # diff = np.minimum(diff * 1.01, 1.0)
+    diff = np.minimum(diff * 1.01, 1.0)
 
-    I_final[M_bg > 0] = (bg_img * diff)[M_bg > 0]
+    # this erosion is necessary to get rid of the plane edges artifacts
+    footprint = disk(2)
+    m_all = erosion(m_all, footprint)
+
+    I_final[~m_all] = bg_img[~m_all]
+    I_final[m_all & M_bg.astype(bool)] = (bg_img * diff)[m_all & M_bg.astype(bool)]
 
     final = Image.fromarray(I_final)
     final.save(dest_image_path)
@@ -78,77 +89,85 @@ def compose_and_blend(bg_img_path, im_all_path, dest_image_path, im_pl_path, im_
 if __name__ == '__main__':
     bg_img_path = "/home/gdsu/scenes/city_test/assets/cam2_week1_right_turn_2021-05-01T14-42-00.655968.jpg"
     im_all_path = "/home/gdsu/scenes/city_test/cadillac_right.png"
-    dest_image_path = "/home/gdsu/scenes/city_test/cadillac_right_blend-k5-2.png"
+    dest_image_path = "/home/gdsu/scenes/city_test/cadillac_right_BLENDd.png"
     im_pl_path = "/home/gdsu/scenes/city_test/cadillac_right_pl.png"
     im_obj_path = "/home/gdsu/scenes/city_test/cadillac_right_obj.png"
-    # compose_and_blend(bg_img_path, im_all_path, dest_image_path, im_pl_path, im_obj_path)
+    compose_and_blend(bg_img_path, im_all_path, dest_image_path, im_pl_path, im_obj_path)
 
-    h = 1500
-    w = 2000
-    I = Image.open('/home/gdsu/scenes/city_test/assets/cam2_week1_right_turn_2021-05-01T14-42-00.655968.jpg')
-    I = I.resize((w, h))
-    I = np.asarray(I) #/ 255.0
-    I = I[:, :, :3]
+    # h = 1500
+    # w = 2000
+    # I = Image.open('/home/gdsu/scenes/city_test/assets/cam2_week1_right_turn_2021-05-01T14-42-00.655968.jpg')
+    # I = I.resize((w, h))
+    # I = np.asarray(I) #/ 255.0
+    # I = I[:, :, :3]
 
-    I_all = Image.open('/home/gdsu/scenes/city_test/cadillac_right.png')
-    I_all = I_all.resize((w, h))
-    I_all = np.asarray(I_all) #/ 255.0
-    I_all = I_all[:, :, :3]
+    # I_all = Image.open('/home/gdsu/scenes/city_test/cadillac_right.png')
+    # I_all = I_all.resize((w, h))
+    # I_all = np.asarray(I_all) #/ 255.0
+    # I_all = I_all[:, :, :3]
 
-    I_pl = Image.open('/home/gdsu/scenes/city_test/cadillac_right_pl.png')
-    I_pl = I_pl.resize((w, h))
-    I_pl = np.asarray(I_pl) #/ 255.0
-    I_pl = I_pl[:, :, :3]
+    # I_pl = Image.open('/home/gdsu/scenes/city_test/cadillac_right_pl.png')
+    # I_pl = I_pl.resize((w, h))
+    # I_pl = np.asarray(I_pl) #/ 255.0
+    # I_pl = I_pl[:, :, :3]
 
-    obj_img = np.asarray(Image.open('/home/gdsu/scenes/city_test/cadillac_right_obj.png'))
-    I_obj = np.array(obj_img) #/ 255.0
-    M_obj = obj_img[:, :, 3] > 0
+    # obj_img = np.asarray(Image.open('/home/gdsu/scenes/city_test/cadillac_right_obj.png'))
+    # I_obj = np.array(obj_img) #/ 255.0
+    # M_obj = obj_img[:, :, 3] > 0
 
-    all_img = np.asarray(Image.open('/home/gdsu/scenes/city_test/cadillac_right.png'))
-    M_all = all_img[:, :, 3] > 0
+    # all_img = np.asarray(Image.open('/home/gdsu/scenes/city_test/cadillac_right.png'))
+    # M_all = all_img[:, :, 3] > 0
 
-    # mask is m_obj
-    mask = M_obj.astype('uint8') * 255
-    mask = np.repeat(mask[..., np.newaxis], 1, axis=2)
+    # # mask is m_obj
+    # mask = M_obj.astype('uint8') * 255
+    # mask = np.repeat(mask[..., np.newaxis], 1, axis=2)
 
-    contours, hierarchy = cv2.findContours(mask.copy(),
-                                              cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE,
-                                              offset=(0, 0))
+    # contours, hierarchy = cv2.findContours(mask.copy(),
+    #                                           cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE,
+    #                                           offset=(0, 0))
 
-    contour_mask = np.zeros_like(mask)
-    cv2.drawContours(contour_mask, contours, -1, (255,255,255), 2)
-    contour_mask = contour_mask[:, :, 0] > 0
-    contour_mask = contour_mask.astype('uint8') * 255
+    # contour_mask = np.zeros_like(mask)
+    # cv2.drawContours(contour_mask, contours, -1, (255,255,255), 2)
+    # contour_mask = contour_mask[:, :, 0] > 0
+    # contour_mask = contour_mask.astype('uint8') * 255
 
-    I_new = I.copy()
+    # I_new = I.copy()
 
-    I_new[M_obj] = I_all[M_obj]
+    # I_new[M_obj] = I_all[M_obj]
 
-    blurred_image = cv2.GaussianBlur(I_new, (5, 5), 0)
-    #blurred_image = cv2.GaussianBlur(blurred_image, (5, 5), 0)
-    #blurred_image = cv2.medianBlur(I_new, 101)
+    #  # blurred_image = cv2.GaussianBlur(I_new, (5, 5), 0)
+    # blurred_image = cv2.medianBlur(I_new, 5)
 
-    I_final = I.copy()
+    # # plt.imshow(blurred_image); plt.show()
 
-    I_final[M_obj] = I_all[M_obj]
+    # I_final = I.copy()#np.zeros_like(I) #I.copy()
 
-    # instead of just assigning pixels, we alpha blend the blurred edges with the original edges
-    I_final[contour_mask > 0] = cv2.addWeighted(blurred_image[contour_mask > 0], 0.7, I_final[contour_mask > 0], 0.3, 0)
+    # I_final[M_obj] = I_all[M_obj]
+    # # # TODO: instead of just assigning pixels, we alpha blend the blurred edges with the original edges
+    # # # I_final[contour_mask > 0] = blurred_image[contour_mask > 0]
+    # I_final[contour_mask > 0] = cv2.addWeighted(blurred_image[contour_mask > 0], 0.5, I_final[contour_mask > 0], 0.5, 0)
+    # # # I_final[contour_mask > 0] = cv2.addWeighted(I_all[contour_mask > 0], 0.7, I_final[contour_mask > 0], 0.3, 0)
+    # # # I_final[contour_mask > 0] = I[contour_mask > 0]
+    # #
+    # # # plt.imshow(I_final); plt.show()
 
-    # plt.imshow(I_final); plt.show()
+    # M_bg = M_all.astype(int) - M_obj.astype(int) #- contour_mask.astype(bool).astype(int)
 
-    M_bg = M_all.astype(int) - M_obj.astype(int)
-
-    diff = (np.maximum(I_all, 1e-10) / np.maximum(I_pl, 1e-10))
+    # diff = (np.maximum(I_all, 1e-10) / np.maximum(I_pl, 1e-10))
     # diff = np.minimum(diff * 1.01, 1.0)
 
-    I_final[M_bg > 0] = (I * diff)[M_bg > 0]
+    # # plt.imshow(diff)
+    # # plt.show()
 
-    # plt.imshow(I_final)
-    # plt.show()
+    # # TODO: this erosion is necessary to get rid of the plane edges artifacts
+    # footprint = disk(2)
+    # M_all = erosion(M_all, footprint)
 
-    final = Image.fromarray(I_final)
-    final.save(dest_image_path)
+    # I_final[~M_all] = I[~M_all]
+    # I_final[M_all & M_bg.astype(bool)] = (I * diff)[M_all & M_bg.astype(bool)]
+
+    # final = Image.fromarray(I_final)
+    # final.save(dest_image_path)
 
 
 
