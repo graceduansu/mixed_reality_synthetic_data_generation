@@ -3,7 +3,7 @@ __pycache__
 *.exr
 *.log
 *.zip
-assets/traffic-cars
+assets/*
 *.xml
 !assets/car_road_template.xml
 wip/
@@ -11,9 +11,6 @@ vid/
 *.gif
 *.mp4
 *.sh
-assets/mustang
-assets/Nissan
-assets/vintage
-assets/pontiac
 *.txt
 *.rar
+!requirements.txt

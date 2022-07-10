@@ -2,7 +2,7 @@
 
 <scene version="0.5.0">
     <integrator type="volpath">
-        <integer name="rrDepth" value="5" />
+        <integer name="maxDepth" value="4" />
         <boolean name="hideEmitters" value="true" />
     </integrator>
 
@@ -24,10 +24,10 @@
 
     </emitter>
 
-    <sensor type="perspective_rdist">
+    <sensor type="perspective">
 		<string name="fovAxis" value="x" />
 		<float name="fov" value="$fov" />
-		<string name="kc" value="-0.000776,-0.012030" />
+		<!-- <string name="kc" value="-0.000776,-0.012030" /> -->
 
 		<transform name="toWorld">
 			<matrix value="  -6.32009074e-01 3.81421015e-01  6.74598057e-01 -1.95597297e+01

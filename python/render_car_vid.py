@@ -50,7 +50,7 @@ def render_car_vid(wip_dir, render_name, cam_to_world_matrix, cars_list,
     for key in kwargs:
         MITSUBA_ARGS[key] = kwargs[key]
 
-    cli_args = " -q -x "
+    cli_args = " -q "
     for key in MITSUBA_ARGS:
         cli_args += " -D {}={} ".format(key, MITSUBA_ARGS[key])
 
@@ -99,7 +99,7 @@ def render_car_vid(wip_dir, render_name, cam_to_world_matrix, cars_list,
 if __name__ == '__main__':
     ######### Required arguments. Modify as desired: #############
     docker_mount_dir = "/home/gdsu/scenes/city_test"
-    render_name = "mustang-vert-craig-blended"
+    render_name = "cadillac-craig-horz-mtl"
     
     cam_to_world_matrix = '-6.32009074e-01 3.81421015e-01  6.74598057e-01 -1.95597297e+01 '\
         '5.25615099e-03 8.72582680e-01 -4.88438164e-01  6.43714192e+00 '\
@@ -107,12 +107,12 @@ if __name__ == '__main__':
         '0 0 0 1'
 
     cars_list = [
-        {"obj": "assets/mustang/1967-shelby-ford-mustang_RESIZED.obj", 
-        "x_start": 4, "x_end": -16.5, 'speed': 6, 'x':None, 'y':0, "z": None, "scale": 1, "y_rotate": 135, 
-        "line_slope":-0.95, "line_displacement":-16.19},
-        ]
+        {"obj": "assets/traffic-cars/cadillac-ats-sedan/OBJ/Cadillac_ATS.obj", 
+        "x_start": -15, "x_end": 9.5, 'speed': 6, 'x':None, 'y':0, "z": None, "scale": 0.01, "y_rotate": 315, 
+        "line_slope":0.87, "line_displacement":3},
+    ]
 
-    bg_img_path = "/home/gdsu/scenes/city_test/assets/cam2_week1_forward_2021-05-01T14-43-40.623202.jpg"
+    bg_img_path = "/home/gdsu/scenes/city_test/assets/cam2_week1_cars_stopped_2021-05-01T15-15-15.535725.jpg"
     fps = 12
 
     wip_dir = "{}_xmls".format(render_name)
@@ -122,5 +122,6 @@ if __name__ == '__main__':
 
     render_car_vid(wip_dir, render_name, cam_to_world_matrix, cars_list, 
         bg_img_path, vid_path, fps, frames_dir, docker_mount_dir,
-        width=1000, height=750, turbidity=5, sunScale=3, skyScale=3)
+        width=1000, height=750, turbidity=5, fov=90, sampleCount=64
+       )
     
