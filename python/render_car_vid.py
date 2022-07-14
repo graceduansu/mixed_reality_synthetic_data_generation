@@ -6,6 +6,8 @@ from render_car_road import *
 import cv2
 import numpy as np
 from tqdm import trange
+from map_mtl import map_mtl
+
 
 def render_car_vid(wip_dir, render_name, cam_to_world_matrix, cars_list, 
         bg_img_path, vid_path, fps, frames_dir, docker_mount_dir, **kwargs):
@@ -24,6 +26,8 @@ def render_car_vid(wip_dir, render_name, cam_to_world_matrix, cars_list,
     os.system('mkdir {}/{}'.format(docker_mount_dir, wip_dir))
     os.system('mkdir {}/{}'.format(docker_mount_dir, frames_dir))
 
+    bsdf_list = map_mtl(cars_list[0]['obj'], docker_mount_dir)
+
     # generate all xml files
     x_i = cars_list[0]['x_start']
     for i in trange(num_frames, desc="generate xml for each frame"):
@@ -31,18 +35,21 @@ def render_car_vid(wip_dir, render_name, cam_to_world_matrix, cars_list,
         cars_list[0]['x'] = x_i
         cars_list[0]['z'] = calculate_car_pos(cars_list[0]['line_slope'], 
             cars_list[0]['line_displacement'], cars_list[0]['x'])
-
+            
         # Im_all
         xml_path = "{}/{}/{}_{n:02d}.xml".format(docker_mount_dir, wip_dir, render_name, n=i)
-        generate_xml(xml_path, cam_to_world_matrix, cars_list, render_cars=True, render_ground=True)
+        generate_xml(xml_path, cam_to_world_matrix, cars_list, docker_mount_dir, 
+            render_cars=True, render_ground=True, bsdf_list=bsdf_list)
 
         # Im_pl
         xml_path_pl = "{}/{}/{}_pl_{n:02d}.xml".format(docker_mount_dir, wip_dir, render_name, n=i)
-        generate_xml(xml_path_pl, cam_to_world_matrix, cars_list, render_cars=False, render_ground=True)
+        generate_xml(xml_path_pl, cam_to_world_matrix, cars_list, docker_mount_dir, 
+            render_cars=False, render_ground=True, bsdf_list=bsdf_list)
 
         # Im_obj
         xml_path_obj = "{}/{}/{}_obj_{n:02d}.xml".format(docker_mount_dir, wip_dir, render_name, n=i)
-        generate_xml(xml_path_obj, cam_to_world_matrix, cars_list, render_cars=True, render_ground=False)
+        generate_xml(xml_path_obj, cam_to_world_matrix, cars_list, docker_mount_dir, 
+            render_cars=True, render_ground=False, bsdf_list=bsdf_list)
 
         x_i += delta_x
 
@@ -99,7 +106,7 @@ def render_car_vid(wip_dir, render_name, cam_to_world_matrix, cars_list,
 if __name__ == '__main__':
     ######### Required arguments. Modify as desired: #############
     docker_mount_dir = "/home/gdsu/scenes/city_test"
-    render_name = "cadillac-craig-horz-mtl"
+    render_name = "dmimodel-camry-craig-horz"
     
     cam_to_world_matrix = '-6.32009074e-01 3.81421015e-01  6.74598057e-01 -1.95597297e+01 '\
         '5.25615099e-03 8.72582680e-01 -4.88438164e-01  6.43714192e+00 '\
@@ -107,9 +114,10 @@ if __name__ == '__main__':
         '0 0 0 1'
 
     cars_list = [
-        {"obj": "assets/traffic-cars/cadillac-ats-sedan/OBJ/Cadillac_ATS.obj", 
-        "x_start": -15, "x_end": 9.5, 'speed': 6, 'x':None, 'y':0, "z": None, "scale": 0.01, "y_rotate": 315, 
-        "line_slope":0.87, "line_displacement":3},
+        {'obj': 'assets/dmi-models/toyota-camry/Toyota_Camry-TRI.obj', 
+        'x_start': 5, 'x_end': -15, 'speed':6, 'x':None, 'y': 0, 'z': None, 'scale': 1, 'y_rotate': 225, 
+        'line_slope': 0.87, 'line_displacement': 3}, 
+
     ]
 
     bg_img_path = "/home/gdsu/scenes/city_test/assets/cam2_week1_cars_stopped_2021-05-01T15-15-15.535725.jpg"
@@ -122,6 +130,6 @@ if __name__ == '__main__':
 
     render_car_vid(wip_dir, render_name, cam_to_world_matrix, cars_list, 
         bg_img_path, vid_path, fps, frames_dir, docker_mount_dir,
-        width=1000, height=750, turbidity=5, fov=90, sampleCount=64
+        width=1000, height=750, turbidity=5, fov=90, sampleCount=32
        )
     
