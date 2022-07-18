@@ -14,3 +14,6 @@ vid/
 *.txt
 *.rar
 !requirements.txt
+!assets/envmap_template.xml
+*.hdr
+.vscode

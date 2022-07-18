@@ -28,6 +28,7 @@ class MTL(object):
             ac, dc, sc, ec, t, s, i, o = 0, 0, 0, 0, 0, 0, 0, 0
             dm = None
             am = None
+            sm = None
             for line in self.__file.readlines():
                 line = line.strip().split(" ")
                 if line[0] == "newmtl":
@@ -48,24 +49,27 @@ class MTL(object):
                     i = int(line[1])
                 elif line[0] == "Ni":
                     o = float(line[1])
-                elif line[0] == "map_Kd":
+                elif line[0] == "map_Kd" or line[0] == "map_d":
                     if len(line) > 1:
                         dm = line[1]
-
+                elif line[0] == "map_Ks":
+                    if len(line) > 1:
+                        sm = line[1]
                 elif line[0] == "map_Ka":
-                    am = line[1]
+                    if len(line) > 1:
+                        am = line[1]
                 elif current_material:
                     self.materials[current_material] = Material(
-                        current_material, ac, dc, sc, ec, t, s, i, o, dm, am
+                        current_material, ac, dc, sc, ec, t, s, i, o, dm, am, sm
                     )
             if current_material not in self.materials.keys():
                 self.materials[current_material] = Material(
-                    current_material, ac, dc, sc, ec, t, s, i, o, dm, am
+                    current_material, ac, dc, sc, ec, t, s, i, o, dm, am, sm
                 )
 
 
 class Material(object):
-    def __init__(self, name, ac, dc, sc, ec, t, s, i, o, dm, am):
+    def __init__(self, name, ac, dc, sc, ec, t, s, i, o, dm, am, sm):
         """
 		Materials
 			
@@ -81,6 +85,7 @@ class Material(object):
         self.optical_density = o
         self.diffuse_map = dm
         self.ambient_map = am
+        self.specular_map = sm
 
 class OBJ(object):
 
@@ -92,47 +97,6 @@ class OBJ(object):
         self.__materials = None
         self.__material_faces = []
         self.__texture_vertices = []
-
-        # TODO: MAKE CLEAN COPY OF MTL FILE - remove empty attrs
-        obj_file = open(self.__filename, "r+")
-        mtl_path = None
-        new_mtl_path = None
-        lines = obj_file.readlines()
-
-        for i in range(len(lines)):
-            line = lines[i].rstrip().split(" ")
-            if line[0] == "mtllib":
-                mtl_path = os.path.dirname(obj_file.name) + "/" + line[1]
-                stem, ext = os.path.splitext(line[1])
-                new_mtl_name = stem + '-CLEANED' + ext
-                new_mtl_path = os.path.dirname(obj_file.name) + "/" + new_mtl_name
-                lines[i] = 'mtllib '+ new_mtl_name + '\n'
-            
-
-        obj_file.seek(0,0)
-        for line in lines:
-            obj_file.write(line)
-        obj_file.close()
-
-        old_mtl_file = open(mtl_path, "r")
-        new_mtl_file = open(new_mtl_path, "w")
-        mtl_lines = old_mtl_file.readlines()
-
-        for i in range(len(mtl_lines)):
-            l = mtl_lines[i].rstrip().split(" ")
-            if len(l) == 1:
-                # do not copy line into new mtl
-                new_mtl_file.write('\n')
-                continue
-            # to ignore TGA files
-            elif l[0] == "map_Kd":
-                new_mtl_file.write('\n')
-            else:
-                new_mtl_file.write(mtl_lines[i])
-        
-        old_mtl_file.close()
-        new_mtl_file.close()
-        
 
 
     def load(self):

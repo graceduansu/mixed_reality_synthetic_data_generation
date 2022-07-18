@@ -10,7 +10,6 @@ import cv2
 import numpy as np
 from object_insertion import compose_and_blend
 from map_mtl import map_mtl
-import pymeshlab
 
 
 def calculate_mesh_adj(curr_mesh_path, target_length=None, scale=None):
@@ -86,7 +85,7 @@ def generate_xml(xml_file, cam_to_world_matrix, cars_list, docker_mount, bsdf_li
             ground_string = '''<shape type="obj">
         <string name="filename" value="assets/ground.obj" />
         <transform name="toWorld">
-            <scale value="0.03" />
+            <scale value="0.05" />
             <rotate x="0" y="1" z="0" angle="{}" />
             <translate x="{}" y="{}" z="{}" />
         </transform>
@@ -205,7 +204,7 @@ if __name__ == '__main__':
     # This will be the docker volume mount:
     output_dir = "/home/gdsu/scenes/city_test/" 
 
-    xml_name = "dmi-forest_truck"
+    xml_name = "ford_police"
     cam_to_world_matrix = '-6.32009074e-01 3.81421015e-01  6.74598057e-01 -1.95597297e+01 '\
         '5.25615099e-03 8.72582680e-01 -4.88438164e-01  6.43714192e+00 '\
         '-7.74943161e-01  -3.05151563e-01 -5.53484978e-01  4.94516235e+00 '\
@@ -214,8 +213,9 @@ if __name__ == '__main__':
     # car z position will be calculated later according to line equation
     # TODO: Note: obj path is weird...
     cars_list = [
-        {'obj': 'assets/dmi-models/forest-truck/Ford_F-250_US_Forest_Service-TRI.obj', 
-            'x': -15, 'y': 0, 'z': None, 'scale': 1, 'y_rotate': 225, 'line_slope': 0.87, 'line_displacement': 3}, 
+        {'obj': 'assets/ford-police-interceptor/Ford_Police_Interceptor-OBJ-DECIMATE.obj', 
+            'x': -10, 'y': 0, 'z': None, 'scale': 1, 'y_rotate': 315, 
+            'line_slope': 0.87, 'line_displacement': -3}, 
 
         # {"obj": "assets/car/2b9cebe9ceae3f79186bed5098d348af/model.obj", 
         # "x": -5, "y": 0.8, "z": None, "scale": 5, "y_rotate": 315, 
@@ -226,7 +226,7 @@ if __name__ == '__main__':
         # {"obj": "assets/car/4a6dea7ffa04531cf63ee8a34069b7c5/model.obj", 
         # "x": -17, "y": 0.8, "z": None, "scale": 5, "y_rotate": 225, 
         # "line_slope":-0.95, "line_displacement":-16.19},
-        # {"obj": "assets/car/5a95fd2640602d944794da8d462f32a2/model.obj", 
+        # # {"obj": "assets/car/5a95fd2640602d944794da8d462f32a2/model.obj", 
         # "x": -12, "y": 0.8, "z": None, "scale": 5, "y_rotate": 225, 
         # "line_slope":-0.95, "line_displacement":-16.19},
         # {"obj": "assets/car/6a23da6a9ab0771caa69dfdc5532bb13/model.obj", 
@@ -249,7 +249,7 @@ if __name__ == '__main__':
 
     render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list, 
         bg_img_path, rendered_img_name, composite_img_name, compose_mode, is_hdr_output,
-        width=1000, height=750, fov=90, sampleCount=32
+        width=1000, height=750, fov=90, sampleCount=32,
         # turbidity=3, latitude=40.5247051, longitude=-79.962172,
         # year=2022, month=3, day=16, hour=16, minute=30
         )

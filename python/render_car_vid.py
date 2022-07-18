@@ -106,7 +106,7 @@ def render_car_vid(wip_dir, render_name, cam_to_world_matrix, cars_list,
 if __name__ == '__main__':
     ######### Required arguments. Modify as desired: #############
     docker_mount_dir = "/home/gdsu/scenes/city_test"
-    render_name = "dmimodel-camry-craig-horz"
+    render_name = "dmimodel-ambulance-craig-vert_bright"
     
     cam_to_world_matrix = '-6.32009074e-01 3.81421015e-01  6.74598057e-01 -1.95597297e+01 '\
         '5.25615099e-03 8.72582680e-01 -4.88438164e-01  6.43714192e+00 '\
@@ -114,9 +114,9 @@ if __name__ == '__main__':
         '0 0 0 1'
 
     cars_list = [
-        {'obj': 'assets/dmi-models/toyota-camry/Toyota_Camry-TRI.obj', 
-        'x_start': 5, 'x_end': -15, 'speed':6, 'x':None, 'y': 0, 'z': None, 'scale': 1, 'y_rotate': 225, 
-        'line_slope': 0.87, 'line_displacement': 3}, 
+        {'obj': 'assets/dmi-models/ambulance/Ambulance.obj', 
+        "x_start": -16.5, "x_end": 4, 'speed': 6, 'x':None, 'y':0, "z": None, "scale": 1, "y_rotate": 135, 
+        "line_slope":-0.95, "line_displacement":-6},
 
     ]
 
@@ -130,6 +130,7 @@ if __name__ == '__main__':
 
     render_car_vid(wip_dir, render_name, cam_to_world_matrix, cars_list, 
         bg_img_path, vid_path, fps, frames_dir, docker_mount_dir,
-        width=1000, height=750, turbidity=5, fov=90, sampleCount=32
+        width=1000, height=750, turbidity=3, fov=90, sampleCount=32,
+        sunScale=3, skyScale=3
        )
     

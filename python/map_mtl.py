@@ -5,7 +5,7 @@ import os
 import cv2
 
 
-CAR_MTL_DICT = {'thindielectric': ['glass', 'translucent', 'verre', 'window', 'vitre'],
+CAR_MTL_DICT = {'thindielectric': ['glass', 'translucent', 'verre', 'wind', 'vitre'],
     'plastic': ['plast', 'ligh', 'lamp', 'voyant', 'phare'],
     'conductor': ['chrome', 'mirr', 'miroir'],
     'car_metal': ['body', 'metal', 'carroserie'],

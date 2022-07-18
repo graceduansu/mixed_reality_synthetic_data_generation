@@ -13,6 +13,7 @@ from bpy import context
 import bmesh
 from math import radians
 from mathutils import Matrix
+from optix_map_mtl import clean_mtl
 
 # Notes: y axis points towards top of screen
 #   order: (x, y, z)
@@ -92,8 +93,13 @@ def calculate_y_trans(curr_mesh_path):
     measures = ms.get_geometric_measures()
     bbox = measures['bbox']
     min_coord = bbox.min()
-    max_coord = bbox.max()
-
+    print("2nd pymeshlab process")
+    dims = np.array([bbox.dim_x(), bbox.dim_y(), bbox.dim_z()])
+    dim_argmax = np.argmax(dims)
+    curr_len = dims[dim_argmax]
+    print("curr_len", curr_len)
+    print("dim_argmax", dim_argmax)
+    print("min_coord", min_coord)
     # translate until bottom of model is at y=0
     y_trans = -1.0 * min_coord[1]
     return y_trans
@@ -109,6 +115,10 @@ def bpy_process_mesh(curr_mesh_path, new_mesh_path, target_length=None, scale=No
     print(center_translation)
     print(dim_argmax)
     
+    
+    if rotations == 0:
+        dim_argmax = 0
+    
     startTime = time.time()
     def log(msg):
         s = round(time.time() - startTime, 2)
@@ -122,6 +132,7 @@ def bpy_process_mesh(curr_mesh_path, new_mesh_path, target_length=None, scale=No
     s = time.time()
     
     bpy.ops.import_scene.obj(filepath=curr_mesh_path)
+    #bpy.ops.import_scene.fbx(filepath=curr_mesh_path)
     log("Loaded")
     modifierName='DecimateMod'
     objectList=bpy.data.objects
@@ -154,7 +165,7 @@ def bpy_process_mesh(curr_mesh_path, new_mesh_path, target_length=None, scale=No
             bpy.ops.transform.rotate(value=radians(-90), orient_axis='X', orient_type='GLOBAL')
         elif dim_argmax == 2:
             # z is long, rotate around x
-            bpy.ops.transform.rotate(value=radians(90), orient_axis='X',  orient_type='GLOBAL')
+            bpy.ops.transform.rotate(value=radians(-90), orient_axis='X',  orient_type='GLOBAL')
 
 
     bpy.ops.export_scene.obj(filepath=new_mesh_path, global_scale=1.0,
@@ -185,10 +196,10 @@ def bpy_process_mesh(curr_mesh_path, new_mesh_path, target_length=None, scale=No
 
     for i, obj in enumerate(meshes):
         bpy.context.view_layer.objects.active = obj
-        bpy.ops.transform.translate(orient_type='GLOBAL', value=(0, 0, y_trans), use_accurate=True)
+        bpy.ops.transform.translate(orient_type='GLOBAL', value=(0, y_trans, 0), use_accurate=True)
         print(obj.location)
 
-    bpy.ops.export_scene.obj(filepath=new_mesh_path, global_scale=1,
+    bpy.ops.export_scene.obj(filepath=new_mesh_path, global_scale=1.0,
             use_materials=True,use_mesh_modifiers=True, check_existing=False,
             use_triangles=True, use_blen_objects=True, 
             keep_vertex_order=True, path_mode='ABSOLUTE', axis_up='Y'
@@ -197,9 +208,45 @@ def bpy_process_mesh(curr_mesh_path, new_mesh_path, target_length=None, scale=No
 
 
 if __name__ == '__main__':
-    old_path = '/home/gdsu/scenes/city_test/assets/dmi-models/forest-truck/Ford_F-250_US_Forest_Service.obj'
-    new_path = '/home/gdsu/scenes/city_test/assets/dmi-models/forest-truck/Ford_F-250_US_Forest_Service-TRI.obj'
-    bpy_process_mesh(old_path, new_path, target_length=6.0, decimateRatio=1)
+    old_path = '/home/gdsu/scenes/city_test/assets/ford-police-interceptor/Ford_Police_Interceptor_Utility_Hybrid_AWD_obj_base.obj'
+    new_path = '/home/gdsu/scenes/city_test/assets/ford-police-interceptor/Ford_Police_Interceptor-OBJ-DECIMATE.obj'
+    bpy_process_mesh(old_path, new_path, target_length=4.8, decimateRatio=0.5)
+    #clean_mtl(new_path)
+    
+    # old_path = '/home/gdsu/scenes/city_test/assets/dmi-models/bmw_m3e92/BMW_M3_E92.obj'
+    # new_path = '/home/gdsu/scenes/city_test/assets/dmi-models/bmw_m3e92/BMW_M3_E92-TRI.obj'
+    # bpy_process_mesh(old_path, new_path, target_length=4.8, decimateRatio=None)
+    # old_path = '/home/gdsu/scenes/city_test/assets/dmi-models/ford-f150/Ford_F-150.obj'
+    # new_path = '/home/gdsu/scenes/city_test/assets/dmi-models/ford-f150/Ford_F-150-TRI.obj'
+    # bpy_process_mesh(old_path, new_path, target_length=6.4, decimateRatio=None)
+
+    """
+    old_path = '/home/gdsu/scenes/city_test/assets/dmi-models/ford-gt/Ford_GT_2017.obj'
+    new_path = '/home/gdsu/scenes/city_test/assets/dmi-models/ford-gt/Ford_GT_2017-TRI.obj'
+    bpy_process_mesh(old_path, new_path, target_length=4.8, decimateRatio=None)
+    old_path = '/home/gdsu/scenes/city_test/assets/dmi-models/mercedes/Mercedes_Sprinter_FedEx.obj'
+    new_path = '/home/gdsu/scenes/city_test/assets/dmi-models/mercedes/Mercedes_Sprinter_FedEx-TRI.obj'
+    bpy_process_mesh(old_path, new_path, target_length=4.8, decimateRatio=None)
+    old_path = '/home/gdsu/scenes/city_test/assets/dmi-models/Mustang_GT/3D_Files/OBJ/mustang_GT.obj'
+    new_path = '/home/gdsu/scenes/city_test/assets/dmi-models/Mustang_GT/3D_Files/OBJ/mustang_GT-TRI.obj'
+    bpy_process_mesh(old_path, new_path, target_length=4.8, decimateRatio=None)
+
+    # bus
+    
+    old_path = '/home/gdsu/scenes/city_test/assets/dmi-models/ambulance/Ambulance.obj'
+    new_path = '/home/gdsu/scenes/city_test/assets/dmi-models/ambulance/Ambulance-TRI.obj'
+    bpy_process_mesh(old_path, new_path, target_length=6.7, decimateRatio=None)
+    old_path = '/home/gdsu/scenes/city_test/assets/dmi-models/american-pumper/pumper.obj'
+    new_path = '/home/gdsu/scenes/city_test/assets/dmi-models/american-pumper/pumper-TRI.obj'
+    bpy_process_mesh(old_path, new_path, target_length=12.2, decimateRatio=None)
+    
+    old_path = '/home/gdsu/scenes/city_test/assets/roadwork/cone/trafficCone.obj'
+    new_path = '/home/gdsu/scenes/city_test/assets/roadwork/cone/trafficCone-TRI.obj'
+    bpy_process_mesh(old_path, new_path, target_length=0.72, decimateRatio=None, rotations=0)
+    old_path = '/home/gdsu/scenes/city_test/assets/roadwork/construction_sign/signConstructionWork_02.obj'
+    new_path = '/home/gdsu/scenes/city_test/assets/roadwork/construction_sign/signConstructionWork_02-TRI.obj'
+    bpy_process_mesh(old_path, new_path, target_length=2.5, decimateRatio=None, rotations=0)
+    """
     # cars_list = [
     #     {"obj": "assets/dmi-models/AC_Cobra/Shelby.obj", 
     #     "x": -15, 'y':0, "z": None, "scale": 0.01, "y_rotate": 315, 
