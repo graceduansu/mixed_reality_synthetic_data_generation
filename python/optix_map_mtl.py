@@ -154,7 +154,7 @@ def map_mtl(obj_path, docker_mount):
 
 
 def clean_mtl(obj_filename):
-    # TODO: MAKE CLEAN COPY OF MTL FILE - remove empty attrs
+    # MAKE CLEAN COPY OF MTL FILE - remove empty attrs
     obj_file = open(obj_filename, "r+")
     mtl_path = None
     new_mtl_path = None

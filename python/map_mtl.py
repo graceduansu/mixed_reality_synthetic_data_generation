@@ -1,4 +1,3 @@
-from lxml import etree as ET
 import numpy as np
 from mtl import *
 import os

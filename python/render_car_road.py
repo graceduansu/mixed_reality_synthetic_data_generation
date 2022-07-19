@@ -4,10 +4,7 @@
 import os
 from overlay import overlay
 from alpha_blend import alpha_blend
-from quotient_compose import quotient_compose
 from lxml import etree as ET
-import cv2
-import numpy as np
 from object_insertion import compose_and_blend
 from map_mtl import map_mtl
 
