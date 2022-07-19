@@ -211,14 +211,14 @@ def bpy_process_mesh(curr_mesh_path, new_mesh_path, target_length=None, scale=No
 if __name__ == '__main__':
     old_path = '/home/gdsu/scenes/city_test/assets/dmi-models/american-pumper/pumper.obj'
     new_path = '/home/gdsu/scenes/city_test/assets/dmi-models/american-pumper/pumper-TRI.obj'
-    bpy_process_mesh(old_path, new_path, target_length=12.2, decimateRatio=1)
+    #bpy_process_mesh(old_path, new_path, target_length=12.2, decimateRatio=1)
     # old_path = '/home/gdsu/scenes/city_test/assets/dmi-models/ambulance/Ambulance.obj'
     # new_path = '/home/gdsu/scenes/city_test/assets/dmi-models/ambulance/Ambulance-OPTIX.obj'
     # bpy_process_mesh(old_path, new_path, target_length=6.7, decimateRatio=1)
     # old_path = '/home/gdsu/scenes/city_test/assets/ford-police-interceptor/Ford_Police_Interceptor_Utility_Hybrid_AWD_obj_base.obj'
     # new_path = '/home/gdsu/scenes/city_test/assets/ford-police-interceptor/Ford_Police_Interceptor-OBJ-DECIMATE.obj'
     # bpy_process_mesh(old_path, new_path, target_length=4.8, decimateRatio=None)
-    #clean_mtl(new_path)
+    clean_mtl(new_path)
     
     # old_path = '/home/gdsu/scenes/city_test/assets/dmi-models/bmw_m3e92/BMW_M3_E92.obj'
     # new_path = '/home/gdsu/scenes/city_test/assets/dmi-models/bmw_m3e92/BMW_M3_E92-TRI.obj'
