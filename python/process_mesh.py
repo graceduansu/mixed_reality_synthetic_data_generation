@@ -151,6 +151,7 @@ def bpy_process_mesh(curr_mesh_path, new_mesh_path, target_length=None, scale=No
 
         if decimateRatio is None:
             modifier.ratio = 16000.0 / len(obj.data.polygons)
+            print('NEW DECIMATE', modifier.ratio)
         else:
             modifier.ratio = decimateRatio
 
@@ -159,7 +160,7 @@ def bpy_process_mesh(curr_mesh_path, new_mesh_path, target_length=None, scale=No
         log("{} has {} verts, {} edges, {} polys after decimation".format(obj.name, len(obj.data.vertices), len(obj.data.edges), len(obj.data.polygons)))
         
         bpy.ops.transform.translate(orient_type='GLOBAL', value=center_translation)
-        bpy.ops.transform.resize(orient_type='LOCAL', value=(scale_factor, scale_factor, scale_factor))
+        #bpy.ops.transform.resize(orient_type='LOCAL', value=(scale_factor, scale_factor, scale_factor))
         if dim_argmax == 1:
             # y is long, rotate around x
             bpy.ops.transform.rotate(value=radians(-90), orient_axis='X', orient_type='GLOBAL')
@@ -168,7 +169,7 @@ def bpy_process_mesh(curr_mesh_path, new_mesh_path, target_length=None, scale=No
             bpy.ops.transform.rotate(value=radians(-90), orient_axis='X',  orient_type='GLOBAL')
 
 
-    bpy.ops.export_scene.obj(filepath=new_mesh_path, global_scale=1.0,
+    bpy.ops.export_scene.obj(filepath=new_mesh_path, global_scale=scale_factor,
         use_materials=True,use_mesh_modifiers=True, 
         use_triangles=True, use_blen_objects=True, 
         keep_vertex_order=True, path_mode='ABSOLUTE', axis_up='Y'
@@ -208,9 +209,12 @@ def bpy_process_mesh(curr_mesh_path, new_mesh_path, target_length=None, scale=No
 
 
 if __name__ == '__main__':
-    old_path = '/home/gdsu/scenes/city_test/assets/ford-police-interceptor/Ford_Police_Interceptor_Utility_Hybrid_AWD_obj_base.obj'
-    new_path = '/home/gdsu/scenes/city_test/assets/ford-police-interceptor/Ford_Police_Interceptor-OBJ-DECIMATE.obj'
-    bpy_process_mesh(old_path, new_path, target_length=4.8, decimateRatio=0.5)
+    old_path = '/home/gdsu/scenes/city_test/assets/dmi-models/ambulance/Ambulance.obj'
+    new_path = '/home/gdsu/scenes/city_test/assets/dmi-models/ambulance/Ambulance-OPTIX.obj'
+    bpy_process_mesh(old_path, new_path, target_length=6.7, decimateRatio=1)
+    # old_path = '/home/gdsu/scenes/city_test/assets/ford-police-interceptor/Ford_Police_Interceptor_Utility_Hybrid_AWD_obj_base.obj'
+    # new_path = '/home/gdsu/scenes/city_test/assets/ford-police-interceptor/Ford_Police_Interceptor-OBJ-DECIMATE.obj'
+    # bpy_process_mesh(old_path, new_path, target_length=4.8, decimateRatio=None)
     #clean_mtl(new_path)
     
     # old_path = '/home/gdsu/scenes/city_test/assets/dmi-models/bmw_m3e92/BMW_M3_E92.obj'
@@ -233,9 +237,7 @@ if __name__ == '__main__':
 
     # bus
     
-    old_path = '/home/gdsu/scenes/city_test/assets/dmi-models/ambulance/Ambulance.obj'
-    new_path = '/home/gdsu/scenes/city_test/assets/dmi-models/ambulance/Ambulance-TRI.obj'
-    bpy_process_mesh(old_path, new_path, target_length=6.7, decimateRatio=None)
+    
     old_path = '/home/gdsu/scenes/city_test/assets/dmi-models/american-pumper/pumper.obj'
     new_path = '/home/gdsu/scenes/city_test/assets/dmi-models/american-pumper/pumper-TRI.obj'
     bpy_process_mesh(old_path, new_path, target_length=12.2, decimateRatio=None)

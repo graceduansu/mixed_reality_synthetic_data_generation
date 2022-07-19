@@ -81,7 +81,7 @@ if __name__ == '__main__':
 
     render_envmap(output_dir, xml_name, cam_to_world_matrix,  
         rendered_img_name, 
-        width=1000, height=750, fov=90, sampleCount=32,
+        width=4000, height=3000, fov=90, sampleCount=128,
         # turbidity=3, latitude=40.5247051, longitude=-79.962172,
         # year=2022, month=3, day=16, hour=16, minute=30
         )

@@ -77,19 +77,15 @@ def generate_xml(xml_file, cam_to_world_matrix, cars_list, docker_mount,
 
         if render_ground:
             ground_string = '''<shape type="obj">
-        <string name="filename" value="assets/ground.obj" />
+        <string name="filename" value="/home/gdsu/scenes/city_test/assets/ground.obj" />
         <transform name="toWorld">
-            <scale value="0.05" />
+            <scale value="0.1" />
             <rotate x="0" y="1" z="0" angle="{}" />
             <translate x="{}" y="{}" z="{}" />
         </transform>
 
-        <bsdf type="microfacet">
-            <rgb name="albedo" value="0.1 0.1 0.1" />
-            <rgb name="albedoScale" value="0.5 0.5 0.5" />
-            <float name="roughnessScale" value="0.5" />
-            <float name="metallic" value="0" />
-            <float name="fresnel" value="0" />
+        <bsdf type="diffuse">
+            <rgb name="reflectance" value="0.1 0.1 0.1" />
         </bsdf>
 
     </shape>'''.format(car['y_rotate'], car['x'], 0, car['z'])
@@ -114,7 +110,7 @@ def calculate_car_pos(m, b, x_pos):
     return z_pos
    
 
-DEFAULT_ARGS = {'envScale':'1.5', 'envmapFile':'/home/gdsu/scenes/city_test/assets/envmap-craig.hdr',
+DEFAULT_ARGS = {'envScale':'1.5', 'envmapFile':'/home/gdsu/scenes/city_test/envmap-craig.hdr',
     'fov':'90', 'sampleCount':'32', 'width':'1000', 'height':'750'}
 
 OPTIX_RENDERER_PATH = "/home/gdsu/OptixRenderer/build/bin/optixRenderer"
@@ -162,23 +158,25 @@ def render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list,
     m_all = xml_name + "_all_" 
     m_obj = xml_name + "_obj_" 
 
+    optix_args = " --forceOutput --medianFilter --maxPathLength 7 --rrBeginLength 5 "
+
     with open('optix_script.sh', 'w') as outfn:
         cmd = OPTIX_RENDERER_PATH + " -f " + os.path.join(output_dir, xml_name) + ".xml " \
-            + " -o " + rendered_img_name + " -m 0" + " --forceOutput --gpuIds " + GPU_IDS + "\n"
+            + " -o " + rendered_img_name + " -m 0" + optix_args + " --gpuIds " + GPU_IDS + "\n"
         outfn.write(cmd)
         
         cmd = OPTIX_RENDERER_PATH + " -f " + os.path.join(output_dir, xml_name) + "_pl.xml " \
-            + " -o " + pl_img + " -m 0" + " --forceOutput --gpuIds " + GPU_IDS + "\n"
+            + " -o " + pl_img + " -m 0" + optix_args + " --gpuIds " + GPU_IDS + "\n"
         outfn.write(cmd)
         cmd = OPTIX_RENDERER_PATH + " -f " + os.path.join(output_dir, xml_name) + "_obj.xml " \
-            + " -o " + obj_img + " -m 0" + " --forceOutput --gpuIds " + GPU_IDS + "\n"
+            + " -o " + obj_img + " -m 0" + optix_args + " --gpuIds " + GPU_IDS + "\n"
         outfn.write(cmd)
 
         cmd = OPTIX_RENDERER_PATH + " -f " + os.path.join(output_dir, xml_name) + ".xml " \
-            + " -o " + m_all + " -m 4" + " --forceOutput --gpuIds " + GPU_IDS + "\n"
+            + " -o " + m_all + " -m 4" + optix_args + " --gpuIds " + GPU_IDS + "\n"
         outfn.write(cmd)
         cmd = OPTIX_RENDERER_PATH + " -f " + os.path.join(output_dir, xml_name) + "_obj.xml " \
-        + " -o " + m_obj + " -m 4" + " --forceOutput --gpuIds " + GPU_IDS + "\n"
+        + " -o " + m_obj + " -m 4" + optix_args + " --gpuIds " + GPU_IDS + "\n"
         outfn.write(cmd)
 
     os.system('bash optix_script.sh')
@@ -203,7 +201,7 @@ if __name__ == '__main__':
     # This will be the docker volume mount:
     output_dir = "/home/gdsu/scenes/city_test/" 
 
-    xml_name = "ford_police_interceptor-OBJ"
+    xml_name = "ambulance-optix"
 
     # Matrix needs to be numpy
     cam_to_world_matrix = np.array([[-6.32009074e-01, 3.81421015e-01,  6.74598057e-01, -1.95597297e+01],
@@ -211,10 +209,10 @@ if __name__ == '__main__':
         [-7.74943161e-01 , -3.05151563e-01, -5.53484978e-01,  4.94516235e+00 ],
         [0,0,0,1]])
     # car z position will be calculated later according to line equation
-    cars_list = [
-        {"obj": "/home/gdsu/scenes/city_test/assets/ford-police-interceptor/Ford_Police_Interceptor-OBJ-TRI.obj", 
-        "x": -5, "y": 0, "z": None, "scale": 1, "y_rotate": 315, 
+    cars_list = [{"obj": "/home/gdsu/scenes/city_test/assets/dmi-models/ambulance/Ambulance-OPTIX.obj", 
+        "x": -5, "y": 1, "z": None, "scale": 1, "y_rotate": 225, 
         "line_slope":0.87, "line_displacement":3},
+        
         ]
 
 
@@ -228,7 +226,7 @@ if __name__ == '__main__':
 
     render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list, 
         bg_img_path, rendered_img_name, is_hdr_output,
-        width='2000', height='1500', fov='90', sampleCount='128',
+        width='2000', height='1500', fov='90', sampleCount='1024',
         # turbidity=3, latitude=40.5247051, longitude=-79.962172,
         # year=2022, month=3, day=16, hour=16, minute=30
         )
