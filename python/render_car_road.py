@@ -134,8 +134,7 @@ def render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list,
             mts_cmd = "mitsuba" + cli_args + " -o " + obj_img + " " + xml_name + "_obj.xml \n"
             outfn.write(mts_cmd)
 
-    docker_cmd = '''sudo docker run -v {}:/hosthome/ -it f69cf256f558 /bin/bash 
-        -c \' bash /hosthome/python/docker_script.sh\''''.format(output_dir)
+    docker_cmd = '''sudo docker run -v {}:/hosthome/ -it f69cf256f558 /bin/bash  -c \' bash /hosthome/python/docker_script.sh\''''.format(output_dir)
 
     rendered_img_path = output_dir + rendered_img_name
     composite_img_path = output_dir + composite_img_name
@@ -183,7 +182,7 @@ if __name__ == '__main__':
     # This will be the docker volume mount:
     output_dir = "/home/grace/city_test/" 
 
-    xml_name = "test-pumper"
+    xml_name = "test-ambulance-textures"
     cam_to_world_matrix = '-6.32009074e-01 3.81421015e-01  6.74598057e-01 -1.95597297e+01 '\
         '5.25615099e-03 8.72582680e-01 -4.88438164e-01  6.43714192e+00 '\
         '-7.74943161e-01  -3.05151563e-01 -5.53484978e-01  4.94516235e+00 '\
@@ -192,8 +191,8 @@ if __name__ == '__main__':
     # car z position will be calculated later according to line equation
     # Note: obj path is weird...
     cars_list = [
-        {"obj": "assets/dmi-models/american-pumper/pumper-TRI.obj", 
-        "x": -5, "y": 0.8, "z": None, "scale": 1, "y_rotate": 315, 
+        {"obj": "assets/dmi-models/ambulance/Ambulance-TRI.obj", 
+        "x": -5, "y": 1, "z": None, "scale": 1, "y_rotate": 315, 
         "line_slope":0.87, "line_displacement":3},
         # {"obj": "assets/car/3a5df1c214322cd4a5f6e4975dafe8b5/model.obj", 
         # "x": 0, "y": 0.8, "z": None, "scale": 5, "y_rotate": 315, 
@@ -224,7 +223,7 @@ if __name__ == '__main__':
 
     render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list, 
         bg_img_path, rendered_img_name, composite_img_name, compose_mode, is_hdr_output,
-        width=1000, height=750, fov=90, sampleCount=32,
+        width=1000, height=750, fov=90, sampleCount=16,
         # turbidity=3, latitude=40.5247051, longitude=-79.962172,
         # year=2022, month=3, day=16, hour=16, minute=30
         )
