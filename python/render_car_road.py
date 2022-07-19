@@ -12,35 +12,6 @@ from object_insertion import compose_and_blend
 from map_mtl import map_mtl
 
 
-def calculate_mesh_adj(curr_mesh_path, target_length=None, scale=None):
-    """
-    Returns: scale factor, y translation
-    """
-    ms = pymeshlab.MeshSet()
-    ms.load_new_mesh(curr_mesh_path)
-
-    measures = ms.get_geometric_measures()
-    bbox = measures['bbox']
-    min_coord = bbox.min()
-    max_coord = bbox.max()
-    curr_len = max(bbox.dim_x(), bbox.dim_y())
-
-    if scale is None:
-        scale_factor = 1.0 * target_length / curr_len
-    else:
-        scale_factor = scale
-    
-    # print("min coord", min_coord)
-    # print("max coord", max_coord)
-    # print("curr len", curr_len)
-    # print("scale factor", scale_factor)
-
-    # translate until bottom of model is at y=0
-    y_trans = -1.0 * min_coord[1]
-    # scale mesh
-    return scale_factor, y_trans
-
-
 def generate_xml(xml_file, cam_to_world_matrix, cars_list, docker_mount, bsdf_list=None, render_ground=True, render_cars=True, is_hdr=False):
     
     tree = ET.parse('../assets/car_road_template.xml')

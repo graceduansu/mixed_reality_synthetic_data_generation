@@ -3,10 +3,9 @@
 
 import os
 from render_car_road import *
-import cv2
-import numpy as np
 from tqdm import trange
 from map_mtl import map_mtl
+import time
 
 
 def render_car_vid(wip_dir, render_name, cam_to_world_matrix, cars_list, 
@@ -84,7 +83,9 @@ def render_car_vid(wip_dir, render_name, cam_to_world_matrix, cars_list,
 
     docker_cmd = '''sudo docker run -v {}:/hosthome/ -it f69cf256f558 /bin/bash -c \'bash /hosthome/docker_script.sh\''''.format(docker_mount_dir)
     print(docker_cmd)
+    startRenderTime = time.time()
     os.system(docker_cmd)
+    print('Total rendering time: {}'.format(time.time() - startRenderTime))
 
     # compositing    
     for i in trange(num_frames, desc='generate composite for each frame'):
@@ -106,7 +107,7 @@ def render_car_vid(wip_dir, render_name, cam_to_world_matrix, cars_list,
 if __name__ == '__main__':
     ######### Required arguments. Modify as desired: #############
     docker_mount_dir = "/home/grace/city_test"
-    render_name = "dmimodel-ambulance-craig-vert-remote"
+    render_name = "dmimodel-ambulance-craig-horz-remote"
     
     cam_to_world_matrix = '-6.32009074e-01 3.81421015e-01  6.74598057e-01 -1.95597297e+01 '\
         '5.25615099e-03 8.72582680e-01 -4.88438164e-01  6.43714192e+00 '\
@@ -115,17 +116,17 @@ if __name__ == '__main__':
 
     cars_list = [
         {'obj': 'assets/dmi-models/ambulance/Ambulance-OPTIX.obj', 
-        "x_start": -16.5, "x_end": 4, 'speed': 6, 'x':None, 'y':1, "z": None, "scale": 1, "y_rotate": 135, 
-        "line_slope":-0.95, "line_displacement":-6},
+        "x_start": -15, "x_end": 0, 'speed': 6, 'x':None, 'y':1, "z": None, "scale": 1, "y_rotate": 315, 
+        "line_slope":0.87, "line_displacement":3},
 
     ]
 
-    bg_img_path = "/home/gdsu/scenes/city_test/assets/cam2_week1_cars_stopped_2021-05-01T15-15-15.535725.jpg"
+    bg_img_path = "/home/grace/city_test/assets/cam2_week1_cars_stopped_2021-05-01T15-15-15.535725.jpg"
     fps = 12
 
     wip_dir = "{}_xmls".format(render_name)
     frames_dir = "{}_frames".format(render_name)
-    vid_path = "/home/gdsu/scenes/city_test/{}.mp4".format(render_name)
+    vid_path = "/home/grace/city_test/{}.mp4".format(render_name)
     
 
     render_car_vid(wip_dir, render_name, cam_to_world_matrix, cars_list, 
