@@ -172,7 +172,7 @@ def bpy_process_mesh(curr_mesh_path, new_mesh_path, target_length=None, scale=No
     bpy.ops.export_scene.obj(filepath=new_mesh_path, global_scale=scale_factor,
         use_materials=True,use_mesh_modifiers=True, 
         use_triangles=True, use_blen_objects=True, 
-        keep_vertex_order=True, path_mode='ABSOLUTE', axis_up='Y'
+        keep_vertex_order=True, path_mode='RELATIVE', axis_up='Y'
         )
 
     
@@ -203,7 +203,7 @@ def bpy_process_mesh(curr_mesh_path, new_mesh_path, target_length=None, scale=No
     bpy.ops.export_scene.obj(filepath=new_mesh_path, global_scale=1.0,
             use_materials=True,use_mesh_modifiers=True, check_existing=False,
             use_triangles=True, use_blen_objects=True, 
-            keep_vertex_order=True, path_mode='ABSOLUTE', axis_up='Y'
+            keep_vertex_order=True, path_mode='RELATIVE', axis_up='Y'
             )
 
 
@@ -212,9 +212,9 @@ if __name__ == '__main__':
     # old_path = '/home/grace/city_test/assets/dmi-models/american-pumper/pumper.obj'
     # new_path = '/home/grace/city_test/assets/dmi-models/american-pumper/pumper-TRI.obj'
     #bpy_process_mesh(old_path, new_path, target_length=12.2, decimateRatio=1)
-    # old_path = '/home/gdsu/scenes/city_test/assets/dmi-models/ambulance/Ambulance.obj'
+    old_path = '/home/grace/city_test/assets/dmi-models/ambulance/Ambulance.obj'
     new_path = '/home/grace/city_test/assets/dmi-models/ambulance/Ambulance-TRI.obj'
-    # bpy_process_mesh(old_path, new_path, target_length=6.7, decimateRatio=1)
+    bpy_process_mesh(old_path, new_path, target_length=6.7, decimateRatio=1)
     # old_path = '/home/gdsu/scenes/city_test/assets/ford-police-interceptor/Ford_Police_Interceptor_Utility_Hybrid_AWD_obj_base.obj'
     # new_path = '/home/gdsu/scenes/city_test/assets/ford-police-interceptor/Ford_Police_Interceptor-OBJ-DECIMATE.obj'
     # bpy_process_mesh(old_path, new_path, target_length=4.8, decimateRatio=None)

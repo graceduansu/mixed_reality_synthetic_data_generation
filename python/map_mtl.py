@@ -54,7 +54,8 @@ def mtl_to_bsdf(mtl_instance, obj_dir, docker_mount, ignore_textures=True):
         dm = None
 
     if dm is not None:
-        new_dm = get_new_kd_bitmap(dc, dm, obj_dir, docker_mount)
+        new_dm = dm
+        # new_dm = get_new_kd_bitmap(dc, dm, obj_dir, docker_mount)
         diffuse = '''<texture name="diffuseReflectance" type="bitmap">
                 <string name="filename" value="{}"/>
             </texture>'''.format(os.path.join(obj_dir, new_dm))
