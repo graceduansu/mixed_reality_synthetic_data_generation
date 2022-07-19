@@ -179,7 +179,7 @@ if __name__ == '__main__':
     # This will be the docker volume mount:
     output_dir = "/home/grace/city_test/" 
 
-    xml_name = "test-ambulance-textures"
+    xml_name = "test-ambulance-noMult"
     cam_to_world_matrix = '-6.32009074e-01 3.81421015e-01  6.74598057e-01 -1.95597297e+01 '\
         '5.25615099e-03 8.72582680e-01 -4.88438164e-01  6.43714192e+00 '\
         '-7.74943161e-01  -3.05151563e-01 -5.53484978e-01  4.94516235e+00 '\
