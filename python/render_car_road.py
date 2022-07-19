@@ -178,7 +178,7 @@ def render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list,
             mts_cmd = "mitsuba" + cli_args + " -o " + obj_img + " " + xml_name + "_obj.xml \n"
             outfn.write(mts_cmd)
 
-    docker_cmd = '''sudo docker run -v {}:/hosthome/ -it 3548f5fbbf98 /bin/bash -c \' bash /hosthome/python/docker_script.sh\''''.format(output_dir)
+    docker_cmd = '''sudo docker run -v {}:/hosthome/ -it f69cf256f558 /bin/bash -c \' bash /hosthome/python/docker_script.sh\''''.format(output_dir)
     os.system(docker_cmd)
 
     rendered_img_path = output_dir + rendered_img_name
@@ -202,9 +202,9 @@ if __name__ == '__main__':
     ######### Required arguments. Modify as desired: #############
 
     # This will be the docker volume mount:
-    output_dir = "/home/gdsu/scenes/city_test/" 
+    output_dir = "/home/grace/city_test/" 
 
-    xml_name = "ambulance-test"
+    xml_name = "test-ford-police"
     cam_to_world_matrix = '-6.32009074e-01 3.81421015e-01  6.74598057e-01 -1.95597297e+01 '\
         '5.25615099e-03 8.72582680e-01 -4.88438164e-01  6.43714192e+00 '\
         '-7.74943161e-01  -3.05151563e-01 -5.53484978e-01  4.94516235e+00 '\
@@ -213,7 +213,7 @@ if __name__ == '__main__':
     # car z position will be calculated later according to line equation
     # TODO: Note: obj path is weird...
     cars_list = [
-        {'obj': 'assets/dmi-models/ambulance/Ambulance-OPTIX.obj', 
+        {'obj': 'assets/ford-police-interceptor/Ford_Police_Interceptor-OBJ-TRI.obj', 
             'x': -10, 'y': 0, 'z': None, 'scale': 1, 'y_rotate': 315, 
             'line_slope': 0.87, 'line_displacement': -3}, 
 
@@ -239,7 +239,7 @@ if __name__ == '__main__':
 
 
     bg_img_path = "../assets/cam2_week1_right_turn_2021-05-01T14-42-00.655968.jpg"
-    compose_mode = "overlay" # "alpha", "overlay", or "quotient"
+    compose_mode = "quotient" # "alpha", "overlay", or "quotient"
 
 
     rendered_img_name = xml_name + ".png"

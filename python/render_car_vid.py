@@ -82,7 +82,7 @@ def render_car_vid(wip_dir, render_name, cam_to_world_matrix, cars_list,
             mts_cmd = "mitsuba {} -o {} {}/{}_pl_{n:02d}.xml \n".format(cli_args, img_name, wip_dir, render_name, n=i)
             outfn.write(mts_cmd)
 
-    docker_cmd = '''sudo docker run -v {}:/hosthome/ -it 3548f5fbbf98 /bin/bash -c \'bash /hosthome/docker_script.sh\''''.format(docker_mount_dir)
+    docker_cmd = '''sudo docker run -v {}:/hosthome/ -it f69cf256f558 /bin/bash -c \'bash /hosthome/docker_script.sh\''''.format(docker_mount_dir)
     print(docker_cmd)
     os.system(docker_cmd)
 
@@ -105,8 +105,8 @@ def render_car_vid(wip_dir, render_name, cam_to_world_matrix, cars_list,
 
 if __name__ == '__main__':
     ######### Required arguments. Modify as desired: #############
-    docker_mount_dir = "/home/gdsu/scenes/city_test"
-    render_name = "dmimodel-ambulance-craig-vert_bright"
+    docker_mount_dir = "/home/grace/city_test"
+    render_name = "dmimodel-ambulance-craig-vert-remote"
     
     cam_to_world_matrix = '-6.32009074e-01 3.81421015e-01  6.74598057e-01 -1.95597297e+01 '\
         '5.25615099e-03 8.72582680e-01 -4.88438164e-01  6.43714192e+00 '\
@@ -114,8 +114,8 @@ if __name__ == '__main__':
         '0 0 0 1'
 
     cars_list = [
-        {'obj': 'assets/dmi-models/ambulance/Ambulance.obj', 
-        "x_start": -16.5, "x_end": 4, 'speed': 6, 'x':None, 'y':0, "z": None, "scale": 1, "y_rotate": 135, 
+        {'obj': 'assets/dmi-models/ambulance/Ambulance-OPTIX.obj', 
+        "x_start": -16.5, "x_end": 4, 'speed': 6, 'x':None, 'y':1, "z": None, "scale": 1, "y_rotate": 135, 
         "line_slope":-0.95, "line_displacement":-6},
 
     ]

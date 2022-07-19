@@ -51,8 +51,6 @@ def compose_and_blend(bg_img_path, im_all_path, dest_image_path, im_pl_path, im_
     mask = m_obj.astype('uint8') * 255
     mask = np.repeat(mask[..., np.newaxis], 1, axis=2)
     # print(mask.shape) (1500, 2000, 1)
-    print(m_obj.shape)
-    print(m_all.shape)
 
     contours, hierarchy = cv2.findContours(mask.copy(),
                                               cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE,
@@ -63,7 +61,8 @@ def compose_and_blend(bg_img_path, im_all_path, dest_image_path, im_pl_path, im_
     contour_mask = contour_mask[:, :, 0] > 0
     contour_mask = contour_mask.astype('uint8') * 255
 
-    blurred_image = cv2.medianBlur(im_new, 5)
+    # blurred_image = cv2.medianBlur(im_new, 5)
+    blurred_image = cv2.GaussianBlur(im_new, (5,5),0)
 
     I_final = bg_img.copy()
 
