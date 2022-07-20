@@ -172,7 +172,7 @@ def bpy_process_mesh(curr_mesh_path, new_mesh_path, target_length=None, scale=No
     bpy.ops.export_scene.obj(filepath=new_mesh_path, global_scale=scale_factor,
         use_materials=True,use_mesh_modifiers=True, 
         use_triangles=True, use_blen_objects=True, 
-        keep_vertex_order=True, path_mode='RELATIVE', axis_up='Y'
+        keep_vertex_order=True, path_mode='STRIP', axis_up='Y'
         )
 
     
@@ -203,7 +203,7 @@ def bpy_process_mesh(curr_mesh_path, new_mesh_path, target_length=None, scale=No
     bpy.ops.export_scene.obj(filepath=new_mesh_path, global_scale=1.0,
             use_materials=True,use_mesh_modifiers=True, check_existing=False,
             use_triangles=True, use_blen_objects=True, 
-            keep_vertex_order=True, path_mode='RELATIVE', axis_up='Y'
+            keep_vertex_order=True, path_mode='STRIP', axis_up='Y'
             )
 
 
@@ -223,7 +223,7 @@ if __name__ == '__main__':
     # new_path = '/home/gdsu/scenes/city_test/assets/ford-police-interceptor/Ford_Police_Interceptor-OBJ-DECIMATE.obj'
     # bpy_process_mesh(old_path, new_path, target_length=4.8, decimateRatio=None)
     clean_mtl(new_path)
-    #calculate_y_trans(new_path)
+    calculate_y_trans(new_path)
 
     # old_path = '/home/gdsu/scenes/city_test/assets/dmi-models/bmw_m3e92/BMW_M3_E92.obj'
     # new_path = '/home/gdsu/scenes/city_test/assets/dmi-models/bmw_m3e92/BMW_M3_E92-TRI.obj'

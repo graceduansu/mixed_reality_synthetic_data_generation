@@ -43,29 +43,38 @@ def mtl_to_bsdf(mtl_instance, obj_dir, docker_mount, ignore_textures=True):
     ior = mtl_instance.optical_density 
     am = mtl_instance.ambient_map
     dm = mtl_instance.diffuse_map
-    # print("#########################")
-    # print(mtl_name, dm)
+    sm = mtl_instance.specular_map
 
     # use diffuse map if available; otherwise use diffuse color 
     diffuse = None
 
     if ignore_textures:
         dm = None
+        sm = None
 
     if dm is not None:
-        new_dm = dm
-        # new_dm = get_new_kd_bitmap(dc, dm, obj_dir, docker_mount)
         diffuse = '''<texture name="diffuseReflectance" type="bitmap">
                 <string name="filename" value="{}"/>
-            </texture>'''.format(os.path.join(obj_dir, new_dm))
+            </texture>'''.format(os.path.join(obj_dir, dm))
     else:
         diffuse = '''<spectrum name="diffuseReflectance" 
             value="{} {} {}" />'''.format(dc[0], dc[1], dc[2])
 
 
     # can't let specular reflectance be 0 0 0
-    if sc == (0.0, 0.0, 0.0):
-        sc = (0.2, 0.2, 0.2)
+    # if sc == (0.0, 0.0, 0.0):
+    #     sc = (0.2, 0.2, 0.2)
+
+    specular = None
+
+    if sm is not None:
+        specular = '''<texture name="specularReflectance" type="bitmap">
+                <string name="filename" value="{}"/>
+            </texture>'''.format(os.path.join(docker_mount, obj_dir, sm))
+    else:
+        specular = '''<rgb name="specularReflectance" 
+            value="{} {} {}" />'''.format(sc[0], sc[1], sc[2])
+
 
     for mat in CAR_MTL_DICT:
         kw_list = CAR_MTL_DICT[mat]
@@ -73,13 +82,16 @@ def mtl_to_bsdf(mtl_instance, obj_dir, docker_mount, ignore_textures=True):
             if kw in mtl_name.lower():
                 # only use the first keyword match
                 if mat == 'thindielectric':
-                    bsdf_str = '''<bsdf name="{}" type="thindielectric"> </bsdf>'''.format(mtl_name)
+                    bsdf_str = '''<bsdf name="{}" type="thindielectric"> 
+                        <float name="intIOR" value="{}"/>
+                        </bsdf>'''.format(mtl_name, ior)
                     return bsdf_str
 
                 elif mat =='plastic':
                     bsdf_str = '''<bsdf name="{}" type="plastic">
                             {}
-                        </bsdf>'''.format(mtl_name, diffuse)
+                            {}
+                        </bsdf>'''.format(mtl_name, diffuse, specular)
                     return bsdf_str
 
                 elif mat =='conductor':
@@ -91,19 +103,19 @@ def mtl_to_bsdf(mtl_instance, obj_dir, docker_mount, ignore_textures=True):
                     phong_exp = 3
 
                     bsdf_str = '''<bsdf name="{}" type="phong">
-                            <spectrum name="specularReflectance" value="{} {} {}" />
+                            {}
                             {}
                             <float name="exponent" value="{}" />
-                        </bsdf>'''.format(mtl_name, sc[0], sc[1], sc[2], diffuse, phong_exp)
+                        </bsdf>'''.format(mtl_name, specular, diffuse, phong_exp)
                     return bsdf_str
 
                 elif mat == 'car_metal':
                     phong_exp = 300
                     bsdf_str = '''<bsdf name="{}" type="phong">
-                            <spectrum name="specularReflectance" value="{} {} {}" />
+                            {}
                             {}
                             <float name="exponent" value="{}" />
-                        </bsdf>'''.format(mtl_name, sc[0], sc[1], sc[2], diffuse, phong_exp)
+                        </bsdf>'''.format(mtl_name, specular, diffuse, phong_exp)
                     return bsdf_str
                 
     # if there were no keyword matches, assume mat = 'interior'
@@ -112,15 +124,15 @@ def mtl_to_bsdf(mtl_instance, obj_dir, docker_mount, ignore_textures=True):
     phong_exp = 3
 
     bsdf_str = '''<bsdf name="{}" type="phong">
-            <spectrum name="specularReflectance" value="{} {} {}" />
-            {}
-            <float name="exponent" value="{}" />
-        </bsdf>'''.format(mtl_name, sc[0], sc[1], sc[2], diffuse, phong_exp)
+        {}
+        {}
+        <float name="exponent" value="{}" />
+    </bsdf>'''.format(mtl_name, specular, diffuse, phong_exp)
     return bsdf_str
 
 
 # check: does mitsuba already handle mtl transparency?
-def map_mtl(obj_path, docker_mount):
+def map_mtl(obj_path, docker_mount, ignore_textures=True):
     """ 
     Returns a list of strings containing bsdf xml objects 
     """
@@ -132,7 +144,7 @@ def map_mtl(obj_path, docker_mount):
     all_bsdfs_list = []
     for mtl_name in mtl_dict:
         # check mtl name for our specified substrings
-        bsdf_str = mtl_to_bsdf(mtl_dict[mtl_name], obj_dir, docker_mount, ignore_textures=True)
+        bsdf_str = mtl_to_bsdf(mtl_dict[mtl_name], obj_dir, docker_mount, ignore_textures=ignore_textures)
         all_bsdfs_list.append(bsdf_str)
                     
     #print(all_bsdfs_list)
