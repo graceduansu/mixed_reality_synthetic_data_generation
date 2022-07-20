@@ -132,7 +132,7 @@ def map_mtl(obj_path, docker_mount):
     all_bsdfs_list = []
     for mtl_name in mtl_dict:
         # check mtl name for our specified substrings
-        bsdf_str = mtl_to_bsdf(mtl_dict[mtl_name], obj_dir, docker_mount, ignore_textures=False)
+        bsdf_str = mtl_to_bsdf(mtl_dict[mtl_name], obj_dir, docker_mount, ignore_textures=True)
         all_bsdfs_list.append(bsdf_str)
                     
     #print(all_bsdfs_list)
