@@ -21,6 +21,7 @@
 
 		<float name="sunScale" value="$sunScale" />
 		<float name="skyScale" value="$skyScale" />
+		<float name="sunRadiusScale" value="5"/>
 
     </emitter>
 

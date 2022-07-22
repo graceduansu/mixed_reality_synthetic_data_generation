@@ -152,50 +152,6 @@ def map_mtl(obj_path, docker_mount):
     return all_bsdfs_list
 
 
-
-def clean_mtl(obj_filename):
-    # MAKE CLEAN COPY OF MTL FILE - remove empty attrs
-    obj_file = open(obj_filename, "r+")
-    mtl_path = None
-    new_mtl_path = None
-    lines = obj_file.readlines()
-
-    for i in range(len(lines)):
-        line = lines[i].rstrip().split(" ")
-        if line[0] == "mtllib":
-            mtl_path = os.path.dirname(obj_file.name) + "/" + line[1]
-            stem, ext = os.path.splitext(line[1])
-            new_mtl_name = 'cleaned' + ext
-            new_mtl_path = os.path.dirname(obj_file.name) + "/" + new_mtl_name
-            lines[i] = 'mtllib '+ new_mtl_name + '\n'
-        
-
-    obj_file.seek(0,0)
-    for line in lines:
-        obj_file.write(line)
-    obj_file.close()
-    
-    print(mtl_path)
-    old_mtl_file = open(mtl_path, "r")
-    new_mtl_file = open(new_mtl_path, "w")
-    mtl_lines = old_mtl_file.readlines()
-
-    for i in range(len(mtl_lines)):
-        l = mtl_lines[i].rstrip().split(" ")
-        if len(l) == 1:
-            # do not copy line into new mtl
-            new_mtl_file.write('\n')
-            continue
-        # to ignore TGA files
-        # elif l[0] == "map_Kd":
-        #     new_mtl_file.write('\n')
-        else:
-            new_mtl_file.write(mtl_lines[i])
-    
-    old_mtl_file.close()
-    new_mtl_file.close()
-
-
 if __name__ == '__main__':
     obj_file = "/home/gdsu/scenes/city_test/assets/ford-police-interceptor/Ford_Police_Interceptor-TRI.obj"
     clean_mtl(obj_file)

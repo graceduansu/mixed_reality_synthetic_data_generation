@@ -20,6 +20,8 @@
 
 		<float name="sunScale" value="$sunScale" />
 		<float name="skyScale" value="$skyScale" />
+		<float name="sunRadiusScale" value="5"/>
+		<spectrum name="albedo" value="0.3"/>
 
     </emitter>
 
@@ -41,7 +43,7 @@
 			<integer name="width" value="$width" />
 			<integer name="height" value="$height" />
 			<boolean name="banner" value="false" />
-			<string name="fileFormat" value="rgbe"/>
+			<!-- <string name="fileFormat" value="rgbe"/> -->
 			<rfilter type="gaussian" />
 		</film>
 	</sensor>

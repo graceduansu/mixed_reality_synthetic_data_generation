@@ -6,10 +6,10 @@ import cv2
 
 CAR_MTL_DICT = {'thindielectric': ['glass', 'translucent', 'verre', 'wind', 'vitre'],
     'plastic': ['plast', 'ligh', 'lamp', 'voyant', 'phare'],
-    'conductor': ['chrome', 'mirr', 'miroir'],
+    'conductor': ['chrom', 'mirr', 'miroir'],
     'car_metal': ['body', 'metal', 'carroserie'],
     'interior': ['interior', 'interieur'],
-    'tire': ['tire', 'wheel', 'whl']}
+    'tire': ['tire', 'wheel', 'whl', 'rubber']}
 
 
 def get_new_kd_bitmap(dc, dm, obj_dir, docker_mount):
@@ -117,6 +117,21 @@ def mtl_to_bsdf(mtl_instance, obj_dir, docker_mount, ignore_textures=True):
                             <float name="exponent" value="{}" />
                         </bsdf>'''.format(mtl_name, specular, diffuse, phong_exp)
                     return bsdf_str
+
+                elif mat == 'tire':
+                    if dm is not None:
+                        diffuse = '''<texture name="reflectance" type="bitmap">
+                                <string name="filename" value="{}"/>
+                            </texture>'''.format(os.path.join(obj_dir, dm))
+                    else:
+                        diffuse = '''<spectrum name="reflectance" 
+                            value="{} {} {}" />'''.format(dc[0], dc[1], dc[2])
+
+                    bsdf_str = '''<bsdf name="{}" type="roughdiffuse">
+                            {}
+                            <float name="alpha" value="0.2"/>
+                        </bsdf>'''.format(mtl_name, diffuse)
+                    return bsdf_str
                 
     # if there were no keyword matches, assume mat = 'interior'
     #return None
@@ -149,6 +164,49 @@ def map_mtl(obj_path, docker_mount, ignore_textures=True):
                     
     #print(all_bsdfs_list)
     return all_bsdfs_list
+
+
+def clean_mtl(obj_filename):
+    # MAKE CLEAN COPY OF MTL FILE - remove empty attrs
+    obj_file = open(obj_filename, "r+")
+    mtl_path = None
+    new_mtl_path = None
+    lines = obj_file.readlines()
+
+    for i in range(len(lines)):
+        line = lines[i].rstrip().split(" ")
+        if line[0] == "mtllib":
+            mtl_path = os.path.dirname(obj_file.name) + "/" + line[1]
+            stem, ext = os.path.splitext(line[1])
+            new_mtl_name = stem + '-CLEANED' + ext
+            new_mtl_path = os.path.dirname(obj_file.name) + "/" + new_mtl_name
+            lines[i] = 'mtllib '+ new_mtl_name + '\n'
+        
+
+    obj_file.seek(0,0)
+    for line in lines:
+        obj_file.write(line)
+    obj_file.close()
+    
+    print(mtl_path)
+    old_mtl_file = open(mtl_path, "r")
+    new_mtl_file = open(new_mtl_path, "w")
+    mtl_lines = old_mtl_file.readlines()
+
+    for i in range(len(mtl_lines)):
+        l = mtl_lines[i].rstrip().split(" ")
+        if len(l) == 1:
+            # do not copy line into new mtl
+            new_mtl_file.write('\n')
+            continue
+        # to ignore TGA files
+        # elif l[0] == "map_Kd":
+        #     new_mtl_file.write('\n')
+        else:
+            new_mtl_file.write(mtl_lines[i])
+    
+    old_mtl_file.close()
+    new_mtl_file.close()
 
 
 

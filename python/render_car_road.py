@@ -61,7 +61,7 @@ def generate_xml(xml_file, cam_to_world_matrix, cars_list, docker_mount, bsdf_li
 
             <bsdf type="roughdiffuse">
                 <spectrum name="reflectance" value="0.1" />
-                <float name="alpha" value="0.5" />
+                <float name="alpha" value="0.7" />
             </bsdf>
 
             </shape>'''.format(car['y_rotate'], car['x'], 0, car['z'])
@@ -87,7 +87,7 @@ def calculate_car_pos(m, b, x_pos):
 
 MITSUBA_ARGS = {'turbidity':3, 'latitude':40.44694, 'longitude':-79.94902, 
     'timezone':-4, 'year':2021, 'month':5, 'day':1, 'hour':14, 'minute':43, 
-    'sunScale':1, 'skyScale':1, 
+    'sunScale':2, 'skyScale':2, 
     'fov':90, 'sampleCount':16, 'width':1000, 'height':750}
 
 
@@ -171,45 +171,39 @@ if __name__ == '__main__':
     # This will be the docker volume mount:
     output_dir = "/home/gdsu/scenes/city_test/" 
 
-    xml_name = "test-many-textures"
+    xml_name = "suv-test"
     cam_to_world_matrix = '-6.32009074e-01 3.81421015e-01  6.74598057e-01 -1.95597297e+01 '\
         '5.25615099e-03 8.72582680e-01 -4.88438164e-01  6.43714192e+00 '\
         '-7.74943161e-01  -3.05151563e-01 -5.53484978e-01  4.94516235e+00 '\
-        '0 0 0 1'
+        '0 0 0 0.1'
 
     # car z position will be calculated later according to line equation
     # TODO: Note: obj path is weird...
     cars_list = [
-        {"obj": "assets/dmi-models/renault_bus/Renault_Agora_BUS-TRI.obj", 
-        "x": -15, "y": 1.142382, "z": None, "scale": 1, "y_rotate": 315, 
+        {"obj": "assets/cherokee-jeep/Jeep_Cherokee-TRI.obj", 
+        "x": -17, "y": 0, "z": None, "scale": 1, "y_rotate": 315, 
         "line_slope":0.87, "line_displacement":3, "ignore_textures":False}, 
-        {"obj": "assets/car/2b9cebe9ceae3f79186bed5098d348af/model.obj", 
-        "x": -5, "y": 0.8, "z": None, "scale": 5, "y_rotate": 315, 
+        {"obj": "assets/Nissan/Nissan-Rogue-2014/rogue-TRI.obj", 
+        "x": -5, "y": 0, "z": None, "scale": 1, "y_rotate": 315, 
         "line_slope":0.87, "line_displacement":3, "ignore_textures":False},
-        {"obj": "assets/car/3a5df1c214322cd4a5f6e4975dafe8b5/model.obj", 
-        "x": 0, "y": 0.8, "z": None, "scale": 5, "y_rotate": 315, 
+        {"obj": "assets/toyota-land-cruiser/uploads_files_3120740_Toyota+Land+Cruiser+VXR-TRI.obj", 
+        "x": 0, "y": 0, "z": None, "scale": 1, "y_rotate": 315, 
         "line_slope":0.87, "line_displacement":3, "ignore_textures":False},
-        {"obj": "assets/car/4a6dea7ffa04531cf63ee8a34069b7c5/model.obj", 
-        "x": 5, "y": 0.8, "z": None, "scale": 5, "y_rotate": 225, 
-        "line_slope":0.87, "line_displacement":-3, "ignore_textures":False},
-        {"obj": "assets/car/5a95fd2640602d944794da8d462f32a2/model.obj", 
-        "x": -1, "y": 0.8, "z": None, "scale": 5, "y_rotate": 225, 
-        "line_slope":0.87, "line_displacement":-3, "ignore_textures":False},
-        {"obj": "assets/car/6a23da6a9ab0771caa69dfdc5532bb13/model.obj", 
-        "x": -7, "y": 0.8, "z": None, "scale": 5, "y_rotate": 225, 
-        "line_slope":-0.95, "line_displacement":-16.19, "ignore_textures":False},
-        {"obj": "assets/car/7a13aaf4344630329ed7f3a4aa9b6d86/model.obj", 
-        "x": -2, "y": 0.8, "z": None, "scale": 5, "y_rotate": 225, 
-        "line_slope":-0.95, "line_displacement":-5, "ignore_textures":False},
-        {"obj": "assets/dmi-models/ambulance/Ambulance-TRI.obj", 
-        "x": -15, "y": 0.989696, "z": None, "scale": 1, "y_rotate": 225, 
-        "line_slope":-0.95, "line_displacement":-14, "ignore_textures":False},
-        {"obj": "assets/dmi-models/american-pumper/pumper-TRI.obj", 
-        "x": -8, "y": 1.65, "z": None, "scale": 1, "y_rotate": 225, 
-        "line_slope":-0.95, "line_displacement":-25, "ignore_textures":True},
-        {"obj": "assets/traffic-cars/cadillac-ats-sedan/OBJ/Cadillac_ATS-TRI.obj", 
-        "x": 3, "y": 0, "z": None, "scale": 1, "y_rotate": 225, 
-        "line_slope":-0.95, "line_displacement":-10, "ignore_textures":False},
+        # {"obj": "assets/dmi-models/ford-gt/Ford_GT_2017-TRI.obj", 
+        # "x": -8, "y": 0, "z": None, "scale": 1, "y_rotate": 225, 
+        # "line_slope":0.95, "line_displacement":-3, "ignore_textures":False},
+        # {"obj": "assets/dmi-models/mercedes/Mercedes_Sprinter_FedEx-TRI.obj", 
+        # "x": -11, "y": 0, "z": None, "scale": 1, "y_rotate": 225, 
+        # "line_slope":0.87, "line_displacement":-3, "ignore_textures":True},
+        # {"obj": "assets/dmi-models/Mustang_GT/3D_Files/OBJ/mustang_GT-TRI.obj", 
+        # "x": -15, "y": 0, "z": None, "scale": 1, "y_rotate": 225, 
+        # "line_slope":-0.95, "line_displacement":-16.19, "ignore_textures":True},
+        # {"obj": "assets/dmi-models/nypd/Dodge_Charger_Police_NYPD-TRI.obj", 
+        # "x": -2, "y": 0, "z": None, "scale": 1, "y_rotate": 225, 
+        # "line_slope":-0.95, "line_displacement":-5, "ignore_textures":False},
+        # {"obj": "assets/dmi-models/toyota-camry/Toyota_Camry-TRI.obj", 
+        # "x": -15, "y": 0, "z": None, "scale": 1, "y_rotate": 225, 
+        # "line_slope":-0.95, "line_displacement":-14, "ignore_textures":True},
         ]
 
 
