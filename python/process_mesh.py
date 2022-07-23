@@ -345,9 +345,9 @@ if __name__ == '__main__':
     # calculate_y_trans(new_path)
 
     old_path = '/home/gdsu/scenes/city_test/assets/mercedes_coupe_2019/mercedes_s63_amg_coupe_2019.obj'
-    new_path = '/home/gdsu/scenes/city_test/assets/mercedes_coupe_2019/mercedes_s63_amg_coupe_2019-TRI.obj'
-    bpy_process_mesh(old_path, new_path, target_length=5, decimateRatio=1)
-    clean_mtl(new_path)
+    new_path = '/home/gdsu/scenes/city_test/assets/mercedes-benz/mercedes_amg-TRI.obj'
+    # bpy_process_mesh(old_path, new_path, target_length=5, decimateRatio=1)
+    # clean_mtl(new_path)
     calculate_y_trans(new_path)
 
     # old_path = '/home/gdsu/scenes/city_test/assets/ford-econoline/ford-e-150.obj'

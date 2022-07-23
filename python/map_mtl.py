@@ -9,7 +9,7 @@ CAR_MTL_DICT = {'thindielectric': ['gla', 'translucent', 'verre', 'wind', 'vitre
     'conductor': ['chrom', 'mirr', 'miroir'],
     'car_metal': ['body', 'metal', 'carroserie'],
     'interior': ['interior', 'interieur'],
-    'tire': ['tire', 'wheel', 'whl', 'rubber']}
+    'tire': ['tire', 'wheel', 'whl', 'rubber', 'tyre']}
 
 
 def get_new_kd_bitmap(dc, dm, obj_dir, docker_mount):
@@ -100,8 +100,24 @@ def mtl_to_bsdf(mtl_instance, obj_dir, docker_mount, ignore_textures=True):
                     return bsdf_str
 
                 elif mat =='conductor':
-                    bsdf_str = '''<bsdf name="{}" type="conductor"><string name="material" value="Cr" /> 
-                        </bsdf>'''.format(mtl_name)
+                    bsdf_str = '''<bsdf name="{}" type="twosided" >
+                        <bsdf type="coating" >
+                            <float name="intIOR" value="1.3" />
+                            <float name="extIOR" value="1" />
+                            <float name="thickness" value="1" />
+                            <spectrum name="sigmaA" value="0"/>
+                            <bsdf type="twosided" >
+                                <bsdf type="roughconductor" >
+                                    <float name="alpha" value="0.1" />
+                                    <string name="distribution" value="beckmann" />
+                                    <float name="extEta" value="1" />
+                                    <rgb name="specularReflectance" value="1, 1, 1"/>
+                                    <rgb name="eta" value="1.65746, 0.880369, 0.521229"/>
+                                    <rgb name="k" value="9.22387, 6.26952, 4.837"/>
+                                </bsdf>
+                            </bsdf>
+                        </bsdf>
+                    </bsdf>'''.format(mtl_name)
                     return bsdf_str
 
                 elif mat =='interior':
@@ -115,12 +131,32 @@ def mtl_to_bsdf(mtl_instance, obj_dir, docker_mount, ignore_textures=True):
                     return bsdf_str
 
                 elif mat == 'car_metal':
-                    phong_exp = 300
-                    bsdf_str = '''<bsdf name="{}" type="phong">
+                    if dm is not None:
+                        diffuse = '''<texture name="sigmaA" type="bitmap">
+                                <string name="filename" value="{}"/>
+                            </texture>'''.format(os.path.join(obj_dir, dm))
+                    else:
+                        diffuse = '''<spectrum name="sigmaA" 
+                            value="{} {} {}" />'''.format(dc[0], dc[1], dc[2])
+
+                    bsdf_str = '''<bsdf name="{}" type="twosided" >
+                        <bsdf type="coating" >
+                            <float name="intIOR" value="1.3" />
+                            <float name="extIOR" value="1" />
+                            <float name="thickness" value="1" />
                             {}
-                            {}
-                            <float name="exponent" value="{}" />
-                        </bsdf>'''.format(mtl_name, specular, diffuse, phong_exp)
+                            <bsdf type="twosided" >
+                                <bsdf type="roughconductor" >
+                                    <float name="alpha" value="0.1" />
+                                    <string name="distribution" value="beckmann" />
+                                    <float name="extEta" value="1" />
+                                    <rgb name="specularReflectance" value="1, 1, 1"/>
+                                    <rgb name="eta" value="1.65746, 0.880369, 0.521229"/>
+                                    <rgb name="k" value="9.22387, 6.26952, 4.837"/>
+                                </bsdf>
+                            </bsdf>
+                        </bsdf>
+                    </bsdf>'''.format(mtl_name, diffuse)
                     return bsdf_str
 
                 elif mat == 'tire':
