@@ -5,11 +5,11 @@ import cv2
 
 
 CAR_MTL_DICT = {'thindielectric': ['gla', 'translucent', 'verre', 'wind', 'vitre'],
-    'plastic': ['plast', 'ligh', 'lamp', 'voyant', 'phare'],
-    'conductor': ['chrom', 'mirr', 'miroir'],
-    'car_metal': ['body', 'metal', 'carroserie'],
-    'interior': ['interior', 'interieur'],
-    'tire': ['tire', 'wheel', 'whl', 'rubber', 'tyre']}
+    'plastic': ['plast', 'ligh', 'lamp', 'voyant', 'phare', 'indicat'],
+    'conductor': ['chrom', 'mirr', 'miroir', 'silv'],
+    'car_metal': ['body', 'metal', 'carroserie', 'gril'],
+    'interior': ['rim', 'interior', 'interieur'],
+    'tire': ['tire', 'wheel', 'whl', 'rubber', 'tyre', 'pneu', 'roue', 'gum', 'black', 'blck']}
 
 
 def get_new_kd_bitmap(dc, dm, obj_dir, docker_mount):
@@ -61,7 +61,7 @@ def mtl_to_bsdf(mtl_instance, obj_dir, docker_mount, ignore_textures=True):
                 <string name="filename" value="{}"/>
             </texture>'''.format(os.path.join(obj_dir, new_dm))
     else:
-        diffuse = '''<spectrum name="diffuseReflectance" 
+        diffuse = '''<rgb name="diffuseReflectance" 
             value="{} {} {}" />'''.format(dc[0], dc[1], dc[2])
 
 
@@ -77,7 +77,7 @@ def mtl_to_bsdf(mtl_instance, obj_dir, docker_mount, ignore_textures=True):
                 <string name="filename" value="{}"/>
             </texture>'''.format(os.path.join(obj_dir, new_sm))
     else:
-        specular = '''<spectrum name="specularReflectance" 
+        specular = '''<rgb name="specularReflectance" 
             value="{} {} {}" />'''.format(sc[0], sc[1], sc[2])
 
 
@@ -105,7 +105,7 @@ def mtl_to_bsdf(mtl_instance, obj_dir, docker_mount, ignore_textures=True):
                             <float name="intIOR" value="1.3" />
                             <float name="extIOR" value="1" />
                             <float name="thickness" value="1" />
-                            <spectrum name="sigmaA" value="0"/>
+                            <rgb name="sigmaA" value="0"/>
                             <bsdf type="twosided" >
                                 <bsdf type="roughconductor" >
                                     <float name="alpha" value="0.1" />
@@ -136,7 +136,7 @@ def mtl_to_bsdf(mtl_instance, obj_dir, docker_mount, ignore_textures=True):
                                 <string name="filename" value="{}"/>
                             </texture>'''.format(os.path.join(obj_dir, dm))
                     else:
-                        diffuse = '''<spectrum name="sigmaA" 
+                        diffuse = '''<rgb name="sigmaA" 
                             value="{} {} {}" />'''.format(dc[0], dc[1], dc[2])
 
                     bsdf_str = '''<bsdf name="{}" type="twosided" >
@@ -160,13 +160,9 @@ def mtl_to_bsdf(mtl_instance, obj_dir, docker_mount, ignore_textures=True):
                     return bsdf_str
 
                 elif mat == 'tire':
-                    if dm is not None:
-                        diffuse = '''<texture name="reflectance" type="bitmap">
-                                <string name="filename" value="{}"/>
-                            </texture>'''.format(os.path.join(obj_dir, dm))
-                    else:
-                        diffuse = '''<spectrum name="reflectance" 
-                            value="{} {} {}" />'''.format(dc[0], dc[1], dc[2])
+
+                    diffuse = '''<rgb name="reflectance" 
+                        value="{} {} {}" />'''.format(0.09333, 0.09333, 0.12)
 
                     bsdf_str = '''<bsdf name="{}" type="roughdiffuse">
                             {}

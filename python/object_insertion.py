@@ -62,7 +62,7 @@ def compose_and_blend(bg_img_path, im_all_path, dest_image_path, im_pl_path, im_
     contour_mask = contour_mask.astype('uint8') * 255
 
     # blurred_image = cv2.medianBlur(im_new, 5)
-    blurred_image = cv2.GaussianBlur(im_new, (5,5),0)
+    blurred_image = cv2.GaussianBlur(im_new, (3,3),0)
 
     I_final = bg_img.copy()
 

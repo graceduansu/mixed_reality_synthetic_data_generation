@@ -57,6 +57,9 @@ def generate_xml(xml_file, cam_to_world_matrix, cars_list, docker_mount,
                     
                     <translate x="{}" y="{}" z="{}" />
                 </transform>
+                <bsdf type="diffuse">
+            <rgb name="reflectance" value="0.1 0.1 0.1" />
+        </bsdf>
                 
             </shape>
             '''.format(car['obj'], car['scale'], car['y_rotate'], car['x'], car['y'], car['z'])
@@ -83,10 +86,6 @@ def generate_xml(xml_file, cam_to_world_matrix, cars_list, docker_mount,
             <rotate x="0" y="1" z="0" angle="{}" />
             <translate x="{}" y="{}" z="{}" />
         </transform>
-
-        <bsdf type="diffuse">
-            <rgb name="reflectance" value="0.1 0.1 0.1" />
-        </bsdf>
 
     </shape>'''.format(car['y_rotate'], car['x'], 0, car['z'])
 
@@ -144,7 +143,7 @@ def render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list,
     xml_path_obj = output_dir + xml_name + "_obj.xml"
     generate_xml(xml_path_obj, cam_to_world_matrix, cars_list, output_dir, 
         render_cars=True, render_ground=False, is_hdr=is_hdr_output, 
-        bsdf_list=bsdf_list, kwargs=DEFAULT_ARGS)
+        kwargs=DEFAULT_ARGS)
 
     # TODO:
     if is_hdr_output:
@@ -161,16 +160,16 @@ def render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list,
     optix_args = " --forceOutput --medianFilter --maxPathLength 7 --rrBeginLength 5 "
 
     with open('optix_script.sh', 'w') as outfn:
-        cmd = OPTIX_RENDERER_PATH + " -f " + os.path.join(output_dir, xml_name) + ".xml " \
-            + " -o " + rendered_img_name + " -m 0" + optix_args + " --gpuIds " + GPU_IDS + "\n"
-        outfn.write(cmd)
+        # cmd = OPTIX_RENDERER_PATH + " -f " + os.path.join(output_dir, xml_name) + ".xml " \
+        #     + " -o " + rendered_img_name + " -m 0" + optix_args + " --gpuIds " + GPU_IDS + "\n"
+        # outfn.write(cmd)
         
-        cmd = OPTIX_RENDERER_PATH + " -f " + os.path.join(output_dir, xml_name) + "_pl.xml " \
-            + " -o " + pl_img + " -m 0" + optix_args + " --gpuIds " + GPU_IDS + "\n"
-        outfn.write(cmd)
-        cmd = OPTIX_RENDERER_PATH + " -f " + os.path.join(output_dir, xml_name) + "_obj.xml " \
-            + " -o " + obj_img + " -m 0" + optix_args + " --gpuIds " + GPU_IDS + "\n"
-        outfn.write(cmd)
+        # cmd = OPTIX_RENDERER_PATH + " -f " + os.path.join(output_dir, xml_name) + "_pl.xml " \
+        #     + " -o " + pl_img + " -m 0" + optix_args + " --gpuIds " + GPU_IDS + "\n"
+        # outfn.write(cmd)
+        # cmd = OPTIX_RENDERER_PATH + " -f " + os.path.join(output_dir, xml_name) + "_obj.xml " \
+        #     + " -o " + obj_img + " -m 0" + optix_args + " --gpuIds " + GPU_IDS + "\n"
+        # outfn.write(cmd)
 
         cmd = OPTIX_RENDERER_PATH + " -f " + os.path.join(output_dir, xml_name) + ".xml " \
             + " -o " + m_all + " -m 4" + optix_args + " --gpuIds " + GPU_IDS + "\n"
@@ -181,13 +180,24 @@ def render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list,
 
     os.system('bash optix_script.sh')
 
-    rendered_img_path = output_dir + rendered_img_name + "_1.png"
-    composite_img_path = output_dir + composite_img_name
-    im_pl_path = output_dir + pl_img + "_1.png"
-    im_obj_path = output_dir + obj_img + "_1.png"
-    m_all_path = output_dir + m_all + "mask_1.png"
-    m_obj_path = output_dir + m_obj + "mask_1.png"
+    # rendered_img_path = output_dir + rendered_img_name + "_1.png"
+    # composite_img_path = output_dir + composite_img_name
+    # im_pl_path = output_dir + pl_img + "_1.png"
+    # im_obj_path = output_dir + obj_img + "_1.png"
+    # m_all_path = output_dir + m_all + "mask_1.png"
+    # m_obj_path = output_dir + m_obj + "mask_1.png"
 
+    # optix_compose(bg_img_path, rendered_img_path, composite_img_path, 
+    #     im_pl_path, im_obj_path,
+    #     m_all_path, m_obj_path)
+    # print('Composition for {} complete'.format(composite_img_path))
+
+    rendered_img_path = "/home/gdsu/scenes/city_test/pickup_truck-test.png"
+    composite_img_path = "/home/gdsu/scenes/city_test/pickup_truck-test-OPTIX_COMPOSE.png"
+    im_pl_path = "/home/gdsu/scenes/city_test/pickup_truck-test_pl.png"
+    im_obj_path = "/home/gdsu/scenes/city_test/pickup_truck-test_obj.png"
+    m_all_path = "/home/gdsu/scenes/city_test/mask-test_all_mask_1.png"
+    m_obj_path = "/home/gdsu/scenes/city_test/mask-test_obj_mask_1.png"
     optix_compose(bg_img_path, rendered_img_path, composite_img_path, 
         im_pl_path, im_obj_path,
         m_all_path, m_obj_path)
@@ -201,7 +211,7 @@ if __name__ == '__main__':
     # This will be the docker volume mount:
     output_dir = "/home/gdsu/scenes/city_test/" 
 
-    xml_name = "ambulance-optix"
+    xml_name = "mask-test"
 
     # Matrix needs to be numpy
     cam_to_world_matrix = np.array([[-6.32009074e-01, 3.81421015e-01,  6.74598057e-01, -1.95597297e+01],
@@ -209,9 +219,12 @@ if __name__ == '__main__':
         [-7.74943161e-01 , -3.05151563e-01, -5.53484978e-01,  4.94516235e+00 ],
         [0,0,0,1]])
     # car z position will be calculated later according to line equation
-    cars_list = [{"obj": "/home/gdsu/scenes/city_test/assets/dmi-models/ambulance/Ambulance-OPTIX.obj", 
-        "x": -5, "y": 1, "z": None, "scale": 1, "y_rotate": 225, 
-        "line_slope":0.87, "line_displacement":3},
+    cars_list = [ {"obj": "assets/Dodge_Ram_2007/Dodge_Ram_2007-TRI.obj", 
+        "x": -15, "y": 0, "z": None, "scale": 1, "y_rotate": 315, 
+        "line_slope":0.87, "line_displacement":3, "ignore_textures":False}, 
+        {"obj": "assets/dmi-models/ford-f150/Ford_F-150-TRI.obj", 
+        "x": 0, "y": 0, "z": None, "scale": 1, "y_rotate": 315, 
+        "line_slope":0.87, "line_displacement":3, "ignore_textures":False},
         
         ]
 
@@ -226,7 +239,7 @@ if __name__ == '__main__':
 
     render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list, 
         bg_img_path, rendered_img_name, is_hdr_output,
-        width='2000', height='1500', fov='90', sampleCount='1024',
+        width='1000', height='750', fov='90', sampleCount='64',
         # turbidity=3, latitude=40.5247051, longitude=-79.962172,
         # year=2022, month=3, day=16, hour=16, minute=30
         )

@@ -171,7 +171,7 @@ if __name__ == '__main__':
     # This will be the docker volume mount:
     output_dir = "/home/gdsu/scenes/city_test/" 
 
-    xml_name = "sedan-test"
+    xml_name = "pickup_truck-test-noContours"
     cam_to_world_matrix = '-6.32009074e-01 3.81421015e-01  6.74598057e-01 -1.95597297e+01 '\
         '5.25615099e-03 8.72582680e-01 -4.88438164e-01  6.43714192e+00 '\
         '-7.74943161e-01  -3.05151563e-01 -5.53484978e-01  4.94516235e+00 '\
@@ -180,28 +180,33 @@ if __name__ == '__main__':
     # car z position will be calculated later according to line equation
     # TODO: Note: obj path is weird...
     cars_list = [
-        {"obj": "assets/chevy_camaro/camaro_ss_2016-TRI.obj", 
+        # {"obj": "assets/mercedes-benz/mercedes_amg-TRI.obj", 
+        # "x": -15, "y": 0, "z": None, "scale": 1, "y_rotate": 315, 
+        # "line_slope":0.87, "line_displacement":3, "ignore_textures":False}, 
+        # {"obj": "assets/Mercedes_w211/Mercedes-w211-TRI.obj", 
+        # "x": -5, "y": 0, "z": None, "scale": 1, "y_rotate": 315, 
+        # "line_slope":0.87, "line_displacement":3, "ignore_textures":False},
+        # {"obj": "assets/chevy_camaro/camaro_ss_2016-TRI.obj", 
+        # "x": -10, "y": 0, "z": None, "scale": 1, "y_rotate": 135, 
+        # "line_slope":0.87, "line_displacement":3, "ignore_textures":False},
+        # {"obj": "assets/dmi-models/Mustang_GT/3D_Files/OBJ/mustang_GT-TRI.obj", 
+        # "x": 0, "y": 0, "z": None, "scale": 1, "y_rotate": 135, 
+        # "line_slope":0.87, "line_displacement":3, "ignore_textures":False},
+
+        # {"obj": "assets/cherokee-jeep/Jeep_Cherokee-TRI.obj", 
+        # "x": -15, "y": 0, "z": None, "scale": 1, "y_rotate": 315, 
+        # "line_slope":0.87, "line_displacement":3, "ignore_textures":False}, 
+        # {"obj": "assets/Nissan/Nissan-Rogue-2014/rogue-TRI.obj", 
+        # "x": 0, "y": 0, "z": None, "scale": 1, "y_rotate": 315, 
+        # "line_slope":0.87, "line_displacement":3, "ignore_textures":False},
+
+        {"obj": "assets/Dodge_Ram_2007/Dodge_Ram_2007-TRI.obj", 
         "x": -15, "y": 0, "z": None, "scale": 1, "y_rotate": 315, 
         "line_slope":0.87, "line_displacement":3, "ignore_textures":False}, 
-        {"obj": "assets/Mercedes_w211/Mercedes-w211-TRI.obj", 
+        {"obj": "assets/dmi-models/ford-f150/Ford_F-150-TRI.obj", 
         "x": 0, "y": 0, "z": None, "scale": 1, "y_rotate": 315, 
         "line_slope":0.87, "line_displacement":3, "ignore_textures":False},
-        {"obj": "assets/mercedes-benz/mercedes_amg-TRI.obj", 
-        "x": -5, "y": 0, "z": None, "scale": 1, "y_rotate": 135, 
-        "line_slope":0.87, "line_displacement":3, "ignore_textures":False},
-
-        # {"obj": "assets/dmi-models/mercedes/Mercedes_Sprinter_FedEx-TRI.obj", 
-        # "x": -11, "y": 0, "z": None, "scale": 1, "y_rotate": 225, 
-        # "line_slope":0.87, "line_displacement":-3, "ignore_textures":True},
-        # {"obj": "assets/subarau_imprezza/imprezza-2005-TRI.obj", 
-        # "x": -15, "y": 0, "z": None, "scale": 1, "y_rotate": 225, 
-        # "line_slope":-0.95, "line_displacement":-16.19, "ignore_textures":True},
-        # {"obj": "assets/vw-scirocco/VW_scirocco-TRI.obj", 
-        # "x": -10, "y": 0, "z": None, "scale": 1, "y_rotate": 225, 
-        # "line_slope":-0.95, "line_displacement":-5, "ignore_textures":False},
-        # {"obj": "assets/dmi-models/toyota-camry/Toyota_Camry-TRI.obj", 
-        # "x": -5, "y": 0, "z": None, "scale": 1, "y_rotate": 225, 
-        # "line_slope":-0.95, "line_displacement":-14, "ignore_textures":True},
+ 
         ]
 
 
