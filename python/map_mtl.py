@@ -4,7 +4,7 @@ import os
 import cv2
 
 
-CAR_MTL_DICT = {'thindielectric': ['glass', 'translucent', 'verre', 'wind', 'vitre'],
+CAR_MTL_DICT = {'thindielectric': ['gla', 'translucent', 'verre', 'wind', 'vitre'],
     'plastic': ['plast', 'ligh', 'lamp', 'voyant', 'phare'],
     'conductor': ['chrom', 'mirr', 'miroir'],
     'car_metal': ['body', 'metal', 'carroserie'],
@@ -15,17 +15,20 @@ CAR_MTL_DICT = {'thindielectric': ['glass', 'translucent', 'verre', 'wind', 'vit
 def get_new_kd_bitmap(dc, dm, obj_dir, docker_mount):
     # TODO: convert TGA to png
     map_kd = cv2.imread(os.path.join(docker_mount, obj_dir, dm))
-    map_kd = map_kd.astype('float64')
-    new_map = np.copy(map_kd) 
-    new_map[:, :, 0] *= dc[0]
-    new_map[:, :, 1] *= dc[1]
-    new_map[:, :, 2] *= dc[2]
+    if map_kd is not None:
+        map_kd = map_kd.astype('float64')
+        new_map = np.copy(map_kd) 
+        new_map[:, :, 0] *= dc[0]
+        new_map[:, :, 1] *= dc[1]
+        new_map[:, :, 2] *= dc[2]
 
-    stem, ext = os.path.splitext(dm)
-    new_name = os.path.basename(stem) + "-MTS" + ext
+        stem, ext = os.path.splitext(dm)
+        new_name = os.path.basename(stem) + "-MTS" + ext
 
-    cv2.imwrite(os.path.join(docker_mount, obj_dir, new_name), new_map)
-    return new_name
+        cv2.imwrite(os.path.join(docker_mount, obj_dir, new_name), new_map)
+        return new_name
+    else:
+        return dm
 
 
 def mtl_to_bsdf(mtl_instance, obj_dir, docker_mount, ignore_textures=True):
@@ -53,9 +56,10 @@ def mtl_to_bsdf(mtl_instance, obj_dir, docker_mount, ignore_textures=True):
         sm = None
 
     if dm is not None:
+        new_dm = get_new_kd_bitmap(dc, dm, obj_dir, docker_mount)
         diffuse = '''<texture name="diffuseReflectance" type="bitmap">
                 <string name="filename" value="{}"/>
-            </texture>'''.format(os.path.join(obj_dir, dm))
+            </texture>'''.format(os.path.join(obj_dir, new_dm))
     else:
         diffuse = '''<spectrum name="diffuseReflectance" 
             value="{} {} {}" />'''.format(dc[0], dc[1], dc[2])
@@ -68,11 +72,12 @@ def mtl_to_bsdf(mtl_instance, obj_dir, docker_mount, ignore_textures=True):
     specular = None
 
     if sm is not None:
+        new_sm = get_new_kd_bitmap(sc, sm, obj_dir, docker_mount)
         specular = '''<texture name="specularReflectance" type="bitmap">
                 <string name="filename" value="{}"/>
-            </texture>'''.format(os.path.join(docker_mount, obj_dir, sm))
+            </texture>'''.format(os.path.join(obj_dir, new_sm))
     else:
-        specular = '''<rgb name="specularReflectance" 
+        specular = '''<spectrum name="specularReflectance" 
             value="{} {} {}" />'''.format(sc[0], sc[1], sc[2])
 
 

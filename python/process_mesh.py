@@ -76,8 +76,8 @@ def calculate_mesh_adj(curr_mesh_path, target_length=None, scale=None):
         scale_factor = scale
 
     neg_x_avg = (min_coord[0] + max_coord[0]) / -2.0
-    neg_y_avg = (min_coord[0] + max_coord[0]) / -2.0
-    neg_z_avg = (min_coord[0] + max_coord[0]) / -2.0
+    neg_y_avg = (min_coord[1] + max_coord[1]) / -2.0
+    neg_z_avg = (min_coord[2] + max_coord[2]) / -2.0
     translation = (neg_x_avg, neg_y_avg, neg_z_avg)
 
     return scale_factor, translation, dim_argmax
@@ -157,29 +157,28 @@ def bpy_process_mesh(curr_mesh_path, new_mesh_path, target_length=None, scale=No
             meshes.append(obj)
     log("{} meshes".format(len(meshes)))
 
-    for i, obj in enumerate(meshes):
-        print('#############################################################')
-        obj.select_set(True)
-        bpy.context.view_layer.objects.active = obj
-        log("{}/{} meshes, name: {}".format(i, len(meshes), obj.name))
-        log("{} has {} verts, {} edges, {} polys".format(obj.name, len(obj.data.vertices), len(obj.data.edges), len(obj.data.polygons)))
-        modifier = obj.modifiers.new(modifierName,'DECIMATE')
+    # for i, obj in enumerate(meshes):
+    #     print('#############################################################')
+    #     bpy.context.view_layer.objects.active = obj
+    #     log("{}/{} meshes, name: {}".format(i, len(meshes), obj.name))
+    #     log("{} has {} verts, {} edges, {} polys".format(obj.name, len(obj.data.vertices), len(obj.data.edges), len(obj.data.polygons)))
+    #     modifier = obj.modifiers.new(modifierName,'DECIMATE')
 
-        if decimateRatio is None:
-            modifier.ratio = 16000.0 / len(obj.data.polygons)
-            print('NEW DECIMATE', modifier.ratio)
-        else:
-            modifier.ratio = decimateRatio
+    #     if decimateRatio is None:
+    #         modifier.ratio = 16000.0 / len(obj.data.polygons)
+    #         print('NEW DECIMATE', modifier.ratio)
+    #     else:
+    #         modifier.ratio = decimateRatio
 
-        modifier.use_collapse_triangulate = True
-        bpy.ops.object.modifier_apply(modifier=modifierName)
-        log("{} has {} verts, {} edges, {} polys after decimation".format(obj.name, len(obj.data.vertices), len(obj.data.edges), len(obj.data.polygons)))
+    #     modifier.use_collapse_triangulate = True
+    #     bpy.ops.object.modifier_apply(modifier=modifierName)
+    #     log("{} has {} verts, {} edges, {} polys after decimation".format(obj.name, len(obj.data.vertices), len(obj.data.edges), len(obj.data.polygons)))
         
-        bpy.ops.transform.translate(orient_type='LOCAL', value=center_translation)
-        #bpy.ops.transform.resize(orient_type='LOCAL', value=(scale_factor, scale_factor, scale_factor))
-        if dim_argmax == 1:
-            # y is long, rotate around x
-            bpy.ops.transform.rotate(value=radians(-90), orient_axis='X', orient_type='GLOBAL')
+    bpy.ops.transform.translate(orient_type='LOCAL', value=center_translation)
+    #bpy.ops.transform.resize(orient_type='LOCAL', value=(scale_factor, scale_factor, scale_factor))
+    if dim_argmax == 1:
+        # y is long, rotate around x
+        bpy.ops.transform.rotate(value=radians(-90), orient_axis='X', orient_type='GLOBAL')
 
     stem, ext = os.path.splitext(old_path)
     temp_mesh_path = stem + "-TEMP.obj"
@@ -212,11 +211,8 @@ def bpy_y_trans(curr_mesh_path, new_mesh_path):
         if(obj.type == "MESH"):
             meshes.append(obj)
 
-    for i, obj in enumerate(meshes):
-        obj.select_set(True)
-        bpy.context.view_layer.objects.active = obj
-        bpy.ops.transform.translate(orient_type='LOCAL', value=(0, y_trans, 0))
-        print(obj.location)
+
+    bpy.ops.transform.translate(orient_type='LOCAL', value=(0, y_trans, 0))
 
     bpy.ops.export_scene.obj(filepath=new_mesh_path, global_scale=1.0,
             use_materials=True,use_mesh_modifiers=True, check_existing=False,
@@ -261,12 +257,12 @@ def separate_objs(curr_mesh_path, new_mesh_path, target_length=None, scale=None,
             meshes.append(obj)
     log("{} meshes".format(len(meshes)))
 
-    bpy.ops.object.select_all(action='DESELECT')
-    bpy.context.view_layer.objects.active = None
+    # bpy.ops.object.select_all(action='DESELECT')
+    # bpy.context.view_layer.objects.active = None
 
     for i, obj in enumerate(meshes):
         print('#############################################################')
-        obj.select_set(True)
+        # obj.select_set(True)
         bpy.context.view_layer.objects.active = obj
         log("{}/{} meshes, name: {}".format(i, len(meshes), obj.name))
         modifier = obj.modifiers.new(modifierName,'DECIMATE')
@@ -296,7 +292,7 @@ def separate_objs(curr_mesh_path, new_mesh_path, target_length=None, scale=None,
             use_triangles=True, use_blen_objects=False, 
             keep_vertex_order=True, path_mode='STRIP', axis_up='Y'
             )
-        obj.select_set(False)
+        # obj.select_set(False)
 
 
 
@@ -324,7 +320,7 @@ if __name__ == '__main__':
     # calculate_y_trans(new_path)
 
     
-    # old_path = '/home/gdsu/scenes/city_test/assets/chevy-van/chevy_van.obj'
+    # old_path = '/home/gdsu/scenes/city_test/assets/dodge_charger/dodge_charger.fbx'
     # convert_fbx_to_obj('/home/gdsu/scenes/city_test/assets/chevy-van/source/CHVAN_panel_MODEL.fbx', 
     #     old_path)
     # new_path = '/home/gdsu/scenes/city_test/assets/chevy-van/chevy_van-TRI.obj'
@@ -338,21 +334,21 @@ if __name__ == '__main__':
     # clean_mtl(new_path)
     # calculate_y_trans(new_path)
 
-    old_path = '/home/gdsu/scenes/city_test/assets/mitsubishi-lancer/lancer-TRI.obj'
-    new_path = '/home/gdsu/scenes/city_test/assets/mitsubishi-lancer/lancer-TRI.obj'
-    bpy_y_trans(old_path, new_path)
-    # bpy_process_mesh(old_path, new_path, scale=1, decimateRatio=1)
-    # clean_mtl(new_path)12.111069
-    calculate_y_trans(new_path)
+    # old_path = '/home/gdsu/scenes/city_test/assets/chevy_camaro/camaro_ss_2016.obj'
+    # new_path = '/home/gdsu/scenes/city_test/assets/chevy_camaro/camaro_ss_2016-TRI.obj'
+    # #bpy_y_trans(old_path, new_path)
+    # bpy_process_mesh(old_path, new_path, target_length=4.783, decimateRatio=1)
+    # clean_mtl(new_path)
+    # calculate_y_trans(new_path)
 
     # new_path = '/home/gdsu/scenes/city_test/assets/toyota-land-cruiser/uploads_files_3120740_Toyota+Land+Cruiser+VXR-TRI.obj'
     # calculate_y_trans(new_path)
 
-    # old_path = '/home/gdsu/scenes/city_test/assets/chevy-silverado/silverado.obj'
-    # new_path = '/home/gdsu/scenes/city_test/assets/chevy-silverado/silverado-TRI.obj'
-    # bpy_process_mesh(old_path, new_path, target_length=5.83, decimateRatio=1)
-    # clean_mtl(new_path)
-    # calculate_y_trans(new_path)
+    old_path = '/home/gdsu/scenes/city_test/assets/mercedes_coupe_2019/mercedes_s63_amg_coupe_2019.obj'
+    new_path = '/home/gdsu/scenes/city_test/assets/mercedes_coupe_2019/mercedes_s63_amg_coupe_2019-TRI.obj'
+    bpy_process_mesh(old_path, new_path, target_length=5, decimateRatio=1)
+    clean_mtl(new_path)
+    calculate_y_trans(new_path)
 
     # old_path = '/home/gdsu/scenes/city_test/assets/ford-econoline/ford-e-150.obj'
     # new_path = '/home/gdsu/scenes/city_test/assets/ford-econoline/ford-e-150-TRI.obj'
