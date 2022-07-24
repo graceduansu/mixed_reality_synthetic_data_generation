@@ -10,9 +10,10 @@ from map_mtl import map_mtl
 import time
 
 
-def generate_xml(xml_file, cam_to_world_matrix, cars_list, docker_mount, bsdf_list=None, render_ground=True, render_cars=True, is_hdr=False):
+def generate_xml(xml_file, cam_to_world_matrix, cars_list, docker_mount, bsdf_list=None, 
+    render_ground=True, render_cars=True, is_hdr=False, template="../assets/car_road_template.xml"):
     
-    tree = ET.parse('../assets/car_road_template.xml')
+    tree = ET.parse(template)
     root = tree.getroot()
 
     sensor_matrix = root.find('sensor').find('transform').find('matrix')
@@ -92,7 +93,8 @@ MITSUBA_ARGS = {'turbidity':3, 'latitude':40.44694, 'longitude':-79.94902,
 
 
 def render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list, 
-        bg_img_path, rendered_img_name, composite_img_name, compose_mode, is_hdr_output, **kwargs):
+        bg_img_path, rendered_img_name, composite_img_name, compose_mode, 
+        is_hdr_output, template, **kwargs):
     """
     See MITSUBA_ARGS dict initialization above for optional kwargs
     """
@@ -105,16 +107,19 @@ def render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list,
     
     # Im_all
     xml_path = output_dir + xml_name + ".xml"
-    generate_xml(xml_path, cam_to_world_matrix, cars_list, output_dir, render_cars=True, render_ground=True, is_hdr=is_hdr_output)
+    generate_xml(xml_path, cam_to_world_matrix, cars_list, output_dir, 
+        render_cars=True, render_ground=True, is_hdr=is_hdr_output, template=template)
 
-    if compose_mode == "quotient":
+    if compose_mode == "quotient" or compose_mode == "none":
         # Im_pl
         xml_path_pl = output_dir + xml_name + "_pl.xml"
-        generate_xml(xml_path_pl, cam_to_world_matrix, cars_list, output_dir, render_cars=False, render_ground=True, is_hdr=is_hdr_output)
+        generate_xml(xml_path_pl, cam_to_world_matrix, cars_list, output_dir, 
+            render_cars=False, render_ground=True, is_hdr=is_hdr_output, template=template)
 
         # Im_obj
         xml_path_obj = output_dir + xml_name + "_obj.xml"
-        generate_xml(xml_path_obj, cam_to_world_matrix, cars_list, output_dir, render_cars=True, render_ground=False, is_hdr=is_hdr_output)
+        generate_xml(xml_path_obj, cam_to_world_matrix, cars_list, output_dir, 
+            render_cars=True, render_ground=False, is_hdr=is_hdr_output, template=template)
 
     # handle kwargs
     for key in kwargs:
@@ -138,7 +143,7 @@ def render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list,
         mts_cmd = "mitsuba" + cli_args + " -o " + rendered_img_name + " " + xml_name + ".xml \n"
         outfn.write(mts_cmd)
 
-        if compose_mode == "quotient":
+        if compose_mode == "quotient" or compose_mode == "none":
             mts_cmd = "mitsuba" + cli_args + " -o " + pl_img + " " + xml_name + "_pl.xml \n"
             outfn.write(mts_cmd)
             mts_cmd = "mitsuba" + cli_args + " -o " + obj_img + " " + xml_name + "_obj.xml \n"
@@ -162,7 +167,9 @@ def render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list,
     elif compose_mode == "quotient":
         compose_and_blend(bg_img_path, rendered_img_path, composite_img_path, 
             output_dir + pl_img, output_dir + obj_img)
-        print('Overlay for {} complete'.format(composite_img_path))
+        print('Composition for {} complete'.format(composite_img_path))
+    elif compose_mode == "none":
+        return
    
 
 if __name__ == '__main__':
@@ -218,9 +225,11 @@ if __name__ == '__main__':
     composite_img_name = xml_name + "_" + compose_mode + "_composite.png"
     is_hdr_output = False # if False, output ldr
     
+    template = "../assets/car_road_template.xml"
 
     render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list, 
         bg_img_path, rendered_img_name, composite_img_name, compose_mode, is_hdr_output,
+        template,
         width=1000, height=750, fov=90, sampleCount=32,
         # turbidity=3, latitude=40.5247051, longitude=-79.962172,
         # year=2022, month=3, day=16, hour=16, minute=30

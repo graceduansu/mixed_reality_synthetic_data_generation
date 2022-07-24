@@ -7,11 +7,11 @@ import cv2
 import numpy as np
 from object_insertion import optix_compose
 from optix_map_mtl import map_mtl
-
 from calc_lookat import calc_lookat
+import render_car_road
 
 
-def generate_xml(xml_file, cam_to_world_matrix, cars_list, docker_mount, 
+def generate_optix_xml(xml_file, np_cam_matrix, cars_list, docker_mount, 
     bsdf_list=None, render_ground=True, render_cars=True, is_hdr=False, **kwargs):
     
     new_bsdf_list = None
@@ -19,7 +19,7 @@ def generate_xml(xml_file, cam_to_world_matrix, cars_list, docker_mount,
     root = tree.getroot()
 
     # Calculate camera lookAt params
-    origin, target = calc_lookat(cam_to_world_matrix)
+    origin, target = calc_lookat(np_cam_matrix)
     sensor_lookAt = root.find('sensor').find('transform').find('lookAt')
     sensor_lookAt.set('origin', origin) 
     sensor_lookAt.set('target', target)
@@ -117,7 +117,7 @@ OPTIX_RENDERER_PATH = "/home/gdsu/OptixRenderer/build/bin/optixRenderer"
 # TODO: use gpu ids
 GPU_IDS = " 1 2 3 " # 0 1 2 3
 
-def render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list, 
+def render_masks(output_dir, xml_name, np_cam_matrix, cars_list, 
         bg_img_path, rendered_img_name, is_hdr_output, **kwargs):
     """
     See DEFAULT_ARGS dict initialization above for optional kwargs
@@ -131,17 +131,17 @@ def render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list,
     
     # Im_all
     xml_path = output_dir + xml_name + ".xml"
-    bsdf_list = generate_xml(xml_path, cam_to_world_matrix, cars_list, output_dir, 
+    bsdf_list = generate_optix_xml(xml_path, np_cam_matrix, cars_list, output_dir, 
         render_cars=True, render_ground=True, is_hdr=is_hdr_output, kwargs=DEFAULT_ARGS)
 
     # Im_pl
     xml_path_pl = output_dir + xml_name + "_pl.xml"
-    generate_xml(xml_path_pl, cam_to_world_matrix, cars_list, output_dir, 
+    generate_optix_xml(xml_path_pl, np_cam_matrix, cars_list, output_dir, 
         render_cars=False, render_ground=True, is_hdr=is_hdr_output, kwargs=DEFAULT_ARGS)
 
     # Im_obj
     xml_path_obj = output_dir + xml_name + "_obj.xml"
-    generate_xml(xml_path_obj, cam_to_world_matrix, cars_list, output_dir, 
+    generate_optix_xml(xml_path_obj, np_cam_matrix, cars_list, output_dir, 
         render_cars=True, render_ground=False, is_hdr=is_hdr_output, 
         kwargs=DEFAULT_ARGS)
 
@@ -160,17 +160,6 @@ def render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list,
     optix_args = " --forceOutput --medianFilter --maxPathLength 7 --rrBeginLength 5 "
 
     with open('optix_script.sh', 'w') as outfn:
-        # cmd = OPTIX_RENDERER_PATH + " -f " + os.path.join(output_dir, xml_name) + ".xml " \
-        #     + " -o " + rendered_img_name + " -m 0" + optix_args + " --gpuIds " + GPU_IDS + "\n"
-        # outfn.write(cmd)
-        
-        # cmd = OPTIX_RENDERER_PATH + " -f " + os.path.join(output_dir, xml_name) + "_pl.xml " \
-        #     + " -o " + pl_img + " -m 0" + optix_args + " --gpuIds " + GPU_IDS + "\n"
-        # outfn.write(cmd)
-        # cmd = OPTIX_RENDERER_PATH + " -f " + os.path.join(output_dir, xml_name) + "_obj.xml " \
-        #     + " -o " + obj_img + " -m 0" + optix_args + " --gpuIds " + GPU_IDS + "\n"
-        # outfn.write(cmd)
-
         cmd = OPTIX_RENDERER_PATH + " -f " + os.path.join(output_dir, xml_name) + ".xml " \
             + " -o " + m_all + " -m 4" + optix_args + " --gpuIds " + GPU_IDS + "\n"
         outfn.write(cmd)
@@ -179,31 +168,7 @@ def render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list,
         outfn.write(cmd)
 
     os.system('bash optix_script.sh')
-
-    # rendered_img_path = output_dir + rendered_img_name + "_1.png"
-    # composite_img_path = output_dir + composite_img_name
-    # im_pl_path = output_dir + pl_img + "_1.png"
-    # im_obj_path = output_dir + obj_img + "_1.png"
-    # m_all_path = output_dir + m_all + "mask_1.png"
-    # m_obj_path = output_dir + m_obj + "mask_1.png"
-
-    # optix_compose(bg_img_path, rendered_img_path, composite_img_path, 
-    #     im_pl_path, im_obj_path,
-    #     m_all_path, m_obj_path)
-    # print('Composition for {} complete'.format(composite_img_path))
-
-    rendered_img_path = "/home/gdsu/scenes/city_test/pickup_truck-test.png"
-    composite_img_path = "/home/gdsu/scenes/city_test/pickup_truck-test-OPTIX_COMPOSE.png"
-    im_pl_path = "/home/gdsu/scenes/city_test/pickup_truck-test_pl.png"
-    im_obj_path = "/home/gdsu/scenes/city_test/pickup_truck-test_obj.png"
-    m_all_path = "/home/gdsu/scenes/city_test/mask-test_all_mask_1.png"
-    m_obj_path = "/home/gdsu/scenes/city_test/mask-test_obj_mask_1.png"
-    optix_compose(bg_img_path, rendered_img_path, composite_img_path, 
-        im_pl_path, im_obj_path,
-        m_all_path, m_obj_path)
-    print('Composition for {} complete'.format(composite_img_path))
-
-    
+   
 
 if __name__ == '__main__':
     ######### Required arguments. Modify as desired: #############
@@ -211,13 +176,14 @@ if __name__ == '__main__':
     # This will be the docker volume mount:
     output_dir = "/home/gdsu/scenes/city_test/" 
 
-    xml_name = "mask-test"
+    xml_name = "truck_mask_test"
 
     # Matrix needs to be numpy
-    cam_to_world_matrix = np.array([[-6.32009074e-01, 3.81421015e-01,  6.74598057e-01, -1.95597297e+01],
+    np_cam_matrix = np.array([[-6.32009074e-01, 3.81421015e-01,  6.74598057e-01, -1.95597297e+01],
         [5.25615099e-03, 8.72582680e-01, -4.88438164e-01,  6.43714192e+00 ],
         [-7.74943161e-01 , -3.05151563e-01, -5.53484978e-01,  4.94516235e+00 ],
         [0,0,0,1]])
+
     # car z position will be calculated later according to line equation
     cars_list = [ {"obj": "assets/Dodge_Ram_2007/Dodge_Ram_2007-TRI.obj", 
         "x": -15, "y": 0, "z": None, "scale": 1, "y_rotate": 315, 
@@ -225,7 +191,6 @@ if __name__ == '__main__':
         {"obj": "assets/dmi-models/ford-f150/Ford_F-150-TRI.obj", 
         "x": 0, "y": 0, "z": None, "scale": 1, "y_rotate": 315, 
         "line_slope":0.87, "line_displacement":3, "ignore_textures":False},
-        
         ]
 
 
@@ -235,12 +200,36 @@ if __name__ == '__main__':
     rendered_img_name = xml_name 
     composite_img_name = xml_name + "_composite.png"
     is_hdr_output = False # if False, output ldr
-    
 
-    render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list, 
-        bg_img_path, rendered_img_name, is_hdr_output,
-        width='1000', height='750', fov='90', sampleCount='64',
-        # turbidity=3, latitude=40.5247051, longitude=-79.962172,
-        # year=2022, month=3, day=16, hour=16, minute=30
-        )
+    # render_masks(output_dir, xml_name, np_cam_matrix, cars_list, 
+    #     bg_img_path, rendered_img_name, is_hdr_output,
+    #     width='1000', height='750', fov='90', sampleCount='64',
+    #     # turbidity=3, latitude=40.5247051, longitude=-79.962172,
+    #     # year=2022, month=3, day=16, hour=16, minute=30
+    #     )
+
+    cam_to_world_matrix = '-6.32009074e-01 3.81421015e-01  6.74598057e-01 -1.95597297e+01 '\
+        '5.25615099e-03 8.72582680e-01 -4.88438164e-01  6.43714192e+00 '\
+        '-7.74943161e-01  -3.05151563e-01 -5.53484978e-01  4.94516235e+00 '\
+        '0 0 0 0.1'
     
+    rendered_img_path = output_dir + rendered_img_name + ".png"
+    composite_img_path = output_dir + composite_img_name
+    pl_img = xml_name + "_pl.png" 
+    obj_img = xml_name + "_obj.png" 
+    im_pl_path = output_dir + pl_img
+    im_obj_path = output_dir + obj_img
+    m_all_path = output_dir + xml_name + "_all_" + "mask_1.png"
+    m_obj_path = output_dir + xml_name + "_obj_" + "mask_1.png"
+
+    # render_car_road.render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list, 
+    #     bg_img_path, rendered_img_name, composite_img_name, "none", is_hdr_output,
+    #     width=1000, height=750, fov=90, sampleCount=32, 
+    #     template="../assets/car_road_template-no_alpha.xml"
+    #     )
+    
+    optix_compose(bg_img_path, rendered_img_path, composite_img_path, 
+        im_pl_path, im_obj_path,
+        m_all_path, m_obj_path)
+
+    print('Composition for {} complete'.format(composite_img_path))

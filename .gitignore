@@ -17,3 +17,4 @@ vid/
 !assets/envmap_template.xml
 *.hdr
 .vscode
+!assets/car_road_template-no_alpha.xml

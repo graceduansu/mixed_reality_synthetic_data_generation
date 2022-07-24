@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from optix_insert_car import *
+from python.render_cars_and_masks import *
 import numpy as np
 from tqdm import trange
 from optix_map_mtl import map_mtl
@@ -48,17 +48,17 @@ def render_car_vid(wip_dir, render_name, cam_to_world_matrix, cars_list,
             
         # Im_all
         xml_path = "{}/{}/{}_{n:02d}.xml".format(output_dir, wip_dir, render_name, n=i)
-        generate_xml(xml_path, cam_to_world_matrix, cars_list, output_dir, 
+        generate_optix_xml(xml_path, cam_to_world_matrix, cars_list, output_dir, 
             render_cars=True, render_ground=True, bsdf_list=bsdf_list, kwargs=DEFAULT_ARGS)
 
         # Im_pl
         xml_path_pl = "{}/{}/{}_pl_{n:02d}.xml".format(output_dir, wip_dir, render_name, n=i)
-        generate_xml(xml_path_pl, cam_to_world_matrix, cars_list, output_dir, 
+        generate_optix_xml(xml_path_pl, cam_to_world_matrix, cars_list, output_dir, 
             render_cars=False, render_ground=True, bsdf_list=bsdf_list, kwargs=DEFAULT_ARGS)
 
         # Im_obj
         xml_path_obj = "{}/{}/{}_obj_{n:02d}.xml".format(output_dir, wip_dir, render_name, n=i)
-        generate_xml(xml_path_obj, cam_to_world_matrix, cars_list, output_dir, 
+        generate_optix_xml(xml_path_obj, cam_to_world_matrix, cars_list, output_dir, 
             render_cars=True, render_ground=False, bsdf_list=bsdf_list, kwargs=DEFAULT_ARGS)
 
         x_i += delta_x
