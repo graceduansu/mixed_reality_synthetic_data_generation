@@ -318,6 +318,7 @@ def main(sfm_dir):
     # plt.plot(all_x, all_y, 'ro')
     # plt.plot(new_points[0], new_points[1], 'b-')
     # plt.show()
+    PTO_list = []
 
     for i in range(len(new_ders[0])):
         y_value_at_point = new_points[1][i]
@@ -344,53 +345,36 @@ def main(sfm_dir):
         # z dir (e3) in O
         G_R_O[:, 0] = np.cross(G_R_O[:, 1], G_R_O[:, 2])
 
-        print(G_R_O)
-        print("#########################")
-        print(G_t_O)
+        G_T_O = np.eye(4)
+        G_T_O[:3, :3] = G_R_O
+        G_T_O[:3, 3] = G_t_O
+        P_T_G = np.linalg.inv(W_T_P)
+        P_T_O = P_T_G @ G_T_O
+        print(P_T_O)
+
 
         K = np.array([[500, 0, 320],
-                      [0, 500, 240],
-                      [0, 0, 1]])
+                    [0, 500, 240],
+                    [0, 0, 1]])
         cam_model = draw_camera(K, G_R_O, G_t_O, K[0, 2] * 2, K[1, 2] * 2, 1.0, [0, 1, 0])
         cam_model = cam_model[0]  # no camera frustum
         vis.add_geometry(cam_model)
 
+        PTO_list.append(P_T_O)
+
     coordinate_frame = o3d.geometry.TriangleMesh.create_coordinate_frame(size=1.0, origin=[0., 0., 0.])
     vis.add_geometry(coordinate_frame)
 
-    # # original cameras (assumed to be PINHOLE)
-    # for img_id in original_image_ids:
-    #     img_info = latest_images[img_id]
-    #     cam_info = latest_cameras[img_info.camera_id]
-    #     # img_info = init_images[img_id]
-    #     # cam_info = init_cameras[img_info.camera_id]
-    #
-    #     C_R_G, C_t_G = qvec2rotmat(img_info.qvec), img_info.tvec
-    #     # C_T_G = np.eye(4)
-    #     # C_T_G[:3, :3], C_T_G[:3, 3] = C_R_G, C_t_G
-    #     # transformed_C_T_G = transform_pose(transform_mat=transform_mat, src_mat=C_T_G)
-    #     # C_R_G, C_t_G = transformed_C_T_G[:3, :3], transformed_C_T_G[:3, 3]
-    #
-    #     # build intrinsic from params
-    #     assert cam_info.model == 'PINHOLE'
-    #     # fx, fy, cx, cy
-    #     K = np.eye(3)
-    #     K[0, 0], K[1, 1], K[0, 2], K[1, 2] = cam_info.params[0], cam_info.params[1], cam_info.params[2], cam_info.params[3]
-    #
-    #     # invert
-    #     t = -C_R_G.T @ C_t_G
-    #     R = C_R_G.T
-    #
-    #     cam_model = draw_camera(K, R, t, K[0, 2] * 2, K[1, 2] * 2, 0.4, [0, 1, 0])
-    #     frames.extend(cam_model)
-    #
     # add geometries to visualizer
     for i in frames:
         vis.add_geometry(i)
 
-    with open('fifth_craig-traj-8.npy', 'wb') as f:
-        print(len(new_ders[0]))
-        np.save(f, new_ders)
+    # Save trajectory
+    PTO_array = np.array(PTO_list)
+    print(PTO_array.shape)
+    
+    with open('/home/gdsu/scenes/city_test/assets/fifth_craig-traj-15.npy', 'wb') as f:
+       np.save(f, PTO_array)
 
     ro = vis.get_render_option()
     # ro.show_coordinate_frame = True

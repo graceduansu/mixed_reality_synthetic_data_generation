@@ -31,7 +31,7 @@ def get_new_kd_bitmap(dc, dm, obj_dir, docker_mount):
         return dm
 
 
-def mtl_to_bsdf(mtl_instance, obj_dir, docker_mount, ignore_textures=True):
+def mtl_to_bsdf(mtl_instance, obj_dir, docker_mount, ignore_textures=True, new_color=None):
     """
     mtl_instance: class Material
     Returns: a string containing one bsdf xml object
@@ -131,10 +131,14 @@ def mtl_to_bsdf(mtl_instance, obj_dir, docker_mount, ignore_textures=True):
                     return bsdf_str
 
                 elif mat == 'car_metal':
+                    if new_color is not None:
+                        dc = new_color
+
                     if dm is not None:
+                        new_dm = get_new_kd_bitmap(dc, dm, obj_dir, docker_mount)
                         diffuse = '''<texture name="sigmaA" type="bitmap">
                                 <string name="filename" value="{}"/>
-                            </texture>'''.format(os.path.join(obj_dir, dm))
+                            </texture>'''.format(os.path.join(obj_dir, new_dm))
                     else:
                         diffuse = '''<rgb name="sigmaA" 
                             value="{} {} {}" />'''.format(dc[0], dc[1], dc[2])
@@ -184,7 +188,7 @@ def mtl_to_bsdf(mtl_instance, obj_dir, docker_mount, ignore_textures=True):
 
 
 # check: does mitsuba already handle mtl transparency?
-def map_mtl(obj_path, docker_mount, ignore_textures=True):
+def map_mtl(obj_path, docker_mount, ignore_textures=True, new_color=None):
     """ 
     Returns a list of strings containing bsdf xml objects 
     """
@@ -196,7 +200,8 @@ def map_mtl(obj_path, docker_mount, ignore_textures=True):
     all_bsdfs_list = []
     for mtl_name in mtl_dict:
         # check mtl name for our specified substrings
-        bsdf_str = mtl_to_bsdf(mtl_dict[mtl_name], obj_dir, docker_mount, ignore_textures=ignore_textures)
+        bsdf_str = mtl_to_bsdf(mtl_dict[mtl_name], obj_dir, docker_mount, 
+            ignore_textures=ignore_textures, new_color=new_color)
         all_bsdfs_list.append(bsdf_str)
                     
     #print(all_bsdfs_list)
