@@ -93,7 +93,8 @@ def generate_img(docker_mount_dir, run_name, cam_to_world_matrix, cars_list,
     for key in MITSUBA_ARGS:
         cli_args += " -D {}={} ".format(key, MITSUBA_ARGS[key])
 
-    with open('docker_script.sh', 'w') as outfn:
+    sh_path = '{}/{}/docker_script.sh'.format(docker_mount_dir, wip_dir)
+    with open(sh_path, 'w') as outfn:
         outfn.write('cd /hosthome \n')
 
         img_name = "{}/{}.png".format(output_dir, run_name)
@@ -118,7 +119,7 @@ def generate_img(docker_mount_dir, run_name, cam_to_world_matrix, cars_list,
             mts_cmd = "mitsuba {} -o {} {}/{}_segm_{}.xml \n".format(cli_args, img_name, wip_dir, run_name, i)
             outfn.write(mts_cmd)
 
-    docker_cmd = '''sudo docker run -v {}:/hosthome/ -it feb79bb374a0 /bin/bash -c \' bash /hosthome/python/docker_script.sh\''''.format(docker_mount_dir)
+    docker_cmd = '''sudo docker run -v {}:/hosthome/ -it feb79bb374a0 /bin/bash -c \' bash /hosthome/{}/docker_script.sh\''''.format(docker_mount_dir, wip_dir)
     startRenderTime = time.time()
     os.system(docker_cmd)
     print('Total rendering time: {}'.format(time.time() - startRenderTime))
@@ -140,7 +141,7 @@ def generate_dataset(root_dir, dataset_name, cam_to_world_matrix, num_imgs,
     wip_dir = "{}-xmls".format(dataset_name)
     os.system('mkdir {}/{}'.format(docker_mount_dir, wip_dir))
 
-    for n in trange(num_imgs, desc='Num imgs'):
+    for n in trange(1, num_imgs, desc='Num imgs'):
         cars_list = []
         i = 0
         num_cars = np.random.randint(low, high+1)
@@ -197,7 +198,7 @@ def generate_dataset(root_dir, dataset_name, cam_to_world_matrix, num_imgs,
 if __name__ == '__main__':
     docker_mount_dir = "/home/gdsu/scenes/city_test" 
 
-    run_name = "dataset_1"
+    run_name = "dataset"
 
     cam_to_world_matrix = '-6.32009074e-01 3.81421015e-01  6.74598057e-01 -1.95597297e+01 '\
         '5.25615099e-03 8.72582680e-01 -4.88438164e-01  6.43714192e+00 '\
