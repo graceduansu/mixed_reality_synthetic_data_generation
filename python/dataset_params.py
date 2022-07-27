@@ -3,7 +3,7 @@ from glob import glob
 
 
 MITSUBA_ARGS = {'turbidity':3, 'latitude':40.44694, 'longitude':-79.94902, 
-    'timezone':-4, 'year':2021, 'month':5, 'day':4, 'hour':14, 'minute':00, 
+    'timezone':-4, 'year':2021, 'month':5, 'day':4, 'hour':14, 'minute':30, 
     'sunScale':2, 'skyScale':2, 
     'fov':90, 'sampleCount':16, 'width':1000, 'height':750}
 

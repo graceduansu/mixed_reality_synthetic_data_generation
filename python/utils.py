@@ -82,6 +82,26 @@ def calc_bbox_transform(np_mat, bbox):
     return trans_corners
 
 
+def TEST_calc_bbox_transform(np_mat, bbox):
+    bbox_corners = np.array(bbox)
+    trans_corners = np.zeros_like(bbox_corners)
+    for i in range(len(bbox_corners)):
+        pt = np.array([[bbox_corners[i][0]], [bbox_corners[i][1]], [bbox_corners[i][2]], [1]])
+        trans_pt = np_mat @ pt
+        trans_corners[i, :] = trans_pt[:3, :].flatten()
+
+    # print(trans_corners)
+    
+
+    x_min = np.amin(trans_corners[:,0], axis=None)
+    x_max = np.amax(trans_corners[:,0], axis=None)
+    y_min = np.amin(trans_corners[:,1], axis=None)
+    y_max = np.amax(trans_corners[:,1], axis=None)
+    z_min = np.amin(trans_corners[:,2], axis=None)
+    z_max = np.amax(trans_corners[:,2], axis=None)
+    return trans_corners
+
+
 def bboxes_to_minmax(bbox_list):
     bbox_list = np.array(bbox_list)
     x_min = np.amin(bbox_list[:,0], axis=None)

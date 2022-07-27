@@ -21,6 +21,9 @@ def generate_xml(xml_file, cam_to_world_matrix, cars_list, docker_mount,
     sensor_matrix = root.find('sensor').find('transform').find('matrix')
     sensor_matrix.set('value', cam_to_world_matrix) 
 
+    emitter_matrix = root.find('emitter').find('transform').find('matrix')
+    emitter_matrix.set('value', cam_to_world_matrix) 
+
     for car in cars_list:   
         if render_cars:
             car_string = '''<shape type="obj">
@@ -47,23 +50,22 @@ def generate_xml(xml_file, cam_to_world_matrix, cars_list, docker_mount,
 
             root.append(car_element)
 
-        if render_ground:
-            ground_string = '''<shape type="obj">
-            <string name="filename" value="assets/ground.obj" />
-            <transform name="toWorld">
-                <scale value="0.05" />
-                <matrix value="{}" />
-            </transform>
+    if render_ground:
+        ground_string = '''<shape type="obj">
+        <string name="filename" value="assets/ground.obj" />
+        <transform name="toWorld">
+            <scale value="100" />
+        </transform>
 
-            <bsdf type="roughdiffuse">
-                <spectrum name="reflectance" value="0.1" />
-                <float name="alpha" value="0.7" />
-            </bsdf>
+        <bsdf type="roughdiffuse">
+            <spectrum name="reflectance" value="0.1" />
+            <float name="alpha" value="0.7" />
+        </bsdf>
 
-            </shape>'''.format(car['matrix'])
+        </shape>'''
 
-            ground = ET.fromstring(ground_string)
-            root.append(ground)
+        ground = ET.fromstring(ground_string)
+        root.append(ground)
 
 
     tree.write(xml_file, encoding='utf-8', xml_declaration=True)
@@ -121,6 +123,7 @@ def generate_img(docker_mount_dir, run_name, cam_to_world_matrix, cars_list,
 
     docker_cmd = '''sudo docker run -v {}:/hosthome/ -it feb79bb374a0 /bin/bash -c \' bash /hosthome/{}/docker_script.sh\''''.format(docker_mount_dir, wip_dir)
     startRenderTime = time.time()
+    print('\nRunning mitsuba...')
     os.system(docker_cmd)
     print('Total rendering time: {}'.format(time.time() - startRenderTime))
 
@@ -135,13 +138,13 @@ def generate_img(docker_mount_dir, run_name, cam_to_world_matrix, cars_list,
 
 
 def generate_dataset(root_dir, dataset_name, cam_to_world_matrix, num_imgs,
-    low=10, high=20):
+    low=10, high=20, start_idx=0):
 
     os.system('mkdir {}/{}'.format(root_dir, dataset_name))
     wip_dir = "{}-xmls".format(dataset_name)
     os.system('mkdir {}/{}'.format(docker_mount_dir, wip_dir))
 
-    for n in trange(1, num_imgs, desc='Num imgs'):
+    for n in trange(start_idx, num_imgs, desc='{} img num'.format(dataset_name)):
         cars_list = []
         i = 0
         num_cars = np.random.randint(low, high+1)
@@ -198,33 +201,19 @@ def generate_dataset(root_dir, dataset_name, cam_to_world_matrix, num_imgs,
 if __name__ == '__main__':
     docker_mount_dir = "/home/gdsu/scenes/city_test" 
 
-    run_name = "dataset"
-
     cam_to_world_matrix = '-6.32009074e-01 3.81421015e-01  6.74598057e-01 -1.95597297e+01 '\
         '5.25615099e-03 8.72582680e-01 -4.88438164e-01  6.43714192e+00 '\
         '-7.74943161e-01  -3.05151563e-01 -5.53484978e-01  4.94516235e+00 '\
         '0 0 0 1'
 
-    cars_list = [
-        {"obj": "assets/dmi-models/ford-f150/Ford_F-150-TRI.obj", 
-        "matrix": None, 
-        "color": None,
-        "ignore_textures":False}, 
-        {"obj": "assets/opel-zafira/opel-TRI.obj", 
-        "matrix": None, "color": None,
-        "ignore_textures":False}, 
-        ]
-
-    bg_img_path = "../assets/cam2_week1_right_turn_2021-05-01T14-42-00.655968.jpg"
+    # run_name = "dataset-1"
+    # generate_dataset(docker_mount_dir, run_name, cam_to_world_matrix, 100,
+    #     low=10, high=20, start_idx=0)
 
 
-    output_dir = run_name
-    wip_dir = "{}_xmls".format(run_name)
+
+    run_name = "dataset-2"
+    generate_dataset(docker_mount_dir, run_name, cam_to_world_matrix, 100,
+        low=10, high=20, start_idx=0)
     
-    # generate_img(docker_mount_dir, run_name, cam_to_world_matrix, cars_list, 
-    #     bg_img_path, output_dir, wip_dir,
-    #     width=1000, height=750, fov=90, sampleCount=32,
-    #     )
-
-    generate_dataset(docker_mount_dir, run_name, cam_to_world_matrix, 100)
     
