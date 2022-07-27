@@ -25,7 +25,8 @@ def get_new_kd_bitmap(dc, dm, obj_dir, docker_mount):
         stem, ext = os.path.splitext(dm)
         new_name = os.path.basename(stem) + "-MTS" + ext
 
-        cv2.imwrite(os.path.join(docker_mount, obj_dir, new_name), new_map)
+        # NOTE: currently all -MTS maps have been generated
+        # cv2.imwrite(os.path.join(docker_mount, obj_dir, new_name), new_map)
         return new_name
     else:
         return dm
