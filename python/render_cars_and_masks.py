@@ -52,17 +52,14 @@ def generate_optix_xml(xml_file, np_cam_matrix, cars_list, docker_mount,
             car_string = '''<shape type="obj">
                 <string name="filename" value="{}"/>
                 <transform name="toWorld">
-                    <scale value="{}"/>
-                    <rotate x="0" y="1" z="0" angle="{}" />
-                    
-                    <translate x="{}" y="{}" z="{}" />
+                    <matrix value="-6.30439204e-01  1.74791195e-18  7.76238629e-01 -1.48978244e+01 4.14373368e-15  1.00000000e+00 -2.45877286e-19  0.00000000e+00 -7.76238629e-01 -7.96063745e-19 -6.30439204e-01  6.73076135e+00 0 0 0 1 " />
                 </transform>
                 <bsdf type="diffuse">
             <rgb name="reflectance" value="0.1 0.1 0.1" />
         </bsdf>
                 
             </shape>
-            '''.format(car['obj'], car['scale'], car['y_rotate'], car['x'], car['y'], car['z'])
+            '''.format(car['obj'])
 
             car_element = ET.fromstring(car_string)
 
@@ -83,11 +80,11 @@ def generate_optix_xml(xml_file, np_cam_matrix, cars_list, docker_mount,
         <string name="filename" value="/home/gdsu/scenes/city_test/assets/ground.obj" />
         <transform name="toWorld">
             <scale value="0.1" />
-            <rotate x="0" y="1" z="0" angle="{}" />
-            <translate x="{}" y="{}" z="{}" />
+            <matrix value="-6.30439204e-01  1.74791195e-18  7.76238629e-01 -1.48978244e+01 4.14373368e-15  1.00000000e+00 -2.45877286e-19  0.00000000e+00 -7.76238629e-01 -7.96063745e-19 -6.30439204e-01  6.73076135e+00 0 0 0 1 " />
+                
         </transform>
 
-    </shape>'''.format(car['y_rotate'], car['x'], 0, car['z'])
+    </shape>'''
 
             ground = ET.fromstring(ground_string)
             root.append(ground)
@@ -176,7 +173,7 @@ if __name__ == '__main__':
     # This will be the docker volume mount:
     output_dir = "/home/gdsu/scenes/city_test/" 
 
-    xml_name = "truck_mask_test"
+    xml_name = "matrix-optix-test"
 
     # Matrix needs to be numpy
     np_cam_matrix = np.array([[-6.32009074e-01, 3.81421015e-01,  6.74598057e-01, -1.95597297e+01],
@@ -188,9 +185,6 @@ if __name__ == '__main__':
     cars_list = [ {"obj": "assets/Dodge_Ram_2007/Dodge_Ram_2007-TRI.obj", 
         "x": -15, "y": 0, "z": None, "scale": 1, "y_rotate": 315, 
         "line_slope":0.87, "line_displacement":3, "ignore_textures":False}, 
-        {"obj": "assets/dmi-models/ford-f150/Ford_F-150-TRI.obj", 
-        "x": 0, "y": 0, "z": None, "scale": 1, "y_rotate": 315, 
-        "line_slope":0.87, "line_displacement":3, "ignore_textures":False},
         ]
 
 
@@ -201,12 +195,12 @@ if __name__ == '__main__':
     composite_img_name = xml_name + "_composite.png"
     is_hdr_output = False # if False, output ldr
 
-    # render_masks(output_dir, xml_name, np_cam_matrix, cars_list, 
-    #     bg_img_path, rendered_img_name, is_hdr_output,
-    #     width='1000', height='750', fov='90', sampleCount='64',
-    #     # turbidity=3, latitude=40.5247051, longitude=-79.962172,
-    #     # year=2022, month=3, day=16, hour=16, minute=30
-    #     )
+    render_masks(output_dir, xml_name, np_cam_matrix, cars_list, 
+        bg_img_path, rendered_img_name, is_hdr_output,
+        width='1000', height='750', fov='90', sampleCount='64',
+        # turbidity=3, latitude=40.5247051, longitude=-79.962172,
+        # year=2022, month=3, day=16, hour=16, minute=30
+        )
 
     cam_to_world_matrix = '-6.32009074e-01 3.81421015e-01  6.74598057e-01 -1.95597297e+01 '\
         '5.25615099e-03 8.72582680e-01 -4.88438164e-01  6.43714192e+00 '\
@@ -222,11 +216,11 @@ if __name__ == '__main__':
     m_all_path = output_dir + xml_name + "_all_" + "mask_1.png"
     m_obj_path = output_dir + xml_name + "_obj_" + "mask_1.png"
 
-    # render_car_road.render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list, 
-    #     bg_img_path, rendered_img_name, composite_img_name, "none", is_hdr_output,
-    #     width=1000, height=750, fov=90, sampleCount=32, 
-    #     template="../assets/car_road_template-no_alpha.xml"
-    #     )
+    render_car_road.render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list, 
+        bg_img_path, rendered_img_name, composite_img_name, "none", is_hdr_output,
+        width=1000, height=750, fov=90, sampleCount=32, 
+        template="../assets/car_road_template-no_alpha.xml"
+        )
     
     optix_compose(bg_img_path, rendered_img_path, composite_img_path, 
         im_pl_path, im_obj_path,

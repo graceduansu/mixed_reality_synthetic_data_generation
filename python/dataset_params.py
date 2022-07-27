@@ -1,25 +1,20 @@
 import json
+from glob import glob
 
 
 MITSUBA_ARGS = {'turbidity':3, 'latitude':40.44694, 'longitude':-79.94902, 
-    'timezone':-4, 'year':2021, 'month':5, 'day':1, 'hour':14, 'minute':43, 
+    'timezone':-4, 'year':2021, 'month':5, 'day':4, 'hour':14, 'minute':00, 
     'sunScale':2, 'skyScale':2, 
     'fov':90, 'sampleCount':16, 'width':1000, 'height':750}
 
 # these all face -y direction in blender
-CAR_MODELS = ["assets/cherokee-jeep/Jeep_Cherokee-TRI.obj",
-    "assets/Nissan/Nissan-Rogue-2014/rogue-TRI.obj",
-    "assets/mercedes-benz/mercedes_amg-TRI.obj",
-    "assets/chevy_camaro/camaro_ss_2016-TRI.obj",
-    "assets/dmi-models/Mustang_GT/3D_Files/OBJ/mustang_GT-TRI.obj",
-    "assets/mercedes-vito/mercedes_vito-TRI.obj",
-    "assets/opel-zafira/opel-TRI.obj",
-    "assets/dmi-models/mercedes/Mercedes_Sprinter_FedEx-TRI.obj",
-    "assets/ford-econoline/ford-e-150-TRI.obj",
-    "assets/dmi-models/ford-f150/Ford_F-150-TRI.obj",
-    "assets/Dodge_Ram_2007/Dodge_Ram_2007-TRI.obj"
-    ]
+f = open('/home/gdsu/scenes/city_test/assets/car_models.json')
+CAR_MODELS = json.load(f)
+f.close()
 
+BG_IMG_DIR = '/home/gdsu/scenes/city_test/assets/fifth_craig_median_images'
+exp = '{}/*.jpg'.format(BG_IMG_DIR)
+NUM_BG_IMGS = len(glob(exp))
 
 # npy files of trajectories. 
 # Each npy has a sequence of matrices describing the trajectory

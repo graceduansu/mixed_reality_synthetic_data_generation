@@ -36,9 +36,9 @@ class MTL(object):
                 elif line[0] == "Ka":
                     ac = (float(line[1]), float(line[2]), float(line[3]))
                 elif line[0] == "Kd":
-                    dc = (float(line[1]), float(line[2]), float(line[3]))
+                    dc = [float(line[1]), float(line[2]), float(line[3])]
                 elif line[0] == "Ks":
-                    sc = (float(line[1]), float(line[2]), float(line[3]))
+                    sc = [float(line[1]), float(line[2]), float(line[3])]
                 elif line[0] == "Ke":
                     ec = (float(line[1]), float(line[2]), float(line[3]))
                 elif line[0] == "d" or line[0] == "Tr":
@@ -130,12 +130,12 @@ class OBJ(object):
                         self.__material_faces.append((material_index, prev_material))
                         material_index = [material_index[1] + 1]
             # vertices
-        #     elif line[0] == "v":
-        #         line.pop(0)
-        #         i = 1 if line[0] == "" else 0
-        #         self.__vertices.append(
-        #             (float(line[i]), float(line[i + 1]), float(line[i + 2]))
-        #         )
+            elif line[0] == "v":
+                line.pop(0)
+                i = 1 if line[0] == "" else 0
+                self.__vertices.append(
+                    (float(line[i]), float(line[i + 1]), float(line[i + 2]))
+                )
         #     # normals
         #     elif line[0] == "vn":
         #         line.pop(0)
@@ -184,3 +184,10 @@ class OBJ(object):
 
     def get_texture_vertices(self):
         return self.__texture_vertices
+
+    def get_bbox(self):
+        verts = self.__vertices
+        xs = [v[0] for v in verts]
+        ys = [v[1] for v in verts]
+        zs = [v[2] for v in verts]
+        return (min(xs), max(xs), min(ys), max(ys), min(zs), max(zs))

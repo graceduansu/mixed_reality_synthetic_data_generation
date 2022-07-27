@@ -4,13 +4,15 @@
 import pymeshlab
 import numpy as np
 # System Libs
-import time, os
+import time, os, json
 
 
 # Blender Libs
 import bpy
 from math import radians
 from map_mtl import clean_mtl
+import mtl
+
 
 # Notes: y axis points towards top of screen
 #   order: (x, y, z)
@@ -295,8 +297,64 @@ def separate_objs(curr_mesh_path, new_mesh_path, target_length=None, scale=None,
         # obj.select_set(False)
 
 
+def calculate_bboxes(assets_dir, json_file):
+    json_path = os.path.join(assets_dir, json_file)
+    f = open(json_path, "r")
+    cars_list = json.load(f)
+    f.close()
+
+    for i in range(len(cars_list)):
+        obj_path = os.path.join(assets_dir, cars_list[i]['obj_file'])
+        # car_obj = mtl.OBJ(obj_path)
+        # car_obj.load()
+        # cars_list[i]['bbox'] = car_obj.get_bbox()
+        ms = pymeshlab.MeshSet()
+        ms.load_new_mesh(obj_path)
+
+        measures = ms.get_geometric_measures()
+        bbox = measures['bbox']
+        
+        minbox = bbox.min()
+        maxbox = bbox.max()
+        box1 = bbox.min() + np.array([bbox.dim_x(), 0, 0])
+        box2 = bbox.min() + np.array([0, bbox.dim_y(), 0])
+        box3 = bbox.min() + np.array([0, 0, bbox.dim_z()])
+        box4 = bbox.min() + np.array([bbox.dim_x(), bbox.dim_y(), 0])
+        box5 = bbox.min() + np.array([bbox.dim_x(), 0, bbox.dim_z()])
+        box6 = bbox.min() + np.array([0, bbox.dim_y(), bbox.dim_z()])
+        bbox_list = [minbox, box1, box2, box3, box4, box5, box6, maxbox]
+        for b in bbox_list:
+            print(b)
+        
+        bbox_list = [b.tolist() for b in bbox_list]
+        cars_list[i]['bbox'] = bbox_list
+    
+    out_file = open(json_path, "w")
+    json.dump(cars_list, out_file)
+    out_file.close()
+
 
 if __name__ == '__main__':
+    # calculate_bboxes('/home/gdsu/scenes/city_test', 'assets/car_models-COPY.json')
+    
+
+
+    # count = 0
+    # for t in TRAJS:
+    #     traj_array = None
+    #     with open(t, 'rb') as f:
+    #         traj_array = np.load(f)
+
+    #     for mat in traj_array:
+    #         if mat[2,3] < -30:
+    #             count += 1
+
+    # total = len(TRAJS) * 20
+    # ratio = count / total
+    # print(count)
+    # print(ratio)
+            
+
     # old_path = '/home/gdsu/scenes/city_test/assets/construction_equipment/cone/cone-TRI.obj'
     # new_path = '/home/gdsu/scenes/city_test/assets/construction_equipment/cone/cone-TRI.obj'
     # separate_objs(old_path, new_path, scale=0.001, decimateRatio=1)
@@ -344,11 +402,14 @@ if __name__ == '__main__':
     # new_path = '/home/gdsu/scenes/city_test/assets/toyota-land-cruiser/uploads_files_3120740_Toyota+Land+Cruiser+VXR-TRI.obj'
     # calculate_y_trans(new_path)
 
-    old_path = '/home/gdsu/scenes/city_test/assets/mercedes_coupe_2019/mercedes_s63_amg_coupe_2019.obj'
-    new_path = '/home/gdsu/scenes/city_test/assets/mercedes-benz/mercedes_amg-TRI.obj'
-    # bpy_process_mesh(old_path, new_path, target_length=5, decimateRatio=1)
-    # clean_mtl(new_path)
-    calculate_y_trans(new_path)
+    # old_path = '/home/gdsu/scenes/city_test/assets/mercedes_coupe_2019/mercedes_s63_amg_coupe_2019.obj'
+    # new_path = '/home/gdsu/scenes/city_test/assets/mercedes-benz/mercedes_amg-TRI.obj'
+    # # bpy_process_mesh(old_path, new_path, target_length=5, decimateRatio=1)
+    # # clean_mtl(new_path)
+    # #calculate_y_trans(new_path)
+    # my_obj = mtl.OBJ(new_path)
+    # my_obj.load()
+    # print(my_obj.get_bbox())
 
     # old_path = '/home/gdsu/scenes/city_test/assets/ford-econoline/ford-e-150.obj'
     # new_path = '/home/gdsu/scenes/city_test/assets/ford-econoline/ford-e-150-TRI.obj'

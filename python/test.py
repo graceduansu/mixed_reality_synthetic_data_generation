@@ -1,27 +1,115 @@
-from pylab import *
-#set environment variable NUMBA_DISABLE_JIT = 1 before importing sunposition to disable jit if it negatively impacts performance
-# e.g. import os; os.environ['NUMBA_DISABLE_JIT'] = 1
-from sunposition import sunpos
-from datetime import datetime
 
-#evaluate on a 2 degree grid
-lon  = linspace(-180,180,181)
-lat = linspace(-90,90,91)
-LON, LAT = meshgrid(lon,lat)
-#at the current time
-now = datetime.utcnow()
-az,zen = sunpos(now,LAT,LON,0)[:2] #discard RA, dec, H
-#convert zenith to elevation
-elev = 90 - zen
-#convert azimuth to vectors
-u, v = cos((90-az)*pi/180), sin((90-az)*pi/180)
-#plot
-figure()
-imshow(elev,cmap=cm.CMRmap,origin='lower',vmin=-90,vmax=90,extent=(-180,180,-90,90))
-s = slice(5,-1,5) # equivalent to 5:-1:5
-quiver(lon[s],lat[s],u[s,s],v[s,s])
-contour(lon,lat,elev,[0])
-cb = colorbar()
-cb.set_label('Elevation Angle (deg)')
-gca().set_aspect('equal')
-xticks(arange(-180,181,45)); yticks(arange(-90,91,45))
+import numpy as np
+from utils import *
+from dataset_params import *
+import torch
+from pytorch3d.ops import box3d_overlap
+
+
+
+mat_a_str = "-7.41039819e-01  1.74791195e-18  6.71461084e-01 -1.48515134e+01  4.07808811e-15  1.00000000e+00  7.20775546e-19 -4.44089210e-16 -6.71461084e-01 -7.96063745e-19 -7.41039819e-01  6.77990166e+00 0. 0. 0. 1. "
+mat_a = str_to_mat(mat_a_str)   
+mat_b_str = "-6.32009074e-01 3.81421015e-01  6.74598057e-01 -1.95597297e+01 5.25615099e-03 8.72582680e-01 -4.88438164e-01  6.43714192e+00 -7.74943161e-01  -3.05151563e-01 -5.53484978e-01  4.94516235e+00 0 0 0 1"
+mat_b = str_to_mat(mat_b_str)	  
+
+a = [
+        [
+            -1.026722,
+            -0.0,
+            -2.445286
+        ],
+        [
+            1.026722,
+            0.0,
+            -2.445286
+        ],
+        [
+            -1.026722,
+            1.85642,
+            -2.445286
+        ],
+        [
+            -1.026722,
+            0.0,
+            2.4497139999999997
+        ],
+        [
+            1.026722,
+            1.85642,
+            -2.445286
+        ],
+        [
+            1.026722,
+            0.0,
+            2.4497139999999997
+        ],
+        [
+            -1.026722,
+            1.85642,
+            2.4497139999999997
+        ],
+        [
+            1.026722,
+            1.85642,
+            2.449714
+        ]
+    ]
+
+b = [
+        [
+            -1.05221,
+            -0.000466,
+            -2.560133
+        ],
+        [
+            1.0522110000000002,
+            -0.000466,
+            -2.560133
+        ],
+        [
+            -1.05221,
+            1.420466,
+            -2.560133
+        ],
+        [
+            -1.05221,
+            -0.000466,
+            2.2228669999999995
+        ],
+        [
+            1.0522110000000002,
+            1.420466,
+            -2.560133
+        ],
+        [
+            1.0522110000000002,
+            -0.000466,
+            2.2228669999999995
+        ],
+        [
+            -1.05221,
+            1.420466,
+            2.2228669999999995
+        ],
+        [
+            1.052211,
+            1.420466,
+            2.222867
+        ]
+    ]
+bbox_a = calc_bbox_transform(mat_a, a)
+bbox_b = calc_bbox_transform(mat_b, b)
+print('################################3')
+print(bbox_a)
+print(bbox_b)
+
+#print(check_collision(bbox_a, bbox_b))
+from pytorch3d.ops import box3d_overlap
+
+a_list = torch.tensor(bbox_a).expand(1, -1, -1)
+b_list = torch.tensor(bbox_b).expand(1, -1, -1)
+
+print(a_list.size())
+print(b_list.size())
+vol, iou = box3d_overlap(a_list, b_list)
+print(vol)

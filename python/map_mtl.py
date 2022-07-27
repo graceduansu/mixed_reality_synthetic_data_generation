@@ -166,7 +166,7 @@ def mtl_to_bsdf(mtl_instance, obj_dir, docker_mount, ignore_textures=True, new_c
                 elif mat == 'tire':
 
                     diffuse = '''<rgb name="reflectance" 
-                        value="{} {} {}" />'''.format(0.09333, 0.09333, 0.12)
+                        value="{} {} {}" />'''.format(0.04, 0.04, 0.05)
 
                     bsdf_str = '''<bsdf name="{}" type="roughdiffuse">
                             {}
