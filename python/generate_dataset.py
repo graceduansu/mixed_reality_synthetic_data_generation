@@ -126,7 +126,7 @@ def generate_img(docker_mount_dir, run_name, cam_to_world_matrix, cars_list,
 
     docker_cmd = '''sudo docker run -v {}:/hosthome/ -it feb79bb374a0 /bin/bash -c \' bash /hosthome/{}/docker_script.sh\''''.format(docker_mount_dir, wip_dir)
     startRenderTime = time.time()
-    print('\nRunning mitsuba...')
+    print('\n[{}] Running mitsuba...'.format(startRenderTime))
     os.system(docker_cmd)
     print('Total rendering time: {}'.format(time.time() - startRenderTime))
 
@@ -215,7 +215,7 @@ if __name__ == '__main__':
 
     run_name = "dataset-2"
     generate_dataset(docker_mount_dir, run_name, cam_to_world_matrix, 100,
-        low=10, high=20, start_idx=0)
+        low=10, high=20, start_idx=13)
 
     # run_name = "depth-test"
     # generate_dataset(docker_mount_dir, run_name, cam_to_world_matrix, 1,

@@ -19,4 +19,5 @@ vid/
 .vscode
 !assets/car_road_template-no_alpha.xml
 !assets/car_segm_template.xml
+!assets/car_depth_template.xml
 *.npy

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<scene version="0.5.0">
+
+	<emitter type="constant" />
+
+	<integrator type="field">
+		<string name="field" value="distance" />
+		<spectrum name="undefined" value="0" />
+	</integrator>
+
+	<sensor type="perspective">
+		<string name="fovAxis" value="x" />
+		<float name="fov" value="$fov" />
+		<float name="farClip" value="1000" />
+		<float name="nearClip" value="0.1" />
+		<!-- <string name="kc" value="-0.000776,-0.012030" /> -->
+
+		<transform name="toWorld">
+			<matrix value="  -6.32009074e-01 3.81421015e-01  6.74598057e-01 -1.95597297e+01
+            5.25615099e-03 8.72582680e-01 -4.88438164e-01  6.43714192e+00 
+            -7.74943161e-01  -3.05151563e-01 -5.53484978e-01  4.94516235e+00 
+            0 0 0 1" />
+		</transform>
+
+		<sampler type="ldsampler">
+			<integer name="sampleCount" value="$sampleCount" />
+		</sampler>
+
+		<film type="mfilm">
+			<string name="pixelFormat" value="luminanceAlpha" />
+			<string name="fileFormat" value="numpy" />
+			<integer name="width" value="$width" />
+			<integer name="height" value="$height" />
+			<boolean name="banner" value="false" />
+			<rfilter type="gaussian" />
+		</film>
+	</sensor>
+
+
+	<!-- Add car and road objects to scene below -->
+
+
+</scene>

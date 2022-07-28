@@ -106,20 +106,20 @@ def render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list,
             cars_list[i]['line_displacement'], cars_list[i]['x'])
     
     # Im_all
-    xml_path = output_dir + xml_name + ".xml"
-    generate_xml(xml_path, cam_to_world_matrix, cars_list, output_dir, 
-        render_cars=True, render_ground=True, is_hdr=is_hdr_output, template=template)
+    # xml_path = output_dir + xml_name + ".xml"
+    # generate_xml(xml_path, cam_to_world_matrix, cars_list, output_dir, 
+    #     render_cars=True, render_ground=True, is_hdr=is_hdr_output, template=template)
 
-    if compose_mode == "quotient" or compose_mode == "none":
-        # Im_pl
-        xml_path_pl = output_dir + xml_name + "_pl.xml"
-        generate_xml(xml_path_pl, cam_to_world_matrix, cars_list, output_dir, 
-            render_cars=False, render_ground=True, is_hdr=is_hdr_output, template=template)
+    # if compose_mode == "quotient" or compose_mode == "none":
+    #     # Im_pl
+    #     xml_path_pl = output_dir + xml_name + "_pl.xml"
+    #     generate_xml(xml_path_pl, cam_to_world_matrix, cars_list, output_dir, 
+    #         render_cars=False, render_ground=True, is_hdr=is_hdr_output, template=template)
 
-        # Im_obj
-        xml_path_obj = output_dir + xml_name + "_obj.xml"
-        generate_xml(xml_path_obj, cam_to_world_matrix, cars_list, output_dir, 
-            render_cars=True, render_ground=False, is_hdr=is_hdr_output, template=template)
+    #     # Im_obj
+    #     xml_path_obj = output_dir + xml_name + "_obj.xml"
+    #     generate_xml(xml_path_obj, cam_to_world_matrix, cars_list, output_dir, 
+    #         render_cars=True, render_ground=False, is_hdr=is_hdr_output, template=template)
 
     # handle kwargs
     for key in kwargs:
@@ -146,7 +146,8 @@ def render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list,
         if compose_mode == "quotient" or compose_mode == "none":
             # mts_cmd = "mitsuba" + cli_args + " -o " + pl_img + " " + xml_name + "_pl.xml \n"
             # outfn.write(mts_cmd)
-            mts_cmd = "mitsuba" + cli_args + " -o " + obj_img + " " + xml_name + "_obj.xml \n"
+            # mts_cmd = "mitsuba" + cli_args + " -o " + obj_img + " " + xml_name + "_obj.xml \n"
+            mts_cmd = "mitsuba" + cli_args + " " + "assets/im-5-depth.xml \n"
             outfn.write(mts_cmd)
 
     docker_cmd = '''sudo docker run -v {}:/hosthome/ -it feb79bb374a0 /bin/bash -c \' bash /hosthome/python/docker_script.sh\''''.format(output_dir)
@@ -178,7 +179,7 @@ if __name__ == '__main__':
     # This will be the docker volume mount:
     output_dir = "/home/gdsu/scenes/city_test/" 
 
-    xml_name = "depth_test-1"
+    xml_name = "im-5-depth_obj"
     cam_to_world_matrix = '-6.32009074e-01 3.81421015e-01  6.74598057e-01 -1.95597297e+01 '\
         '5.25615099e-03 8.72582680e-01 -4.88438164e-01  6.43714192e+00 '\
         '-7.74943161e-01  -3.05151563e-01 -5.53484978e-01  4.94516235e+00 '\
@@ -207,12 +208,12 @@ if __name__ == '__main__':
         # "x": 0, "y": 0, "z": None, "scale": 1, "y_rotate": 315, 
         # "line_slope":0.87, "line_displacement":3, "ignore_textures":False},
 
-        {"obj": "assets/Dodge_Ram_2007/Dodge_Ram_2007-TRI.obj", 
-        "x": -15, "y": 0, "z": None, "scale": 1, "y_rotate": 315, 
-        "line_slope":0.87, "line_displacement":3, "ignore_textures":True}, 
-        {"obj": "assets/dmi-models/Mustang_GT/3D_Files/OBJ/mustang_GT-TRI.obj", 
-        "x": -15, "y": 0, "z": None, "scale": 1, "y_rotate": 315, 
-        "line_slope":0.87, "line_displacement":-3, "ignore_textures":False},
+        # {"obj": "assets/Dodge_Ram_2007/Dodge_Ram_2007-TRI.obj", 
+        # "x": -15, "y": 0, "z": None, "scale": 1, "y_rotate": 315, 
+        # "line_slope":0.87, "line_displacement":3, "ignore_textures":True}, 
+        # {"obj": "assets/dmi-models/Mustang_GT/3D_Files/OBJ/mustang_GT-TRI.obj", 
+        # "x": -15, "y": 0, "z": None, "scale": 1, "y_rotate": 315, 
+        # "line_slope":0.87, "line_displacement":-3, "ignore_textures":False},
  
         ]
 
