@@ -11,7 +11,7 @@ import time
 
 
 def generate_xml(xml_file, cam_to_world_matrix, cars_list, docker_mount, bsdf_list=None, 
-    render_ground=True, render_cars=True, is_hdr=False, template="../assets/car_road_template.xml"):
+    render_ground=True, render_cars=True, is_hdr=False, template="../assets/car_depth_template.xml"):
     
     tree = ET.parse(template)
     root = tree.getroot()
@@ -140,12 +140,12 @@ def render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list,
     with open('docker_script.sh', 'w') as outfn:
         outfn.write('cd /hosthome \n')
         # generate mitsuba command
-        mts_cmd = "mitsuba" + cli_args + " -o " + rendered_img_name + " " + xml_name + ".xml \n"
-        outfn.write(mts_cmd)
+        # mts_cmd = "mitsuba" + cli_args + " -o " + rendered_img_name + " " + xml_name + ".xml \n"
+        # outfn.write(mts_cmd)
 
         if compose_mode == "quotient" or compose_mode == "none":
-            mts_cmd = "mitsuba" + cli_args + " -o " + pl_img + " " + xml_name + "_pl.xml \n"
-            outfn.write(mts_cmd)
+            # mts_cmd = "mitsuba" + cli_args + " -o " + pl_img + " " + xml_name + "_pl.xml \n"
+            # outfn.write(mts_cmd)
             mts_cmd = "mitsuba" + cli_args + " -o " + obj_img + " " + xml_name + "_obj.xml \n"
             outfn.write(mts_cmd)
 
@@ -178,7 +178,7 @@ if __name__ == '__main__':
     # This will be the docker volume mount:
     output_dir = "/home/gdsu/scenes/city_test/" 
 
-    xml_name = "pickup_truck-test-noContours"
+    xml_name = "depth_test-1"
     cam_to_world_matrix = '-6.32009074e-01 3.81421015e-01  6.74598057e-01 -1.95597297e+01 '\
         '5.25615099e-03 8.72582680e-01 -4.88438164e-01  6.43714192e+00 '\
         '-7.74943161e-01  -3.05151563e-01 -5.53484978e-01  4.94516235e+00 '\
@@ -209,23 +209,23 @@ if __name__ == '__main__':
 
         {"obj": "assets/Dodge_Ram_2007/Dodge_Ram_2007-TRI.obj", 
         "x": -15, "y": 0, "z": None, "scale": 1, "y_rotate": 315, 
-        "line_slope":0.87, "line_displacement":3, "ignore_textures":False}, 
-        {"obj": "assets/dmi-models/ford-f150/Ford_F-150-TRI.obj", 
-        "x": 0, "y": 0, "z": None, "scale": 1, "y_rotate": 315, 
-        "line_slope":0.87, "line_displacement":3, "ignore_textures":False},
+        "line_slope":0.87, "line_displacement":3, "ignore_textures":True}, 
+        {"obj": "assets/dmi-models/Mustang_GT/3D_Files/OBJ/mustang_GT-TRI.obj", 
+        "x": -15, "y": 0, "z": None, "scale": 1, "y_rotate": 315, 
+        "line_slope":0.87, "line_displacement":-3, "ignore_textures":False},
  
         ]
 
 
     bg_img_path = "../assets/cam2_week1_right_turn_2021-05-01T14-42-00.655968.jpg"
-    compose_mode = "quotient" # "alpha", "overlay", or "quotient"
+    compose_mode = "none" # "alpha", "overlay", or "quotient"
 
 
     rendered_img_name = xml_name + ".png"
     composite_img_name = xml_name + "_" + compose_mode + "_composite.png"
     is_hdr_output = False # if False, output ldr
     
-    template = "../assets/car_road_template.xml"
+    template = "../assets/car_depth_template.xml"
 
     render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list, 
         bg_img_path, rendered_img_name, composite_img_name, compose_mode, is_hdr_output,

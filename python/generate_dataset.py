@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+from cv2 import transform
 from lxml import etree as ET
 from object_insertion import compose_and_blend
 from map_mtl import map_mtl
@@ -21,8 +22,9 @@ def generate_xml(xml_file, cam_to_world_matrix, cars_list, docker_mount,
     sensor_matrix = root.find('sensor').find('transform').find('matrix')
     sensor_matrix.set('value', cam_to_world_matrix) 
 
-    emitter_matrix = root.find('emitter').find('transform').find('matrix')
-    emitter_matrix.set('value', cam_to_world_matrix) 
+    emitter_transform = root.find('emitter').find('transform')
+    if emitter_transform is not None:
+        emitter_transform.find('matrix').set('value', cam_to_world_matrix) 
 
     for car in cars_list:   
         if render_cars:
@@ -115,9 +117,10 @@ def generate_img(docker_mount_dir, run_name, cam_to_world_matrix, cars_list,
             # segmentation mask
             xml_path_segm = "{}/{}/{}_segm_{}.xml".format(docker_mount_dir, wip_dir, run_name, i)
             generate_xml(xml_path_segm, cam_to_world_matrix, [cars_list[i]], docker_mount_dir, 
-                render_cars=True, render_ground=False, template='../assets/car_segm_template.xml')
+                render_cars=True, render_ground=False, bsdf_list=[],
+                template='../assets/car_depth_template.xml')
 
-            img_name = "{}/{}_segm_{}.png".format(output_dir, run_name, i)
+            img_name = "{}/{}_segm_{}.npy".format(output_dir, run_name, i)
             mts_cmd = "mitsuba {} -o {} {}/{}_segm_{}.xml \n".format(cli_args, img_name, wip_dir, run_name, i)
             outfn.write(mts_cmd)
 
@@ -210,10 +213,12 @@ if __name__ == '__main__':
     # generate_dataset(docker_mount_dir, run_name, cam_to_world_matrix, 100,
     #     low=10, high=20, start_idx=0)
 
-
-
     run_name = "dataset-2"
     generate_dataset(docker_mount_dir, run_name, cam_to_world_matrix, 100,
         low=10, high=20, start_idx=0)
+
+    # run_name = "depth-test"
+    # generate_dataset(docker_mount_dir, run_name, cam_to_world_matrix, 1,
+    #     low=2, high=2, start_idx=0)
     
     

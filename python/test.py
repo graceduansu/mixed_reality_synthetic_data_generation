@@ -1,5 +1,4 @@
 
-from re import T
 import numpy as np
 from utils import *
 from dataset_params import *
