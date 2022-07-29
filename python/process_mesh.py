@@ -335,25 +335,7 @@ def calculate_bboxes(assets_dir, json_file):
 
 
 if __name__ == '__main__':
-    # calculate_bboxes('/home/gdsu/scenes/city_test', 'assets/car_models-COPY.json')
     
-
-
-    # count = 0
-    # for t in TRAJS:
-    #     traj_array = None
-    #     with open(t, 'rb') as f:
-    #         traj_array = np.load(f)
-
-    #     for mat in traj_array:
-    #         if mat[2,3] < -30:
-    #             count += 1
-
-    # total = len(TRAJS) * 20
-    # ratio = count / total
-    # print(count)
-    # print(ratio)
-            
 
     # old_path = '/home/gdsu/scenes/city_test/assets/construction_equipment/cone/cone-TRI.obj'
     # new_path = '/home/gdsu/scenes/city_test/assets/construction_equipment/cone/cone-TRI.obj'
@@ -416,12 +398,13 @@ if __name__ == '__main__':
     # bpy_process_mesh(old_path, new_path, target_length=5.5, decimateRatio=1)
     # clean_mtl(new_path)
     # calculate_y_trans(new_path)
-    """
-    old_path = '/home/gdsu/scenes/city_test/assets/roadwork/cone/trafficCone.obj'
-    new_path = '/home/gdsu/scenes/city_test/assets/roadwork/cone/trafficCone-TRI.obj'
-    bpy_process_mesh(old_path, new_path, target_length=0.72, decimateRatio=None, rotations=0)
-    old_path = '/home/gdsu/scenes/city_test/assets/roadwork/construction_sign/signConstructionWork_02.obj'
-    new_path = '/home/gdsu/scenes/city_test/assets/roadwork/construction_sign/signConstructionWork_02-TRI.obj'
-    bpy_process_mesh(old_path, new_path, target_length=2.5, decimateRatio=None, rotations=0)
-    """
+    
+    old_path = '/home/gdsu/scenes/city_test/assets/roadwork/barrier/construction_barrier-TRI.obj'
+    new_path = '/home/gdsu/scenes/city_test/assets/roadwork/barrier/construction_barrier-TRI.obj'
+    bpy_process_mesh(old_path, new_path, target_length=0.8, decimateRatio=None, rotations=0)
+    # old_path = '/home/gdsu/scenes/city_test/assets/roadwork/construction_sign/signConstructionWork_02.obj'
+    # new_path = '/home/gdsu/scenes/city_test/assets/roadwork/construction_sign/signConstructionWork_02-TRI.obj'
+    # bpy_process_mesh(old_path, new_path, target_length=2.5, decimateRatio=None, rotations=0)
+    clean_mtl(new_path)
+    calculate_y_trans(new_path)
 

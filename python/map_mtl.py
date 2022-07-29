@@ -14,6 +14,7 @@ CAR_MTL_DICT = {'thindielectric': ['gla', 'translucent', 'verre', 'wind', 'vitre
 
 def get_new_kd_bitmap(dc, dm, obj_dir, docker_mount):
     # TODO: convert TGA to png
+    # return dm
     map_kd = cv2.imread(os.path.join(docker_mount, obj_dir, dm))
     if map_kd is not None:
         map_kd = map_kd.astype('float64')
@@ -26,7 +27,7 @@ def get_new_kd_bitmap(dc, dm, obj_dir, docker_mount):
         new_name = os.path.basename(stem) + "-MTS" + ext
 
         # NOTE: currently all -MTS maps have been generated
-        # cv2.imwrite(os.path.join(docker_mount, obj_dir, new_name), new_map)
+        cv2.imwrite(os.path.join(docker_mount, obj_dir, new_name), new_map)
         return new_name
     else:
         return dm
@@ -103,18 +104,15 @@ def mtl_to_bsdf(mtl_instance, obj_dir, docker_mount, ignore_textures=True, new_c
                 elif mat =='conductor':
                     bsdf_str = '''<bsdf name="{}" type="twosided" >
                         <bsdf type="coating" >
-                            <float name="intIOR" value="1.3" />
-                            <float name="extIOR" value="1" />
                             <float name="thickness" value="1" />
                             <rgb name="sigmaA" value="0"/>
                             <bsdf type="twosided" >
                                 <bsdf type="roughconductor" >
+                                    <string name="material" value="Cr" />
                                     <float name="alpha" value="0.1" />
                                     <string name="distribution" value="beckmann" />
                                     <float name="extEta" value="1" />
                                     <rgb name="specularReflectance" value="1, 1, 1"/>
-                                    <rgb name="eta" value="1.65746, 0.880369, 0.521229"/>
-                                    <rgb name="k" value="9.22387, 6.26952, 4.837"/>
                                 </bsdf>
                             </bsdf>
                         </bsdf>
@@ -146,18 +144,15 @@ def mtl_to_bsdf(mtl_instance, obj_dir, docker_mount, ignore_textures=True, new_c
 
                     bsdf_str = '''<bsdf name="{}" type="twosided" >
                         <bsdf type="coating" >
-                            <float name="intIOR" value="1.3" />
-                            <float name="extIOR" value="1" />
                             <float name="thickness" value="1" />
                             {}
                             <bsdf type="twosided" >
                                 <bsdf type="roughconductor" >
+                                    <string name="material" value="Cr" />
                                     <float name="alpha" value="0.1" />
                                     <string name="distribution" value="beckmann" />
                                     <float name="extEta" value="1" />
                                     <rgb name="specularReflectance" value="1, 1, 1"/>
-                                    <rgb name="eta" value="1.65746, 0.880369, 0.521229"/>
-                                    <rgb name="k" value="9.22387, 6.26952, 4.837"/>
                                 </bsdf>
                             </bsdf>
                         </bsdf>
