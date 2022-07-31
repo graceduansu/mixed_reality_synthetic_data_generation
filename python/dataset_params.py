@@ -2,6 +2,9 @@ import json
 from glob import glob
 
 
+FINAL_HEIGHT = 750
+FINAL_WIDTH = 1000
+
 MITSUBA_ARGS = {'turbidity':3, 'latitude':40.44694, 'longitude':-79.94902, 
     'timezone':-4, 'year':2021, 'month':5, 'day':4, 'hour':14, 'minute':30, 
     'sunScale':2, 'skyScale':2, 

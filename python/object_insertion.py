@@ -7,14 +7,14 @@ from skimage.morphology import (erosion, dilation, opening, closing,  # noqa
                                 white_tophat)
 from skimage.morphology import black_tophat, skeletonize, convex_hull_image  # noqa
 from skimage.morphology import disk  # noqa
-
+from dataset_params import FINAL_HEIGHT, FINAL_WIDTH
 
 
 def compose_and_blend(bg_img_path, im_all_path, dest_image_path, im_pl_path, im_obj_path):
 
     bg_img = Image.open(bg_img_path)
-    height = bg_img.size[1]
-    width = bg_img.size[0]
+    height = FINAL_HEIGHT
+    width = FINAL_WIDTH
     bg_img = np.asarray(bg_img)
 
     im_all = Image.open(im_all_path)
@@ -91,8 +91,8 @@ def optix_compose(bg_img_path, im_all_path, dest_image_path, im_pl_path, im_obj_
     m_all_path, m_obj_path):
 
     bg_img = Image.open(bg_img_path)
-    height = bg_img.size[1]
-    width = bg_img.size[0]
+    height = FINAL_HEIGHT
+    width = FINAL_WIDTH
     bg_img = np.asarray(bg_img)
 
     im_all = Image.open(im_all_path)

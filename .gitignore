@@ -21,3 +21,4 @@ vid/
 !assets/car_segm_template.xml
 !assets/car_depth_template.xml
 *.npy
+*.npz
