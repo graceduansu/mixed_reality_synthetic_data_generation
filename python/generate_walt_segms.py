@@ -58,7 +58,7 @@ def generate_walt_segms(data_dir):
     os.system('cp {} {}/images/'.format(glob_str, data_dir))
     
     for i in trange(num_imgs):
-        os.system('mv {}/images/im-{}_composite.png {}/images/{}-im-{}_composite.png'
+        os.system('mv {}/images/im-{}_composite.png {}/images/{}-im-{}.png'
             .format(data_dir, i, data_dir, dirname, i))
 
     # move to walt dir

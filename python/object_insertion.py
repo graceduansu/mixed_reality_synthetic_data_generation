@@ -15,6 +15,7 @@ def compose_and_blend(bg_img_path, im_all_path, dest_image_path, im_pl_path, im_
     bg_img = Image.open(bg_img_path)
     height = FINAL_HEIGHT
     width = FINAL_WIDTH
+    bg_img = bg_img.resize((width, height))
     bg_img = np.asarray(bg_img)
 
     im_all = Image.open(im_all_path)
