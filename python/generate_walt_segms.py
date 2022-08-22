@@ -18,6 +18,7 @@ def generate_walt_segms(data_dir):
     dirname = os.path.basename(data_dir)
     print(dirname)
     
+    
     # TODO: check if there are segm masks that weren't rendered... 
     for i in trange(num_imgs):
         glob_str = "{}/im-{}_segm_*.npy".format(data_dir, i)
@@ -52,8 +53,10 @@ def generate_walt_segms(data_dir):
         
         cv2.imwrite('{}/Segmentation/{}-im-{}.jpg'.format(data_dir, dirname, i), mask_stacked[:, :, ::-1]*30)
         np.savez_compressed('{}/Segmentation/{}-im-{}'.format(data_dir, dirname, i), mask=mask_stacked_all)
+    
 
     # move composite images
+    glob_str = "{}/*composite.png".format(data_dir)
     os.system('mkdir {}/images'.format(data_dir))
     os.system('cp {} {}/images/'.format(glob_str, data_dir))
     
@@ -64,7 +67,7 @@ def generate_walt_segms(data_dir):
     # move to walt dir
 
 if __name__ == '__main__':
-    data_dir = '/home/gdsu/scenes/city_test/enfuego-6'
+    data_dir = '/home/gdsu/scenes/city_test/dataset-2'
     generate_walt_segms(data_dir)
 
     

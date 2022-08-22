@@ -23,6 +23,7 @@ data_dir = '/home/gdsu/scenes/city_test/{}/Segmentation'.format(dirname)
 
 glob_str = "{}/*.png".format(data_dir)
 img_list = glob(glob_str)
+print(len(img_list))
 for i in trange(len(img_list)):
     cmd = 'mv {}/im-{}.png {}/{}-im-{}.png'.format(data_dir, i, data_dir, dirname, i)
     

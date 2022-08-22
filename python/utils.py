@@ -133,3 +133,24 @@ def str_to_mat(mat_str):
     mat = np.array(mat_list)
     mat = np.reshape(mat, (4,4))
     return mat
+
+
+def get_traj_mat(idx=7, rand_idx=0):
+    traj_file = TRAJS[idx]
+    traj_array = None
+    with open(traj_file, 'rb') as f:
+        traj_array = np.load(f)
+
+    mat = traj_array[rand_idx]
+    
+    mat_str = ''
+    for row in mat:
+        row_str = np.array2string(row)
+        # remove '['
+        row_str = row_str[1:]
+        # remove ']'
+        row_str = row_str[:-1]
+        mat_str += row_str
+        mat_str += ' '
+
+    return mat_str, mat

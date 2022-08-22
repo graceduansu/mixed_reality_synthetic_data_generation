@@ -14,7 +14,7 @@ CAR_MTL_DICT = {'thindielectric': ['gla', 'translucent', 'verre', 'wind', 'vitre
 
 def get_new_kd_bitmap(dc, dm, obj_dir, docker_mount):
     # TODO: convert TGA to png
-    # return dm
+    return dm
     map_kd = cv2.imread(os.path.join(docker_mount, obj_dir, dm))
     if map_kd is not None:
         map_kd = map_kd.astype('float64')
@@ -180,7 +180,7 @@ def mtl_to_bsdf(mtl_instance, obj_dir, docker_mount, ignore_textures=True, new_c
         {}
         <float name="exponent" value="{}" />
     </bsdf>'''.format(mtl_name, specular, diffuse, phong_exp)
-    return bsdf_str
+    return bsdf_str 
 
 
 # check: does mitsuba already handle mtl transparency?

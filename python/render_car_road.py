@@ -44,7 +44,8 @@ def generate_xml(xml_file, cam_to_world_matrix, cars_list, docker_mount, bsdf_li
             car_element = ET.fromstring(car_string)
 
             if bsdf_list is None:
-                new_bsdf_list = map_mtl(car['obj'], docker_mount, ignore_textures=car['ignore_textures'])
+                new_bsdf_list = map_mtl(car['obj'], docker_mount, 
+                    ignore_textures=car['ignore_textures'], new_color=car['color'])
             else:
                 new_bsdf_list = bsdf_list
             
@@ -89,8 +90,8 @@ def calculate_car_pos(m, b, x_pos):
    
 
 MITSUBA_ARGS = {'turbidity':3, 'latitude':40.44694, 'longitude':-79.94902, 
-    'timezone':-4, 'year':2021, 'month':5, 'day':1, 'hour':14, 'minute':43, 
-    'sunScale':2, 'skyScale':2, 
+    'timezone':-4, 'year':2021, 'month':5, 'day':1, 'hour':15, 'minute':16, 
+    'sunScale':4, 'skyScale':4, 
     'fov':90, 'sampleCount':16, 'width':1000, 'height':750}
 
 
@@ -100,7 +101,7 @@ def render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list,
     """
     See MITSUBA_ARGS dict initialization above for optional kwargs
     """
-
+    
     # For each car in cars_list, calculate the correct z position,
     #   given the desired x position and line equation
     for i in range(len(cars_list)):
@@ -158,7 +159,7 @@ def render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list,
 
     rendered_img_path = output_dir + rendered_img_name
     composite_img_path = output_dir + composite_img_name
-
+    
     # compose render onto bg_img_path
     if compose_mode == "alpha":
         alpha_blend(bg_img_path, rendered_img_path, composite_img_path)
@@ -180,7 +181,7 @@ if __name__ == '__main__':
     # This will be the docker volume mount:
     output_dir = "/home/gdsu/scenes/city_test/" 
 
-    xml_name = "my_big_vehicles"
+    xml_name = "spot_the_fake"
     cam_to_world_matrix = '-6.32009074e-01 3.81421015e-01  6.74598057e-01 -1.95597297e+01 '\
         '5.25615099e-03 8.72582680e-01 -4.88438164e-01  6.43714192e+00 '\
         '-7.74943161e-01  -3.05151563e-01 -5.53484978e-01  4.94516235e+00 '\
@@ -189,38 +190,42 @@ if __name__ == '__main__':
     # car z position will be calculated later according to line equation
     # TODO: Note: obj path is weird...
     cars_list = [
-        # {"obj": "assets/mercedes-benz/mercedes_amg-TRI.obj", 
-        # "x": -15, "y": 0, "z": None, "scale": 1, "y_rotate": 315, 
-        # "line_slope":0.87, "line_displacement":3, "ignore_textures":False}, 
-        # {"obj": "assets/Mercedes_w211/Mercedes-w211-TRI.obj", 
-        # "x": -5, "y": 0, "z": None, "scale": 1, "y_rotate": 315, 
-        # "line_slope":0.87, "line_displacement":3, "ignore_textures":False},
         # {"obj": "assets/chevy_camaro/camaro_ss_2016-TRI.obj", 
-        # "x": -10, "y": 0, "z": None, "scale": 1, "y_rotate": 135, 
-        # "line_slope":0.87, "line_displacement":3, "ignore_textures":False},
-        # {"obj": "assets/dmi-models/Mustang_GT/3D_Files/OBJ/mustang_GT-TRI.obj", 
-        # "x": 0, "y": 0, "z": None, "scale": 1, "y_rotate": 135, 
-        # "line_slope":0.87, "line_displacement":3, "ignore_textures":False},
+        # "x": -17, "y": 0, "z": None, "scale": 1, "y_rotate": 45, 
+        # "line_slope":-0.95, "line_displacement":-12, "ignore_textures":False}, 
+        # {"obj": "assets/chevy_camaro/camaro_ss_2016-TRI.obj", 
+        # "x": -13, "y": 0, "z": None, "scale": 1, "y_rotate": 45, 
+        # "line_slope":-0.95, "line_displacement":-12, "ignore_textures":False},
+        # {"obj": "assets/chevy_camaro/camaro_ss_2016-TRI.obj", 
+        # "x": -9, "y": 0, "z": None, "scale": 1, "y_rotate": 45, 
+        # "line_slope":-0.95, "line_displacement":-12, "ignore_textures":False},
+        {"obj": "assets/mercedes-vito/mercedes_vito-TRI.obj", 
+        "x": -6, "y": 0, "z": None, "scale": 1, "y_rotate": 125, 
+        "line_slope":-0.95, "line_displacement":-2.5, "ignore_textures":False,
+        'color':[.99, .99, .99]},
+        # {"obj": "assets/chevy_camaro/camaro_ss_2016-TRI.obj", 
+        # "x": -1, "y": 0, "z": None, "scale": 1, "y_rotate": 45, 
+        # "line_slope":-0.95, "line_displacement":-12, "ignore_textures":False}, 
+        # {"obj": "assets/chevy_camaro/camaro_ss_2016-TRI.obj", 
+        # "x": 3, "y": 0, "z": None, "scale": 1, "y_rotate": 45, 
+        # "line_slope":-0.95, "line_displacement":-12, "ignore_textures":False},
+        # {"obj": "assets/chevy_camaro/camaro_ss_2016-TRI.obj", 
+        # "x": 7, "y": 0, "z": None, "scale": 1, "y_rotate": 45, 
+        # "line_slope":-0.95, "line_displacement":-12, "ignore_textures":False},
 
-        # {"obj": "assets/cherokee-jeep/Jeep_Cherokee-TRI.obj", 
-        # "x": -15, "y": 0, "z": None, "scale": 1, "y_rotate": 315, 
-        # "line_slope":0.87, "line_displacement":3, "ignore_textures":False}, 
-        # {"obj": "assets/Nissan/Nissan-Rogue-2014/rogue-TRI.obj", 
-        # "x": 0, "y": 0, "z": None, "scale": 1, "y_rotate": 315, 
-        # "line_slope":0.87, "line_displacement":3, "ignore_textures":False},
-
-        {"obj": "assets/dmi-models/ambulance/Ambulance-TRI.obj", 
-        "x": -15, "y": 0.989696, "z": None, "scale": 1, "y_rotate": 225, 
-        "line_slope":-0.95, "line_displacement":-14, "ignore_textures":False},
-        {"obj": "assets/dmi-models/american-pumper/pumper-TRI.obj", 
-        "x": -8, "y": 1.65, "z": None, "scale": 1, "y_rotate": 225, 
-        "line_slope":-0.95, "line_displacement":-25, "ignore_textures":True},
+        # {"obj": "assets/dmi-models/ambulance/Ambulance-TRI.obj", 
+        # "x": -15, "y": 0.989696, "z": None, "scale": 1, "y_rotate": 225, 
+        # "line_slope":-0.95, "line_displacement":-14, "ignore_textures":False},
+        # {"obj": "assets/dmi-models/american-pumper/pumper-TRI.obj", 
+        # "x": -8, "y": 1.65, "z": None, "scale": 1, "y_rotate": 225, 
+        # "line_slope":-0.95, "line_displacement":-25, "ignore_textures":True},
   
- 
         ]
 
 
-    bg_img_path = "../assets/cam2_week1_right_turn_2021-05-01T14-42-00.655968.jpg"
+    #bg_img_path = "../assets/cam2_week1_cars_buses_forwards_2021-05-01T15-16-56.571190.jpg"
+    bg_img_path = "../assets/cam2_week1_forward_2021-05-01T14-43-40.623202.jpg"
+    
     compose_mode = "quotient" # "alpha", "overlay", or "quotient"
 
 
@@ -233,8 +238,7 @@ if __name__ == '__main__':
     render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list, 
         bg_img_path, rendered_img_name, composite_img_name, compose_mode, is_hdr_output,
         template,
-        width=1000, height=750, fov=90, sampleCount=32,
-        # turbidity=3, latitude=40.5247051, longitude=-79.962172,
-        # year=2022, month=3, day=16, hour=16, minute=30
+        width=1000, height=750, fov=90, sampleCount=64,
+        hour=15, minute=30, day=4, turbidity=5
         )
     

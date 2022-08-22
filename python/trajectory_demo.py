@@ -2,14 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import os
-from cv2 import transform
 from lxml import etree as ET
 from object_insertion import compose_and_blend
 from map_mtl import map_mtl
 import time
 from utils import *
 from dataset_params import *
-from tqdm import tqdm, trange
+from tqdm import trange
 
 
 def generate_xml(xml_file, cam_to_world_matrix, cars_list, docker_mount, 
@@ -113,17 +112,6 @@ def generate_img(docker_mount_dir, run_name, cam_to_world_matrix, cars_list,
         mts_cmd = "mitsuba {} -o {} {}/{}_obj.xml \n".format(cli_args, img_name, wip_dir, run_name)
         outfn.write(mts_cmd)
 
-        for i in range(len(cars_list)):
-            # segmentation mask
-            xml_path_segm = "{}/{}/{}_segm_{}.xml".format(docker_mount_dir, wip_dir, run_name, i)
-            generate_xml(xml_path_segm, cam_to_world_matrix, [cars_list[i]], docker_mount_dir, 
-                render_cars=True, render_ground=False, bsdf_list=[],
-                template='../assets/car_depth_template.xml')
-
-            img_name = "{}/{}_segm_{}.npy".format(output_dir, run_name, i)
-            mts_cmd = "mitsuba {} -o {} {}/{}_segm_{}.xml \n".format(cli_args, img_name, wip_dir, run_name, i)
-            outfn.write(mts_cmd)
-
     docker_cmd = '''sudo docker run -v {}:/hosthome/ -it feb79bb374a0 /bin/bash -c \' bash /hosthome/{}/docker_script.sh\''''.format(docker_mount_dir, wip_dir)
     startRenderTime = time.time()
     s = time.localtime(startRenderTime)
@@ -150,10 +138,10 @@ def generate_dataset(root_dir, dataset_name, cam_to_world_matrix, num_imgs,
 
     for n in trange(start_idx, num_imgs, desc='{} img num'.format(dataset_name)):
         cars_list = []
-        i = 0
-        num_cars = np.random.randint(low, high+1)
+        i = 1
+        num_cars = 1
 
-        while len(cars_list) < num_cars:
+        while i < 16:
             car_dict = {"obj": None, 
             "matrix": None, 
             "color": None,
@@ -161,43 +149,37 @@ def generate_dataset(root_dir, dataset_name, cam_to_world_matrix, num_imgs,
             "obj_idx": None,
             "np_mat": None}
             
-            car_dict['color'] = list(get_random_color())
-            car_idx = get_random_obj_idx()
+            car_dict['color'] = [153 / 255.0, 157/ 255.0, 160/ 255.0]
+            car_idx = 2
             car_dict['obj_idx'] = car_idx
             car_dict['obj'] = CAR_MODELS[car_idx]['obj_file']
-            car_dict['matrix'], car_dict['np_mat'] = get_random_matrix()
+            car_dict['matrix'], car_dict['np_mat'] = get_traj_mat(rand_idx=i)
 
-            bbox_a = calc_bbox_transform(car_dict['np_mat'], CAR_MODELS[car_idx]['bbox'])
+            cars_list.append(car_dict)
+            i += 3
 
-            # check bbox collisions
-            j = 0
-            collision = False
-            while j in range(len(cars_list)) and (collision is False):
-                idx_b = cars_list[j]['obj_idx']
-                bbox_b = calc_bbox_transform(cars_list[j]['np_mat'], CAR_MODELS[idx_b]['bbox'])
-
-                if check_collision(bbox_a, bbox_b):
-                    collision = True
-                    break
-                else:
-                    j += 1
-                    continue
+        i += 1
+        car_dict = {"obj": None, 
+            "matrix": None, 
+            "color": None,
+            "ignore_textures":False,
+            "obj_idx": None,
+            "np_mat": None}
             
-            if collision is True:
-                # go back to beginning of loop and try again
-                continue
-            else:
-                # there were no collisions
-                cars_list.append(car_dict)
-                i += 1
-    
+        car_dict['color'] = [153 / 255.0, 157/ 255.0, 160/ 255.0]
+        car_idx = 2
+        car_dict['obj_idx'] = car_idx
+        car_dict['obj'] = CAR_MODELS[car_idx]['obj_file']
+        car_dict['matrix'], car_dict['np_mat'] = get_traj_mat(rand_idx=i)
+
+        cars_list.append(car_dict)   
 
         bg_img_path, hr = '/home/gdsu/scenes/city_test/assets/fifth_craig_median_images/T19-median_image.jpg', 15
 
         run_name = "im-{}".format(n)
         generate_img(root_dir, run_name, cam_to_world_matrix, cars_list, 
             bg_img_path, dataset_name, wip_dir,
-            width=1000, height=750, fov=90, sampleCount=16, hour=hr
+            width=1000, height=750, fov=90, sampleCount=32, hour=hr
             )
 
 
@@ -210,16 +192,8 @@ if __name__ == '__main__':
         '-7.74943161e-01  -3.05151563e-01 -5.53484978e-01  4.94516235e+00 '\
         '0 0 0 1'
 
-    # run_name = "dataset-1"
-    # generate_dataset(docker_mount_dir, run_name, cam_to_world_matrix, 1000,
-    #     low=10, high=20, start_idx=34)
+    run_name = "traj_demo"
+    generate_dataset(docker_mount_dir, run_name, cam_to_world_matrix, 1,
+        low=10, high=20, start_idx=0)
 
-    run_name = "poster-data"
-    generate_dataset(docker_mount_dir, run_name, cam_to_world_matrix, 3,
-        low=8, high=10, start_idx=0)
-
-    # run_name = "depth-test"
-    # generate_dataset(docker_mount_dir, run_name, cam_to_world_matrix, 1,
-    #     low=2, high=2, start_idx=0)
-    
     

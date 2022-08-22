@@ -22,3 +22,5 @@ vid/
 !assets/car_depth_template.xml
 *.npy
 *.npz
+*.jpg
+*.gz
