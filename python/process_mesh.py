@@ -337,55 +337,55 @@ def calculate_bboxes(assets_dir, json_file):
 if __name__ == '__main__':
     
 
-    # old_path = '/home/gdsu/scenes/city_test/assets/construction_equipment/cone/cone-TRI.obj'
-    # new_path = '/home/gdsu/scenes/city_test/assets/construction_equipment/cone/cone-TRI.obj'
+    # old_path = '/home/grace/city_test/assets/construction_equipment/cone/cone-TRI.obj'
+    # new_path = '/home/grace/city_test/assets/construction_equipment/cone/cone-TRI.obj'
     # separate_objs(old_path, new_path, scale=0.001, decimateRatio=1)
     #bpy_process_mesh(old_path, new_path, scale=0.01, decimateRatio=1)
     
 
-    # old_path = '/home/gdsu/scenes/city_test/assets/dmi-models/renault_bus/Renault_Agora_BUS.obj'
-    # new_path = '/home/gdsu/scenes/city_test/assets/dmi-models/renault_bus/Renault_Agora_BUS-TRI.obj'
+    # old_path = '/home/grace/city_test/assets/dmi-models/renault_bus/Renault_Agora_BUS.obj'
+    # new_path = '/home/grace/city_test/assets/dmi-models/renault_bus/Renault_Agora_BUS-TRI.obj'
 
     # old_path = '/home/grace/city_test/assets/dmi-models/american-pumper/pumper.obj'
     # new_path = '/home/grace/city_test/assets/dmi-models/american-pumper/pumper-TRI.obj'
     #bpy_process_mesh(old_path, new_path, target_length=12.2, decimateRatio=1)
-    # old_path = '/home/gdsu/scenes/city_test/assets/dmi-models/ambulance/Ambulance.obj'
-    # new_path = '/home/gdsu/scenes/city_test/assets/dmi-models/ambulance/Ambulance-TRI.obj'
+    # old_path = '/home/grace/city_test/assets/dmi-models/ambulance/Ambulance.obj'
+    # new_path = '/home/grace/city_test/assets/dmi-models/ambulance/Ambulance-TRI.obj'
     # bpy_process_mesh(old_path, new_path, target_length=6.7, decimateRatio=1)
 
-    # old_path = '/home/gdsu/scenes/city_test/assets/tavria-hatchback/Zaz1102_Clean.obj'
-    # new_path = '/home/gdsu/scenes/city_test/assets/tavria-hatchback/Zaz1102_Clean-TRI.obj'
+    # old_path = '/home/grace/city_test/assets/tavria-hatchback/Zaz1102_Clean.obj'
+    # new_path = '/home/grace/city_test/assets/tavria-hatchback/Zaz1102_Clean-TRI.obj'
     # bpy_process_mesh(old_path, new_path, target_length=3.7, decimateRatio=1)
     # clean_mtl(new_path)
     # calculate_y_trans(new_path)
 
     
-    # old_path = '/home/gdsu/scenes/city_test/assets/dodge_charger/dodge_charger.fbx'
-    # convert_fbx_to_obj('/home/gdsu/scenes/city_test/assets/chevy-van/source/CHVAN_panel_MODEL.fbx', 
+    # old_path = '/home/grace/city_test/assets/dodge_charger/dodge_charger.fbx'
+    # convert_fbx_to_obj('/home/grace/city_test/assets/chevy-van/source/CHVAN_panel_MODEL.fbx', 
     #     old_path)
-    # new_path = '/home/gdsu/scenes/city_test/assets/chevy-van/chevy_van-TRI.obj'
+    # new_path = '/home/grace/city_test/assets/chevy-van/chevy_van-TRI.obj'
     # bpy_process_mesh(old_path, new_path, target_length=5.69, decimateRatio=1)
     # clean_mtl(new_path)
     # calculate_y_trans(new_path)
 
-    # old_path = '/home/gdsu/scenes/city_test/assets/Nissan/Nissan-Rogue-2014/rogue-TRI.obj'
-    # new_path = '/home/gdsu/scenes/city_test/assets/Nissan/Nissan-Rogue-2014/rogue-TRI.obj'
+    # old_path = '/home/grace/city_test/assets/Nissan/Nissan-Rogue-2014/rogue-TRI.obj'
+    # new_path = '/home/grace/city_test/assets/Nissan/Nissan-Rogue-2014/rogue-TRI.obj'
     # bpy_process_mesh(old_path, new_path, target_length=4.63, decimateRatio=1)
     # clean_mtl(new_path)
     # calculate_y_trans(new_path)
 
-    # old_path = '/home/gdsu/scenes/city_test/assets/chevy_camaro/camaro_ss_2016.obj'
-    # new_path = '/home/gdsu/scenes/city_test/assets/chevy_camaro/camaro_ss_2016-TRI.obj'
+    # old_path = '/home/grace/city_test/assets/chevy_camaro/camaro_ss_2016.obj'
+    # new_path = '/home/grace/city_test/assets/chevy_camaro/camaro_ss_2016-TRI.obj'
     # #bpy_y_trans(old_path, new_path)
     # bpy_process_mesh(old_path, new_path, target_length=4.783, decimateRatio=1)
     # clean_mtl(new_path)
     # calculate_y_trans(new_path)
 
-    # new_path = '/home/gdsu/scenes/city_test/assets/toyota-land-cruiser/uploads_files_3120740_Toyota+Land+Cruiser+VXR-TRI.obj'
+    # new_path = '/home/grace/city_test/assets/toyota-land-cruiser/uploads_files_3120740_Toyota+Land+Cruiser+VXR-TRI.obj'
     # calculate_y_trans(new_path)
 
-    # old_path = '/home/gdsu/scenes/city_test/assets/mercedes_coupe_2019/mercedes_s63_amg_coupe_2019.obj'
-    # new_path = '/home/gdsu/scenes/city_test/assets/mercedes-benz/mercedes_amg-TRI.obj'
+    # old_path = '/home/grace/city_test/assets/mercedes_coupe_2019/mercedes_s63_amg_coupe_2019.obj'
+    # new_path = '/home/grace/city_test/assets/mercedes-benz/mercedes_amg-TRI.obj'
     # # bpy_process_mesh(old_path, new_path, target_length=5, decimateRatio=1)
     # # clean_mtl(new_path)
     # #calculate_y_trans(new_path)
@@ -393,17 +393,17 @@ if __name__ == '__main__':
     # my_obj.load()
     # print(my_obj.get_bbox())
 
-    # old_path = '/home/gdsu/scenes/city_test/assets/ford-econoline/ford-e-150.obj'
-    # new_path = '/home/gdsu/scenes/city_test/assets/ford-econoline/ford-e-150-TRI.obj'
+    # old_path = '/home/grace/city_test/assets/ford-econoline/ford-e-150.obj'
+    # new_path = '/home/grace/city_test/assets/ford-econoline/ford-e-150-TRI.obj'
     # bpy_process_mesh(old_path, new_path, target_length=5.5, decimateRatio=1)
     # clean_mtl(new_path)
     # calculate_y_trans(new_path)
     
-    old_path = '/home/gdsu/scenes/city_test/assets/roadwork/barrier/construction_barrier-TRI.obj'
-    new_path = '/home/gdsu/scenes/city_test/assets/roadwork/barrier/construction_barrier-TRI.obj'
+    old_path = '/home/grace/city_test/assets/roadwork/barrier/construction_barrier-TRI.obj'
+    new_path = '/home/grace/city_test/assets/roadwork/barrier/construction_barrier-TRI.obj'
     bpy_process_mesh(old_path, new_path, target_length=0.8, decimateRatio=None, rotations=0)
-    # old_path = '/home/gdsu/scenes/city_test/assets/roadwork/construction_sign/signConstructionWork_02.obj'
-    # new_path = '/home/gdsu/scenes/city_test/assets/roadwork/construction_sign/signConstructionWork_02-TRI.obj'
+    # old_path = '/home/grace/city_test/assets/roadwork/construction_sign/signConstructionWork_02.obj'
+    # new_path = '/home/grace/city_test/assets/roadwork/construction_sign/signConstructionWork_02-TRI.obj'
     # bpy_process_mesh(old_path, new_path, target_length=2.5, decimateRatio=None, rotations=0)
     clean_mtl(new_path)
     calculate_y_trans(new_path)

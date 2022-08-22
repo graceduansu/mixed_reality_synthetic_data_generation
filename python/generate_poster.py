@@ -192,7 +192,7 @@ def generate_dataset(root_dir, dataset_name, cam_to_world_matrix, num_imgs,
                 i += 1
     
 
-        bg_img_path, hr = get_random_bg_and_hour()
+        bg_img_path, hr = '/home/grace/city_test/assets/fifth_craig_median_images/T19-median_image.jpg', 15
 
         run_name = "im-{}".format(n)
         generate_img(root_dir, run_name, cam_to_world_matrix, cars_list, 
@@ -210,13 +210,13 @@ if __name__ == '__main__':
         '-7.74943161e-01  -3.05151563e-01 -5.53484978e-01  4.94516235e+00 '\
         '0 0 0 1'
 
-    #run_name = "enfuego-13"
-    #generate_dataset(docker_mount_dir, run_name, cam_to_world_matrix, 1000,
-    #    low=10, high=20, start_idx=0)
+    # run_name = "dataset-1"
+    # generate_dataset(docker_mount_dir, run_name, cam_to_world_matrix, 1000,
+    #     low=10, high=20, start_idx=34)
 
     run_name = "poster-data"
-    generate_dataset(docker_mount_dir, run_name, cam_to_world_matrix, 3,
-        low=8, high=10, start_idx=0)
+    generate_dataset(docker_mount_dir, run_name, cam_to_world_matrix, 15,
+        low=8, high=8, start_idx=10)
 
     # run_name = "depth-test"
     # generate_dataset(docker_mount_dir, run_name, cam_to_world_matrix, 1,

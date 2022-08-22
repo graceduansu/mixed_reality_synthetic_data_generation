@@ -178,7 +178,7 @@ if __name__ == '__main__':
     ######### Required arguments. Modify as desired: #############
 
     # This will be the docker volume mount:
-    output_dir = "/home/gdsu/scenes/city_test/" 
+    output_dir = "/home/grace/city_test/" 
 
     xml_name = "my_big_vehicles"
     cam_to_world_matrix = '-6.32009074e-01 3.81421015e-01  6.74598057e-01 -1.95597297e+01 '\

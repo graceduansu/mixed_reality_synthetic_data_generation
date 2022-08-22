@@ -14,7 +14,7 @@ CAR_MTL_DICT = {'thindielectric': ['gla', 'translucent', 'verre', 'wind', 'vitre
 
 def get_new_kd_bitmap(dc, dm, obj_dir, docker_mount):
     # TODO: convert TGA to png
-    # return dm
+    return dm
     map_kd = cv2.imread(os.path.join(docker_mount, obj_dir, dm))
     if map_kd is not None:
         map_kd = map_kd.astype('float64')
@@ -250,6 +250,6 @@ def clean_mtl(obj_filename):
 
 if __name__ == '__main__':
     obj_file = "assets/dmi-models/american-pumper/American LaFrance Pumper.mtl"
-    docker_mount = '/home/gdsu/scenes/city_test'
+    docker_mount = '/home/grace/city_test'
     result = map_mtl(obj_file, docker_mount)
     print(result)

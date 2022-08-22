@@ -64,7 +64,7 @@ def generate_walt_segms(data_dir):
     # move to walt dir
 
 if __name__ == '__main__':
-    data_dir = '/home/gdsu/scenes/city_test/enfuego-6'
+    data_dir = '/home/grace/city_test/enfuego-6'
     generate_walt_segms(data_dir)
 
     

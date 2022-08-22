@@ -10,7 +10,7 @@ from object_insertion import optix_compose
 import time
 
 
-DEFAULT_ARGS = {'envScale':'1.5', 'envmapFile':'/home/gdsu/scenes/city_test/envmap-craig.hdr',
+DEFAULT_ARGS = {'envScale':'1.5', 'envmapFile':'/home/grace/city_test/envmap-craig.hdr',
     'fov':'90', 'sampleCount':'32', 'width':'1000', 'height':'750'}
 
 OPTIX_RENDERER_PATH = "/home/gdsu/OptixRenderer/build/bin/optixRenderer"
@@ -124,7 +124,7 @@ def render_car_vid(wip_dir, render_name, cam_to_world_matrix, cars_list,
 
 if __name__ == '__main__':
     ######### Required arguments. Modify as desired: #############
-    output_dir = "/home/gdsu/scenes/city_test"
+    output_dir = "/home/grace/city_test"
     render_name = "lowpoly-craig-horz-optix"
     
     # Matrix needs to be numpy
@@ -134,18 +134,18 @@ if __name__ == '__main__':
         [0,0,0,1]])
 
     cars_list = [
-        {"obj": "/home/gdsu/scenes/city_test/assets/car/ff5ad56515bc0167500fb89d8b5ec70a/model.obj", 
+        {"obj": "/home/grace/city_test/assets/car/ff5ad56515bc0167500fb89d8b5ec70a/model.obj", 
         "x_start": -15, "x_end": 0, 'speed': 6, 'x':None, 'y':0.8, "z": None, "scale": 5, "y_rotate": 315, 
         "line_slope":0.87, "line_displacement":3},
 
     ]
 
-    bg_img_path = "/home/gdsu/scenes/city_test/assets/cam2_week1_cars_stopped_2021-05-01T15-15-15.535725.jpg"
+    bg_img_path = "/home/grace/city_test/assets/cam2_week1_cars_stopped_2021-05-01T15-15-15.535725.jpg"
     fps = 12
 
     wip_dir = "{}_xmls".format(render_name)
     frames_dir = "{}_frames".format(render_name)
-    vid_path = "/home/gdsu/scenes/city_test/{}.mp4".format(render_name)
+    vid_path = "/home/grace/city_test/{}.mp4".format(render_name)
     
 
     render_car_vid(wip_dir, render_name, cam_to_world_matrix, cars_list, 

@@ -183,14 +183,14 @@ def optix_compose(bg_img_path, im_all_path, dest_image_path, im_pl_path, im_obj_
 
 
 if __name__ == '__main__':
-    bg_img_path = "/home/gdsu/scenes/city_test/assets/cam2_week1_right_turn_2021-05-01T14-42-00.655968.jpg"
-    # im_all_path = "/home/gdsu/scenes/city_test/cadillac_right.png"
-    # dest_image_path = "/home/gdsu/scenes/city_test/cadillac_right_BLENDd.png"
-    # im_pl_path = "/home/gdsu/scenes/city_test/cadillac_right_pl.png"
-    # im_obj_path = "/home/gdsu/scenes/city_test/cadillac_right_obj.png"
+    bg_img_path = "/home/grace/city_test/assets/cam2_week1_right_turn_2021-05-01T14-42-00.655968.jpg"
+    # im_all_path = "/home/grace/city_test/cadillac_right.png"
+    # dest_image_path = "/home/grace/city_test/cadillac_right_BLENDd.png"
+    # im_pl_path = "/home/grace/city_test/cadillac_right_pl.png"
+    # im_obj_path = "/home/grace/city_test/cadillac_right_obj.png"
     # compose_and_blend(bg_img_path, im_all_path, dest_image_path, im_pl_path, im_obj_path)
     
-    output_dir = "/home/gdsu/scenes/city_test/" 
+    output_dir = "/home/grace/city_test/" 
     xml_name = "ford_police_interceptor"
     rendered_img_name = xml_name 
     composite_img_name = xml_name + "_composite.png"
@@ -211,26 +211,26 @@ if __name__ == '__main__':
         m_all_path, m_obj_path)
     # h = 1500
     # w = 2000
-    # I = Image.open('/home/gdsu/scenes/city_test/assets/cam2_week1_right_turn_2021-05-01T14-42-00.655968.jpg')
+    # I = Image.open('/home/grace/city_test/assets/cam2_week1_right_turn_2021-05-01T14-42-00.655968.jpg')
     # I = I.resize((w, h))
     # I = np.asarray(I) #/ 255.0
     # I = I[:, :, :3]
 
-    # I_all = Image.open('/home/gdsu/scenes/city_test/cadillac_right.png')
+    # I_all = Image.open('/home/grace/city_test/cadillac_right.png')
     # I_all = I_all.resize((w, h))
     # I_all = np.asarray(I_all) #/ 255.0
     # I_all = I_all[:, :, :3]
 
-    # I_pl = Image.open('/home/gdsu/scenes/city_test/cadillac_right_pl.png')
+    # I_pl = Image.open('/home/grace/city_test/cadillac_right_pl.png')
     # I_pl = I_pl.resize((w, h))
     # I_pl = np.asarray(I_pl) #/ 255.0
     # I_pl = I_pl[:, :, :3]
 
-    # obj_img = np.asarray(Image.open('/home/gdsu/scenes/city_test/cadillac_right_obj.png'))
+    # obj_img = np.asarray(Image.open('/home/grace/city_test/cadillac_right_obj.png'))
     # I_obj = np.array(obj_img) #/ 255.0
     # M_obj = obj_img[:, :, 3] > 0
 
-    # all_img = np.asarray(Image.open('/home/gdsu/scenes/city_test/cadillac_right.png'))
+    # all_img = np.asarray(Image.open('/home/grace/city_test/cadillac_right.png'))
     # M_all = all_img[:, :, 3] > 0
 
     # # mask is m_obj

@@ -154,5 +154,5 @@ def map_mtl(obj_path, docker_mount):
 
 
 if __name__ == '__main__':
-    obj_file = "/home/gdsu/scenes/city_test/assets/ford-police-interceptor/Ford_Police_Interceptor-TRI.obj"
+    obj_file = "/home/grace/city_test/assets/ford-police-interceptor/Ford_Police_Interceptor-TRI.obj"
     clean_mtl(obj_file)

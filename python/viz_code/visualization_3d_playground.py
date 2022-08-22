@@ -253,7 +253,7 @@ def main(sfm_dir):
         cam_model = draw_camera(K, R, t, K[0, 2] * 2, K[1, 2] * 2, 1.5, [1, 0, 0])
         frames.extend(cam_model)
 
-    bg_img = cv2.imread('/home/gdsu/scenes/city_test/assets/fifth_craig3_median.jpg')
+    bg_img = cv2.imread('/home/grace/city_test/assets/fifth_craig3_median.jpg')
     bg_img = cv2.resize(bg_img, (bg_img.shape[1] // 4, bg_img.shape[0] // 4))
 
     # Callback stuff
@@ -373,7 +373,7 @@ def main(sfm_dir):
     PTO_array = np.array(PTO_list)
     print(PTO_array.shape)
     
-    with open('/home/gdsu/scenes/city_test/assets/fifth_craig-traj-15.npy', 'wb') as f:
+    with open('/home/grace/city_test/assets/fifth_craig-traj-15.npy', 'wb') as f:
        np.save(f, PTO_array)
 
     ro = vis.get_render_option()

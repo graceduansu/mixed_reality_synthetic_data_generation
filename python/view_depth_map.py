@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cv2
 
-a = np.load('/home/gdsu/scenes/city_test/dataset-2/im-5_segm_6.npy')
+a = np.load('/home/grace/city_test/dataset-2/im-5_segm_6.npy')
 solid = a[:,:,0]
 alpha = a[:,:,1]
 print(solid.shape)
@@ -21,9 +21,9 @@ img = cv2.merge((norm, norm, norm, alpha))
 print(img.shape)
 
 plt.imshow(solid)
-plt.savefig('/home/gdsu/scenes/city_test/dataset-2/im-5_segm_6-PLOT.png')
+plt.savefig('/home/grace/city_test/dataset-2/im-5_segm_6-PLOT.png')
 
 plt.imshow(alpha)
-plt.savefig('/home/gdsu/scenes/city_test/dataset-2/im-5_segm_6-PLOT-ALPHA.png')
+plt.savefig('/home/grace/city_test/dataset-2/im-5_segm_6-PLOT-ALPHA.png')
 # cv2.imwrite('depth_test-1_obj-norm.png', norm)
-cv2.imwrite('/home/gdsu/scenes/city_test/dataset-2/im-5_segm_6.png', norm)
+cv2.imwrite('/home/grace/city_test/dataset-2/im-5_segm_6.png', norm)

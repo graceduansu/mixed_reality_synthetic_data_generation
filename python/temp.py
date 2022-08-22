@@ -8,7 +8,7 @@ from tqdm import trange
 from glob import glob
 
 
-# data_dir = '/home/gdsu/scenes/city_test/enfuego-4/images'
+# data_dir = '/home/grace/city_test/enfuego-4/images'
 # dirname = 'enfuego-4'
 
 # glob_str = "{}/*composite.png".format(data_dir)
@@ -18,7 +18,7 @@ from glob import glob
 #     os.system(cmd)
 
 dirname = 'enfuego-6'
-data_dir = '/home/gdsu/scenes/city_test/{}/Segmentation'.format(dirname)
+data_dir = '/home/grace/city_test/{}/Segmentation'.format(dirname)
 
 
 glob_str = "{}/*.png".format(data_dir)

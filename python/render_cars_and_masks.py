@@ -77,7 +77,7 @@ def generate_optix_xml(xml_file, np_cam_matrix, cars_list, docker_mount,
 
         if render_ground:
             ground_string = '''<shape type="obj">
-        <string name="filename" value="/home/gdsu/scenes/city_test/assets/ground.obj" />
+        <string name="filename" value="/home/grace/city_test/assets/ground.obj" />
         <transform name="toWorld">
             <scale value="0.1" />
             <matrix value="-6.30439204e-01  1.74791195e-18  7.76238629e-01 -1.48978244e+01 4.14373368e-15  1.00000000e+00 -2.45877286e-19  0.00000000e+00 -7.76238629e-01 -7.96063745e-19 -6.30439204e-01  6.73076135e+00 0 0 0 1 " />
@@ -106,7 +106,7 @@ def calculate_car_pos(m, b, x_pos):
     return z_pos
    
 
-DEFAULT_ARGS = {'envScale':'1.5', 'envmapFile':'/home/gdsu/scenes/city_test/envmap-craig.hdr',
+DEFAULT_ARGS = {'envScale':'1.5', 'envmapFile':'/home/grace/city_test/envmap-craig.hdr',
     'fov':'90', 'sampleCount':'32', 'width':'1000', 'height':'750'}
 
 OPTIX_RENDERER_PATH = "/home/gdsu/OptixRenderer/build/bin/optixRenderer"
@@ -171,7 +171,7 @@ if __name__ == '__main__':
     ######### Required arguments. Modify as desired: #############
 
     # This will be the docker volume mount:
-    output_dir = "/home/gdsu/scenes/city_test/" 
+    output_dir = "/home/grace/city_test/" 
 
     xml_name = "matrix-optix-test"
 
