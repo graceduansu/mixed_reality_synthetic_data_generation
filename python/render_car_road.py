@@ -185,10 +185,9 @@ if __name__ == '__main__':
     cam_to_world_matrix = '-6.32009074e-01 3.81421015e-01  6.74598057e-01 -1.95597297e+01 '\
         '5.25615099e-03 8.72582680e-01 -4.88438164e-01  6.43714192e+00 '\
         '-7.74943161e-01  -3.05151563e-01 -5.53484978e-01  4.94516235e+00 '\
-        '0 0 0 0.1'
+        '0 0 0 1'
 
     # car z position will be calculated later according to line equation
-    # TODO: Note: obj path is weird...
     cars_list = [
         # {"obj": "assets/chevy_camaro/camaro_ss_2016-TRI.obj", 
         # "x": -17, "y": 0, "z": None, "scale": 1, "y_rotate": 45, 
@@ -238,7 +237,7 @@ if __name__ == '__main__':
     render_car_road(output_dir, xml_name, cam_to_world_matrix, cars_list, 
         bg_img_path, rendered_img_name, composite_img_name, compose_mode, is_hdr_output,
         template,
-        width=1000, height=750, fov=90, sampleCount=64,
+        width=1000, height=750, fov=90, sampleCount=32,
         hour=15, minute=30, day=4, turbidity=5
         )
     
