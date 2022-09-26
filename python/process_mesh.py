@@ -399,12 +399,13 @@ if __name__ == '__main__':
     # clean_mtl(new_path)
     # calculate_y_trans(new_path)
     
-    old_path = '/home/gdsu/scenes/city_test/assets/roadwork/barrier/construction_barrier-TRI.obj'
-    new_path = '/home/gdsu/scenes/city_test/assets/roadwork/barrier/construction_barrier-TRI.obj'
-    bpy_process_mesh(old_path, new_path, target_length=0.8, decimateRatio=None, rotations=0)
-    # old_path = '/home/gdsu/scenes/city_test/assets/roadwork/construction_sign/signConstructionWork_02.obj'
-    # new_path = '/home/gdsu/scenes/city_test/assets/roadwork/construction_sign/signConstructionWork_02-TRI.obj'
-    # bpy_process_mesh(old_path, new_path, target_length=2.5, decimateRatio=None, rotations=0)
+    # old_path = '/home/gdsu/scenes/city_test/assets/wheelchair/dennis/rp_dennis_posed_004_30k.fbx'
+    # new_path = '/home/gdsu/scenes/city_test/assets/wheelchair/dennis/rp_dennis_fbx.obj'
+    # convert_fbx_to_obj(old_path, new_path)
+    
+    old_path = '/home/gdsu/scenes/city_test/assets/wheelchair/dennis/rp_dennis_fbx.obj'
+    new_path = '/home/gdsu/scenes/city_test/assets/wheelchair/dennis/rp_dennis_fbx-TRI.obj'
+    bpy_process_mesh(old_path, new_path, scale=1, decimateRatio=None, rotations=0)
     clean_mtl(new_path)
     calculate_y_trans(new_path)
 

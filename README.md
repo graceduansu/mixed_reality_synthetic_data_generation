@@ -13,9 +13,7 @@ pip install -r requirements.txt
 ```
 
 ## Setup
-1. Replace `feb79bb374a0` on python/render_car_road.py on [line 155](https://github.com/graceduansu/mixed_reality_synthetic_data_generation/blob/master/python/render_car_road.py#L155) with your Mitsuba Docker image ID. 
-
-2. Place all assets (images, 3D model files, etc.) into the `assets` directory.
+Place all assets (images, 3D model files, etc.) into the `assets` directory.
 
 ## Inserting 3D objects into One Photo
 1. See python/render_car_road.py [line 178](https://github.com/graceduansu/mixed_reality_synthetic_data_generation/blob/master/python/render_car_road.py#L178) to access the arguments and view example usage.
@@ -23,7 +21,7 @@ pip install -r requirements.txt
 2. Modify the arguments as desired before running the code:
 
 List of required arguments from the user that can be modified:
-* `output_dir`: This will be the docker volume mount.
+* `output_dir`: This will be the docker volume mount. Please change it to the absolute path of the parent directory containing this repository.
 
 * `xml_name`: The desired root name of your new image. All intermediate files will also use this root name.
 
@@ -42,13 +40,13 @@ List of required arguments from the user that can be modified:
 
 * `bg_img_path`: File path of the desired background photo *RELATIVE TO* `output_dir` (docker container needs to be able to access it)
 
-3. To specify some rendering settings for Mitsuba, edit the [keyword arguments]() for `render_car_road()` as desired. See the `MITSUBA_ARGS` [dictionary](https://github.com/graceduansu/mixed_reality_synthetic_data_generation/blob/master/python/render_car_road.py#L92) for the full list. 
+1. To specify some rendering settings for Mitsuba, edit the [keyword arguments]() for `render_car_road()` as desired. See the `MITSUBA_ARGS` [dictionary](https://github.com/graceduansu/mixed_reality_synthetic_data_generation/blob/master/python/render_car_road.py#L92) for the full list. 
 
 * For example, `width` and `height` changes the dimensions of the images that Mitsuba will render.
 * Location and time related arguments will change the sun's position accordingly.
 
 
-1. Run the code:
+4. Run the code:
 ```
 cd python/
 python render_car_road.py

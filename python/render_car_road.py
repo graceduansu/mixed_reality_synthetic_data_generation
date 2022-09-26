@@ -181,7 +181,7 @@ if __name__ == '__main__':
     # This will be the docker volume mount:
     output_dir = "/home/gdsu/scenes/city_test/" 
 
-    xml_name = "spot_the_fake"
+    xml_name = "ppl_test"
     cam_to_world_matrix = '-6.32009074e-01 3.81421015e-01  6.74598057e-01 -1.95597297e+01 '\
         '5.25615099e-03 8.72582680e-01 -4.88438164e-01  6.43714192e+00 '\
         '-7.74943161e-01  -3.05151563e-01 -5.53484978e-01  4.94516235e+00 '\
@@ -198,10 +198,10 @@ if __name__ == '__main__':
         # {"obj": "assets/chevy_camaro/camaro_ss_2016-TRI.obj", 
         # "x": -9, "y": 0, "z": None, "scale": 1, "y_rotate": 45, 
         # "line_slope":-0.95, "line_displacement":-12, "ignore_textures":False},
-        {"obj": "assets/mercedes-vito/mercedes_vito-TRI.obj", 
+        {"obj": "assets/wheelchair/dennis/rp_dennis_fbx-TRI.obj", 
         "x": -6, "y": 0, "z": None, "scale": 1, "y_rotate": 125, 
         "line_slope":-0.95, "line_displacement":-2.5, "ignore_textures":False,
-        'color':[.99, .99, .99]},
+        'color':None},
         # {"obj": "assets/chevy_camaro/camaro_ss_2016-TRI.obj", 
         # "x": -1, "y": 0, "z": None, "scale": 1, "y_rotate": 45, 
         # "line_slope":-0.95, "line_displacement":-12, "ignore_textures":False}, 
